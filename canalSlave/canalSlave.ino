@@ -4,7 +4,7 @@
 // Código do canal ESCRAVO do Medidor de Impedância
 // Autor: Edson Rodrigues
 // 08/03/2021
-// versão 1.1
+// versão 1.1 inicial
 //******************************************************************************************
 //********INICIALIZAÇAO*******************************************************************
 const int buttonPin8 = 8;     // the number of the pushbutton pin
