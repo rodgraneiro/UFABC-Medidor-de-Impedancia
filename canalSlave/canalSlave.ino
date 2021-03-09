@@ -99,194 +99,194 @@ const int D15 = 44; //Port  C19
 
 void setup() {   //*********************INÍCIO SETUP**********************************8
     
-              pinMode(buttonPin8, INPUT);         // initialize the pushbutton pin as an input:
-              pinMode(habilitaMaster, OUTPUT);    // initialize the pushbutton pin as an input:
-              digitalWrite(habilitaMaster, LOW);  // habilita Master:
-              Serial.begin(115200);
-              Wire.begin(); //               
-              
-
- // Configuração de Ports para iniciar AD7762 
-   pinMode(CS, OUTPUT);       // Port D0 do Arduino Due
-   pinMode(RDWR, OUTPUT);     // Port D1
-   pinMode(RESET, OUTPUT);    // Port D2
-   pinMode(DRDY, INPUT);      // Port A14 do Arduino Due
-
- //
-   digitalWrite(RESET, HIGH);
-   digitalWrite(CS, HIGH);
-   digitalWrite(RDWR, HIGH);
-  
-  pinMode(D0, OUTPUT);
-  pinMode(D1, OUTPUT);
-  pinMode(D2, OUTPUT);
-  pinMode(D3, OUTPUT);
-  pinMode(D4, OUTPUT);
-  pinMode(D5, OUTPUT);
-  pinMode(D6, OUTPUT);
-  pinMode(D7, OUTPUT);
-  pinMode(D8, OUTPUT);
-  pinMode(D9, OUTPUT);
-  pinMode(D10, OUTPUT);
-  pinMode(D11, OUTPUT);
-  pinMode(D12, OUTPUT);
-  pinMode(D13, OUTPUT);
-  pinMode(D14, OUTPUT);
-  pinMode(D15, OUTPUT);
+    pinMode(buttonPin8, INPUT);         // initialize the pushbutton pin as an input:
+    pinMode(habilitaMaster, OUTPUT);    // initialize the pushbutton pin as an input:
+    digitalWrite(habilitaMaster, LOW);  // habilita Master:
+    Serial.begin(115200);
+    Wire.begin(); //               
     
-   // RESET inicial      **************************
-  digitalWrite(RESET, LOW);// reset
-  delay(100);
-  digitalWrite(RESET, HIGH);// reset
-  delay(100);
-  //************************************************
-  
-
-  for (int contadorSetup = 0; contadorSetup < 100; contadorSetup ++) {  
-  
-                // Envia Endereço Registrador2 p/ Bus de Dados**************************
-                  digitalWrite(D0, LOW); //Endereço Registrador 2  0x0002
-                  digitalWrite(D1, HIGH);
-                  digitalWrite(D2, LOW);
-                  digitalWrite(D3, LOW);
-                  digitalWrite(D4, LOW);
-                  digitalWrite(D5, LOW);
-                  digitalWrite(D6, LOW);
-                  digitalWrite(D7, LOW);
-                  digitalWrite(D8, LOW);
-                  digitalWrite(D9, LOW);
-                  digitalWrite(D10, LOW);
-                  digitalWrite(D11, LOW);
-                  digitalWrite(D12, LOW);
-                  digitalWrite(D13, LOW);
-                  digitalWrite(D14, LOW);
-                  digitalWrite(D15, LOW);
-                 
-                  //******************************************
-                  // ESCREVE Endereço Registrador2
-                  //*********************************************
-                  delay(10);
-                  digitalWrite(CS, LOW);  // Habilita Chip Select do AD7762 para escrita
-                  digitalWrite(CS, HIGH); // desabilita Chip Select do AD7762 
-                   
-                  
-                  //*****Envia Palavra de controle do Registrador2 p/ Bus de Dados*****
-                  // set CDIV = 0 metade MCLk
-                  // set DIPD = 0 habilita Dif Amp
-                  // set PD = 0 habilita CI (Power ON)
-                  // set LPWR = 0 seta power no modo normal
-                  //******************************************************
+    
+    // Configuração de Ports para iniciar AD7762 
+    pinMode(CS, OUTPUT);       // Port D0 do Arduino Due
+    pinMode(RDWR, OUTPUT);     // Port D1
+    pinMode(RESET, OUTPUT);    // Port D2
+    pinMode(DRDY, INPUT);      // Port A14 do Arduino Due
+    
+    //
+    digitalWrite(RESET, HIGH);
+    digitalWrite(CS, HIGH);
+    digitalWrite(RDWR, HIGH);
+    
+    pinMode(D0, OUTPUT);
+    pinMode(D1, OUTPUT);
+    pinMode(D2, OUTPUT);
+    pinMode(D3, OUTPUT);
+    pinMode(D4, OUTPUT);
+    pinMode(D5, OUTPUT);
+    pinMode(D6, OUTPUT);
+    pinMode(D7, OUTPUT);
+    pinMode(D8, OUTPUT);
+    pinMode(D9, OUTPUT);
+    pinMode(D10, OUTPUT);
+    pinMode(D11, OUTPUT);
+    pinMode(D12, OUTPUT);
+    pinMode(D13, OUTPUT);
+    pinMode(D14, OUTPUT);
+    pinMode(D15, OUTPUT);
+    
+    // RESET inicial      **************************
+    digitalWrite(RESET, LOW);// reset
+    delay(100);
+    digitalWrite(RESET, HIGH);// reset
+    delay(100);
+    //************************************************
+    
+    
+    for (int contadorSetup = 0; contadorSetup < 100; contadorSetup ++) {  
+    
+        // Envia Endereço Registrador2 p/ Bus de Dados**************************
+        digitalWrite(D0, LOW); //Endereço Registrador 2  0x0002
+        digitalWrite(D1, HIGH);
+        digitalWrite(D2, LOW);
+        digitalWrite(D3, LOW);
+        digitalWrite(D4, LOW);
+        digitalWrite(D5, LOW);
+        digitalWrite(D6, LOW);
+        digitalWrite(D7, LOW);
+        digitalWrite(D8, LOW);
+        digitalWrite(D9, LOW);
+        digitalWrite(D10, LOW);
+        digitalWrite(D11, LOW);
+        digitalWrite(D12, LOW);
+        digitalWrite(D13, LOW);
+        digitalWrite(D14, LOW);
+        digitalWrite(D15, LOW);
         
-                  digitalWrite(D0, LOW); //DIPD
-                  digitalWrite(D1, HIGH);// "1"
-                  digitalWrite(D2, LOW);//LPWR
-                  digitalWrite(D3, LOW);//PD
-                  digitalWrite(D4, HIGH);// Default 9B
-                  digitalWrite(D5, LOW);//CDIV
-                  digitalWrite(D6, LOW);//Default 9B
-                  digitalWrite(D7, HIGH);//Default 9B
-                  digitalWrite(D8, LOW);
-                  digitalWrite(D9, LOW);
-                  digitalWrite(D10, LOW);
-                  digitalWrite(D11, LOW);
-                  digitalWrite(D12, LOW);
-                  digitalWrite(D13, LOW);
-                  digitalWrite(D14, LOW);
-                  digitalWrite(D15, LOW);
-
-                  //******************************************
-                  // ESCREVE palavra de controle no Registrador2
-                  //*********************************************                
-                  delay(10);
-                  digitalWrite(CS, LOW);
-                  digitalWrite(CS, HIGH);
-                 
-  
-   
-                    //*********************************************************
-                    // ESCREVE END REG 1 0X0001
-                    //******************************************************** 
-                    digitalWrite(D0, HIGH); //Endereço Registrador 1  0x0001
-                    digitalWrite(D1, LOW);
-                    digitalWrite(D2, LOW);
-                    digitalWrite(D3, LOW);
-                    digitalWrite(D4, LOW);
-                    digitalWrite(D5, LOW);
-                    digitalWrite(D6, LOW);
-                    digitalWrite(D7, LOW);
-                    digitalWrite(D8, LOW);
-                    digitalWrite(D9, LOW);
-                    digitalWrite(D10, LOW);
-                    digitalWrite(D11, LOW);
-                    digitalWrite(D12, LOW);
-                    digitalWrite(D13, LOW);
-                    digitalWrite(D14, LOW);
-                    digitalWrite(D15, LOW);
-                  
-                    // REG_PIOC_ODSR = 0x00000004; // END reg 2 
-                    
-                    delay(10);
-                    digitalWrite(CS, LOW);
-                    delay(1);
-                    digitalWrite(CS, HIGH);
-                    //delay(100);
-                    //***********************************************************
-
-
-                    //***********************************************
-                    // ESCREVE WORD REG 1 0X001D
-                    // DEC2, DEC1, DEC0 = 0X4 PARA DECIMACAO 16X
-                    digitalWrite(D0, LOW);  //DEC0 = 1 ja ta high
-                    digitalWrite(D1, HIGH);  // DEC1 = 0 ja ta low
-                    digitalWrite(D2, LOW); // DEC2 = 1
-                    digitalWrite(D3, HIGH); // tem que ser 1 (high)
-                    digitalWrite(D4, HIGH); // BYP F3
-                    digitalWrite(D5, LOW);
-                    digitalWrite(D6, LOW);
-                    digitalWrite(D7, LOW);
-                    digitalWrite(D8, LOW);
-                    digitalWrite(D9, LOW);
-                    digitalWrite(D10, LOW);
-                    digitalWrite(D11, LOW);
-                    digitalWrite(D12, LOW);
-                    digitalWrite(D13, LOW);
-                    digitalWrite(D14, LOW);
-                    digitalWrite(D15, LOW);
-                  
-                     // REG_PIOC_ODSR = 0x00000074; // Wor reg 1 
-                  
-                    delay(10);
-                    digitalWrite(CS, LOW);
-                    delay(1);
-                    digitalWrite(CS, HIGH);
-  
-       
-                   }
-
-          delay(100);
+        //******************************************
+        // ESCREVE Endereço Registrador2
+        //*********************************************
+        delay(10);
+        digitalWrite(CS, LOW);  // Habilita Chip Select do AD7762 para escrita
+        digitalWrite(CS, HIGH); // desabilita Chip Select do AD7762 
         
-          //****************************
-          //prepara PORTC como INPUT
-          pinMode(D0, INPUT);
-          pinMode(D1, INPUT);
-          pinMode(D2, INPUT);
-          pinMode(D3, INPUT);
-          pinMode(D4, INPUT);
-          pinMode(D5, INPUT);
-          pinMode(D6, INPUT);
-          pinMode(D7, INPUT);
-          pinMode(D8, INPUT);
-          pinMode(D9, INPUT);
-          pinMode(D10, INPUT);
-          pinMode(D11, INPUT);
-          pinMode(D12, INPUT);
-          pinMode(D13, INPUT);
-          pinMode(D14, INPUT);
-          pinMode(D15, INPUT);
-          
-          delay(100);
-          contadorSetup = 0;
-//**********************FINAL SETUP****************************
+        
+        //*****Envia Palavra de controle do Registrador2 p/ Bus de Dados*****
+        // set CDIV = 0 metade MCLk
+        // set DIPD = 0 habilita Dif Amp
+        // set PD = 0 habilita CI (Power ON)
+        // set LPWR = 0 seta power no modo normal
+        //******************************************************
+        
+        digitalWrite(D0, LOW); //DIPD
+        digitalWrite(D1, HIGH);// "1"
+        digitalWrite(D2, LOW);//LPWR
+        digitalWrite(D3, LOW);//PD
+        digitalWrite(D4, HIGH);// Default 9B
+        digitalWrite(D5, LOW);//CDIV
+        digitalWrite(D6, LOW);//Default 9B
+        digitalWrite(D7, HIGH);//Default 9B
+        digitalWrite(D8, LOW);
+        digitalWrite(D9, LOW);
+        digitalWrite(D10, LOW);
+        digitalWrite(D11, LOW);
+        digitalWrite(D12, LOW);
+        digitalWrite(D13, LOW);
+        digitalWrite(D14, LOW);
+        digitalWrite(D15, LOW);
+        
+        //******************************************
+        // ESCREVE palavra de controle no Registrador2
+        //*********************************************                
+        delay(10);
+        digitalWrite(CS, LOW);
+        digitalWrite(CS, HIGH);
+        
+        
+        
+        //*********************************************************
+        // ESCREVE END REG 1 0X0001
+        //******************************************************** 
+        digitalWrite(D0, HIGH); //Endereço Registrador 1  0x0001
+        digitalWrite(D1, LOW);
+        digitalWrite(D2, LOW);
+        digitalWrite(D3, LOW);
+        digitalWrite(D4, LOW);
+        digitalWrite(D5, LOW);
+        digitalWrite(D6, LOW);
+        digitalWrite(D7, LOW);
+        digitalWrite(D8, LOW);
+        digitalWrite(D9, LOW);
+        digitalWrite(D10, LOW);
+        digitalWrite(D11, LOW);
+        digitalWrite(D12, LOW);
+        digitalWrite(D13, LOW);
+        digitalWrite(D14, LOW);
+        digitalWrite(D15, LOW);
+        
+        // REG_PIOC_ODSR = 0x00000004; // END reg 2 
+        
+        delay(10);
+        digitalWrite(CS, LOW);
+        delay(1);
+        digitalWrite(CS, HIGH);
+        //delay(100);
+        //***********************************************************
+        
+        
+        //***********************************************
+        // ESCREVE WORD REG 1 0X001D
+        // DEC2, DEC1, DEC0 = 0X4 PARA DECIMACAO 16X
+        digitalWrite(D0, LOW);  //DEC0 = 1 ja ta high
+        digitalWrite(D1, HIGH);  // DEC1 = 0 ja ta low
+        digitalWrite(D2, LOW); // DEC2 = 1
+        digitalWrite(D3, HIGH); // tem que ser 1 (high)
+        digitalWrite(D4, HIGH); // BYP F3
+        digitalWrite(D5, LOW);
+        digitalWrite(D6, LOW);
+        digitalWrite(D7, LOW);
+        digitalWrite(D8, LOW);
+        digitalWrite(D9, LOW);
+        digitalWrite(D10, LOW);
+        digitalWrite(D11, LOW);
+        digitalWrite(D12, LOW);
+        digitalWrite(D13, LOW);
+        digitalWrite(D14, LOW);
+        digitalWrite(D15, LOW);
+        
+        // REG_PIOC_ODSR = 0x00000074; // Wor reg 1 
+        
+        delay(10);
+        digitalWrite(CS, LOW);
+        delay(1);
+        digitalWrite(CS, HIGH);
+    
+    
+    }
+    
+    delay(100);
+    
+    //****************************
+    //prepara PORTC como INPUT
+    pinMode(D0, INPUT);
+    pinMode(D1, INPUT);
+    pinMode(D2, INPUT);
+    pinMode(D3, INPUT);
+    pinMode(D4, INPUT);
+    pinMode(D5, INPUT);
+    pinMode(D6, INPUT);
+    pinMode(D7, INPUT);
+    pinMode(D8, INPUT);
+    pinMode(D9, INPUT);
+    pinMode(D10, INPUT);
+    pinMode(D11, INPUT);
+    pinMode(D12, INPUT);
+    pinMode(D13, INPUT);
+    pinMode(D14, INPUT);
+    pinMode(D15, INPUT);
+    
+    delay(100);
+    contadorSetup = 0;
+    //**********************FINAL SETUP****************************
 }
 
 
