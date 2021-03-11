@@ -9,11 +9,11 @@
 //********INICIALIZAÇAO*******************************************************************
 const int buttonPin8 = 8;     // the number of the pushbutton pin
 int buttonState8 = 0;         // variable for reading the pushbutton status
-//int DRDYstate = 1;         // variable for reading the pushbutton status
-const int habilitaMaster = 9;     // the number of the pushbutton pin
-const int Start = 10;     // the number of the pushbutton pin
-int habilitaMasterState = 0;         // variable for reading the pushbutton status
-int StartState = 0;         // variable for reading the pushbutton status
+//int DRDYstate = 1;          // variable for reading the pushbutton status
+const int habilitaMaster = 9; // the number of the pushbutton pin
+const int Start = 10;         // the number of the pushbutton pin
+int habilitaMasterState = 0;  // variable for reading the pushbutton status
+int StartState = 0;           // variable for reading the pushbutton status
 
 #define M_PI 3.141592653589793238462643
 #define Rsentinela 983
@@ -27,7 +27,7 @@ int StartState = 0;         // variable for reading the pushbutton status
 const int CS = 25;    // Port D0 Arduino -> Chip Select AD7762 pin 40
 const int RDWR = 26;  // Port D1 Arduino -> Read/Write AD7762 pin 39
 const int RESET = 27; // Port D2 Arduino -> Reset AD7762 pin 37
-const int DRDY = 23;  // Port A14 Arduino -> Data Ready Output AD7762 pin 
+const int DRDY = 23;  // Port A14 Arduino -> Data Ready Output AD7762 pin 38
 volatile int Nr_de_Amostras = 100;
 volatile uint32_t vetor_Amostra[100];
 volatile uint32_t vetor_segunda_palavra[100];

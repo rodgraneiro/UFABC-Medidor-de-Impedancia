@@ -1,3 +1,11 @@
+//*****************************************************************************************
+// Arquitetura para aquisição de sinais de Miografia de Impedância Elétrica
+// UFABC - Universidade Federal do ABC
+// Código do canal MESTRE do Medidor de Impedância
+// Autor: Edson Rodrigues
+// 08/03/2021
+// versão 1.1 inicial
+//******************************************************************************************
 //********INICIALIZAÇAO*******************************************************************
 const int buttonPin8 = 8;     // the number of the pushbutton pin
 int buttonState8 = 0;         // variable for reading the pushbutton status
@@ -8,16 +16,16 @@ int buttonState8 = 0;         // variable for reading the pushbutton status
 
 #include "MathHelpers.h" 
 #include <Wire.h>
-const int CS = 25; // PORt D0
-const int RDWR = 26; // D1
-const int RESET = 27; // D2
-const int DRDY = 23; // PORTA A14
-const int SYNC = 24; // PORTA A15
-volatile int vetor = 100;
-volatile uint32_t value[100];
-volatile uint32_t LSD[100];
+const int CS = 25;    // Port D0 Arduino -> Chip Select AD7762 pin 40
+const int RDWR = 26;  // Port D1 Arduino -> Read/Write AD7762 pin 39
+const int RESET = 27; // Port D2 Arduino -> Reset AD7762 pin 37
+const int DRDY = 23;  // Port A14 Arduino -> Data Ready Output AD7762 pin 38
+const int SYNC = 24;  // Port A15 Arduino -> Synchronization Input AD7762 pin 36
+volatile int Nr_de_Amostras = 100;
+volatile uint32_t vetor_Amostra[100];
+volatile uint32_t vetor_segunda_palavra[100];
 volatile uint32_t neg;
-volatile int i = 0;
+volatile int contadorAmostra = 0;
 volatile int j = 0;
 volatile int k = 0;
 float fator = 0.0000006;
@@ -299,7 +307,7 @@ void setup() {   //*********************INÍCIO SETUP***************************
   pinMode(D15, INPUT);
   
   delay(500);
-  i=0;
+  contadorAmostra = 0;
   //attachInterrupt(digitalPinToInterrupt(DRDY), leADC, FALLING);
   //**********************FINAL SETUP****************************
 
@@ -327,38 +335,37 @@ main:
                  //goto main;
                 //}
 
- inicio:   
-    while(i<vetor){
-                   //i++;
-                   REG_PIOD_ODSR = 0x00000004; // CS = 1, DRDW = 1 e RSET = 1 habilita leitura
-                   }
+ inicio:    // Realiza a leitura das Nr_de_Amostras enquanto a interrupção "HabilitaDRDY" estiver habilitada
+            while(contadorAmostra < Nr_de_Amostras){
+                                                    NOP();
+                                                    }
+            //*** Desabilita interrupção p/ aquisição de amostras   
+            detachInterrupt(digitalPinToInterrupt(DRDY));
 
-    detachInterrupt(digitalPinToInterrupt(DRDY));
-
-    for(j=0; j<=vetor; j++) {
-                             value[j] = value[j] & 0xffffc; //clear top 11 and bottom 2 bits with mask
-                             value[j] = value[j] >> 2; //shift away the lower 2 cleared bits
+    for(j = 0; j <= Nr_de_Amostras; j++) {
+                             vetor_Amostra[j] = vetor_Amostra[j] & 0xffffc;  //clear top 11 and bottom 2 bits with mask
+                             vetor_Amostra[j] = vetor_Amostra[j] >> 2;       //shift away the lower 2 cleared bits
                                 //remove the two junk bits from center of data
-                             int lo8 = value[j] & 0xff; //mask and save lower 8 bits
-                             value[j] = value[j] >> 10; //shift away the lower 10 bits to clear middle two
-                             value[j] = value[j] << 8 | lo8; //reassemble continuous 16 bits
+                             int lo8 = vetor_Amostra[j] & 0xff;               //mask and save lower 8 bits
+                             vetor_Amostra[j] = vetor_Amostra[j] >> 10;       //shift away the lower 10 bits to clear middle two
+                             vetor_Amostra[j] = vetor_Amostra[j] << 8 | lo8;  //reassemble continuous 16 bits
 
-                             int lo24 = LSD[j] & 0xff000;
+                             int lo24 = vetor_segunda_palavra[j] & 0xff000;
                              lo24  =  lo24 >> 12;
-                             value[j] = value[j] << 8 | lo24; //reassemble continuous 16 bits     
+                             vetor_Amostra[j] = vetor_Amostra[j] << 8 | lo24; //reassemble continuous 16 bits     
                              } 
 
-   for(k=0; k<vetor; k++){
+   for(k = 0; k < Nr_de_Amostras; k++){
     
-                          neg = value[k] & 0x800000;
+                          neg = vetor_Amostra[k] & 0x800000;
                               if(neg == 0x800000){ 
-                                                  int semicicloneg  = ((~value[k] + 0x1)) & 0xffffff;
+                                                  int semicicloneg  = ((~vetor_Amostra[k] + 0x1)) & 0xffffff;
                                                   volts[k] = -(semicicloneg*630e-9);
                                                   Serial.println(sci(volts[k],4));
     
                                                   }
                              else{
-                                  int semiciclopos = value[k]; // * fator;
+                                  int semiciclopos = vetor_Amostra[k]; // * fator;
                                   volts[k] = (semiciclopos*630e-9);
                                   Serial.println(sci(volts[k],4));
   
@@ -433,7 +440,7 @@ Serial.println(sci(cDCbTOTAL,4));
 
     //faseTOTALchA = faseTOTAL;
     
-    i=0;
+    contadorAmostra = 0;
     j=0;
     k=0;
     s=0;
@@ -451,30 +458,49 @@ Serial.println(sci(cDCbTOTAL,4));
     //attachInterrupt(digitalPinToInterrupt(DRDY), leADC, FALLING);
 
 }
-//}
+//**********************************************************************************************************************************
 
-//*******INTERRUPÇÃ0
+                    //*******INTERRUPÇÕES
+
+                    //***************************************************
+                    // Interrupção do botão de início de medição
+                    //*************************************************   
 
 void HabilitaDRDY(){
-  detachInterrupt(digitalPinToInterrupt(buttonPin8));
-  attachInterrupt(digitalPinToInterrupt(DRDY), leADC, FALLING);
-}
+                    // Desabilita interrupção do botão de início de medição
+                    detachInterrupt(digitalPinToInterrupt(buttonPin8));
+                    // Habilita interrupção LeADC para  leitura de dados do AD7762
+                    attachInterrupt(digitalPinToInterrupt(DRDY), leADC, FALLING);
+                  }
+
+                    //***************************************************
+                    // Interrupção para  leitura de dados do AD7762
+                    // Lê "Nr_de_Amostras" 
+                    //*************************************************    
+
+                  
 
 void leADC() {
-   i++;
-   REG_PIOD_ODSR = 0x00000004; // CS = 0, DRDW = 0 e RSET = 1 habilita leitura
-   
-   value[i] = REG_PIOC_PDSR;
-   REG_PIOD_ODSR = 0x00000007; // CS = 1, DRDW = 1 e RSET = 1 desabilita leitura
-   
-   REG_PIOD_ODSR = 0x00000004; // CS = 0, DRDW = 0 e RSET = 1 habilita leitura
-   
-   LSD[i] = REG_PIOC_PDSR;
-   //i++;
-         
-    REG_PIOD_ODSR = 0x00000007; // CS = 1, DRDW = 1 e RSET = 1 desabilita leitura
-    //Tempo_Inter = Tempo_T; 
-}
+               contadorAmostra++;                                       //  contador de amostras
+                                                                        // Palavra de controle do portD para Habilitar a leitura do AD7762
+               REG_PIOD_ODSR = 0x00000004;                              // CS = 0, DRDW = 0 e RSET = 1 habilita leitura
+               
+               vetor_Amostra[contadorAmostra] = REG_PIOC_PDSR;          // lê os 32 bits da palavra 1 (MSD) no registrador  portC
+                                                                        // e armazena na matriz "vetor_Amostra"
+
+                                                                        // Palavra de controle do portD para desabilitar CI AD7762
+               REG_PIOD_ODSR = 0x00000007;                              // CS = 1, DRDW = 1 e RSET = 1 desabilita leitura
+
+                                                                        // Palavra de controle do portD para Habilitar a leitura do AD7762
+               REG_PIOD_ODSR = 0x00000004;                              // CS = 0, DRDW = 0 e RSET = 1 habilita leitura
+               
+               vetor_segunda_palavra[contadorAmostra] = REG_PIOC_PDSR;  // lê os 32 bits da palavra 2 (LSD) no registrador  portC
+                                                                        // e armazena na matriz "vetor_segunda_palavra" 
+               
+                                                                        // Palavra de controle do portD para Habilitar a leitura do AD7762
+                REG_PIOD_ODSR = 0x00000007;                             // CS = 1, DRDW = 1 e RSET = 1 desabilita leitura
+                 
+              }
 
 
 /*void receiveEvent(int howMany)
