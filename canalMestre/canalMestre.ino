@@ -321,6 +321,7 @@ main:
  inicio:    
             // Realiza a leitura das Nr_de_Amostras enquanto a interrupção "HabilitaDRDY" estiver habilitada
             while(contadorAmostra < Nr_de_Amostras){
+                                                    //REG_PIOD_ODSR = 0x00000004;
                                                     NOP();
                                                     }
             //*** Desabilita interrupção p/ aquisição de amostras   
