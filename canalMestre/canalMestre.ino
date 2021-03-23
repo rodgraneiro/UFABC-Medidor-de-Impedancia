@@ -29,7 +29,7 @@ volatile int Nr_de_Amostras = 100;
 volatile uint32_t vetor_Amostra[100];
 volatile uint32_t vetor_segunda_palavra[100];
 volatile uint32_t sinal_negativo = 0;
-volatile uint32_t semiciclo_neg;
+volatile uint32_t semiciclo_neg = 0;
 volatile uint32_t semiciclo_pos = 0;
 volatile uint32_t low8 = 0;
 volatile uint32_t low24 = 0;
@@ -559,7 +559,7 @@ void HabilitaDRDY(){
                   
 
 void leADC() {
-               contadorAmostra++;                                       //  contador de amostras
+               contadorAmostra = contadorAmostra++;                                       //  contador de amostras
                                                                         // Palavra de controle do portD para Habilitar a leitura do AD7762
                REG_PIOD_ODSR = 0x00000004;                              // CS = 0, DRDW = 0 e RSET = 1 habilita leitura
                
@@ -617,17 +617,17 @@ void receiveEvent(int quantidade_bytes_esperados) { // Este código é executado
     // Ajustando os bytes recebidos para obeter a variável_float
     //**********************************************************
     aux1 = (byte2<<16) | (byte3<<8) | byte4;        // Ajusta a parte fracionáia (depois da vírgula)
-    ampTOTALchB = (float) (aux1*0.0001);            // Atribui a parte fracionária, depois da vírgula 
+    ampTOTALchB = (float) (aux1*0.000001);            // Atribui a parte fracionária, depois da vírgula 
     aux1 = byte1; 
     ampTOTALchB += aux1;                            // Atribui a parte iteira
 
     aux2 = (byte6<<16) | (byte7<<8) | byte8;        // Ajusta a parte fracionáia (depois da vírgula)
-    faseTOTALchB = (float) (aux2*0.0001);           // Atribui a parte fracionária, depois da vírgula 
+    faseTOTALchB = (float) (aux2*0.000001);           // Atribui a parte fracionária, depois da vírgula 
     aux2 = byte5; 
     faseTOTALchB += aux2;                           // Atribui a parte inteira
 
     aux3 = (byte10<<16) | (byte11<<8) | byte12;     // Ajusta a parte fracionáia (depois da vírgula)
-    offsetTOTALchB = (float) (aux3*0.0001);           // Atribui a parte fracionária, depois da vírgula 
+    offsetTOTALchB = (float) (aux3*0.000001);           // Atribui a parte fracionária, depois da vírgula 
     aux3 = byte9; 
     offsetTOTALchB += aux3;                           // Atribui a parte inteira
 
