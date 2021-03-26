@@ -321,8 +321,10 @@ main:
  inicio:    
             // Realiza a leitura das Nr_de_Amostras enquanto a interrupção "HabilitaDRDY" estiver habilitada
             while(contadorAmostra < Nr_de_Amostras){
-                                                    //REG_PIOD_ODSR = 0x00000004;
-                                                    NOP();
+                                                    REG_PIOD_ODSR = 0x00000004;
+                                                    //NOP();
+                                                    Serial.println(Nr_de_Amostras);
+                                                    Serial.println(contadorAmostra);
                                                     }
             //*** Desabilita interrupção p/ aquisição de amostras   
             detachInterrupt(digitalPinToInterrupt(DRDY));
@@ -559,7 +561,7 @@ void HabilitaDRDY(){
                   
 
 void leADC() {
-               contadorAmostra = contadorAmostra++;                                       //  contador de amostras
+               contadorAmostra++;                                       //  contador de amostras
                                                                         // Palavra de controle do portD para Habilitar a leitura do AD7762
                REG_PIOD_ODSR = 0x00000004;                              // CS = 0, DRDW = 0 e RSET = 1 habilita leitura
                
