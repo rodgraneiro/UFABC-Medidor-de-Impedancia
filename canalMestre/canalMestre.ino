@@ -34,9 +34,10 @@ volatile uint32_t semiciclo_pos = 0;
 volatile uint32_t low8 = 0;
 volatile uint32_t low24 = 0;
 volatile int contadorSetup = 0;
-volatile int contadorAmostra = 0;
+//volatile int contadorAmostra = 0;
+volatile int i = 0;
 volatile int contador_aux_1 = 0;
-volatile int contador_aux_2 = 0;
+volatile int contadorAuxB = 0;
 float fator = 0.0000006;
 float converte_volts[100];
 
@@ -296,7 +297,9 @@ void setup() {   //*********************INÍCIO SETUP***************************
       pinMode(D15, INPUT);
       
       delay(500);
-      contadorAmostra = 0;
+      //contadorAmostra = 0;
+      i = 0;
+      //contador_aux_2 = 0;
 
        //************ Envia sinal de sincronismo SYNC ******************* 
        digitalWrite(SYNC, LOW);
@@ -312,19 +315,20 @@ void setup() {   //*********************INÍCIO SETUP***************************
 
 void loop() {
 
-main:
+//main:
             //**** Habilita interrupção do botão que dispara a Medição das N_amostras
             attachInterrupt(digitalPinToInterrupt(buttonPin8), HabilitaDRDY, RISING); // Habilita interrupção do botão de início de medição
                                                                                       // e vai para interrupção LeAdc
   
 
- inicio:    
+ //inicio:    
             // Realiza a leitura das Nr_de_Amostras enquanto a interrupção "HabilitaDRDY" estiver habilitada
-            while(contadorAmostra < Nr_de_Amostras){
+            // while(contadorAmostra < Nr_de_Amostras){
+            while(i < Nr_de_Amostras){
                                                     REG_PIOD_ODSR = 0x00000004;
                                                     //NOP();
-                                                    Serial.println(Nr_de_Amostras);
-                                                    Serial.println(contadorAmostra);
+                                                    //Serial.println(Nr_de_Amostras);
+                                                    //Serial.println(i);
                                                     }
             //*** Desabilita interrupção p/ aquisição de amostras   
             detachInterrupt(digitalPinToInterrupt(DRDY));
@@ -355,7 +359,7 @@ main:
                             //*******************************************************************
                             // Primeira palavra com os 16 bits mais significativos (de 23 à 8)
                             //*******************************************************************
-                            
+                            //Serial.println(contador_aux_1);
                             // Zerar bits "0" , "1" e bits de "20" à "31" aplicando a operação lógica "AND" 
                             // por meio da máscara 0x000ffffc
       
@@ -391,7 +395,10 @@ main:
                              // aplicando a operação lógica "OU" com os 8 bits menos significativos
                              // da segunda palavra armazenados na variavel low24
                              
-                             vetor_Amostra[contador_aux_1] = vetor_Amostra[contador_aux_1] << 8 | low24; // Amostra discretizada com 24 bits;      
+                             vetor_Amostra[contador_aux_1] = vetor_Amostra[contador_aux_1] << 8 | low24; // Amostra discretizada com 24 bits;
+                              Serial.print(contador_aux_1);
+                              Serial.print("  ;  ");
+                             Serial.println(vetor_Amostra[contador_aux_1]);      
                              } 
 
                             //********************************************************************* 
@@ -401,30 +408,31 @@ main:
 
 
 
-   for(contador_aux_2 = 0; contador_aux_2 < Nr_de_Amostras; contador_aux_2++){
+   for(contadorAuxB = 0; contadorAuxB < Nr_de_Amostras; contadorAuxB++){
 
                               // O bit 23 indentifica o sinal da amostra: "1" para negativo e "0" para positivo.
-                          
+                            //Serial.println(contador_aux_2);
                               // Verifica estado do bit 23 aplicando a operação lógica "AND" por meio da máscara 0x800000.
-                              sinal_negativo = vetor_Amostra[contador_aux_2] & 0x800000;
+                              sinal_negativo = vetor_Amostra[contadorAuxB] & 0x800000;
 
                               // Se estado do bit 23 igual a "1", aplicar operação lógica de "complemento de 2" e multiplicar por (-1).
                               // Em seguida multiplicar pelo fator de conversão para volts
                               if(sinal_negativo == 0x800000){ 
-                                                  semiciclo_neg  = ((~vetor_Amostra[contador_aux_2] + 0x1)) & 0xffffff; // lê amostra e aplica operação "complemento de 2"
-                                                  converte_volts[contador_aux_2] = -(semiciclo_neg*630e-9);             // converte pata volts e multiplicar por -1
-                                                  Serial.println(sci(converte_volts[contador_aux_2],4));                // Envia para o Monitor Serial
+                                                  semiciclo_neg  = ((~vetor_Amostra[contadorAuxB] + 0x1)) & 0xffffff; // lê amostra e aplica operação "complemento de 2"
+                                                  converte_volts[contadorAuxB] = -(semiciclo_neg*630e-9);             // converte pata volts e multiplicar por -1
+                                                  Serial.println(sci(converte_volts[contadorAuxB],4));                // Envia para o Monitor Serial
     
                                                   }
 
                              // Se estado do bit 23 igual a "0", aplicar fator de conversão para volts   
                                              else{
-                                                  semiciclo_pos = vetor_Amostra[contador_aux_2];                        // lê amostra
-                                                  converte_volts[contador_aux_2] = (semiciclo_pos*630e-9);              // converte pata volts
-                                                  Serial.println(sci(converte_volts[contador_aux_2],4));                // Envia para o Monitor Serial
+                                                  semiciclo_pos = vetor_Amostra[contadorAuxB];                        // lê amostra
+                                                  converte_volts[contadorAuxB] = (semiciclo_pos*630e-9);              // converte pata volts
+                                                  Serial.println(sci(converte_volts[contadorAuxB],4));                // Envia para o Monitor Serial
                   
                                                  }
                          }
+                         //contador_aux_2 = 0;
 
 
 
@@ -435,9 +443,9 @@ main:
                           // Determinar Amplitude, fase e offset. Serão utilizados os três últimos períodos
                           // para evitar transientes do início da medição;
                           
- for(contador_aux_2 = 60; contador_aux_2 < 90; contador_aux_2 = contador_aux_2 + 10){ 
+ for(contadorAuxB = 60; contadorAuxB < 90; contadorAuxB = (contadorAuxB + 10)){ 
                           for (coluna_piE = 0; coluna_piE < 10; coluna_piE++) {
-                                                    ptos_periodo = contador_aux_2 + coluna_piE;
+                                                    ptos_periodo = contadorAuxB + coluna_piE;
 
                                                     // Multiplica a matriz do sinal convertido pela matriz pseudo inversa piE
                                                     soma_seno += (float)converte_volts[ptos_periodo]*(float)piEs[coluna_piE]; 
@@ -462,8 +470,9 @@ main:
                            soma_cosseno = 0;
                            soma_offset = 0;
                            fase = 0;
+                           //Serial.println(contador_aux_2);
                           }
-
+                          //contador_aux_2 = 0;
                        
                           //********************************************  
                           // Calcular média da ampltude, fase e offsset
@@ -520,9 +529,10 @@ Serial.println(sci(soma_offset,4));
 
     //faseTOTALchA = faseTOTAL;
     
-    contadorAmostra = 0;
+    //contadorAmostra = 0;
+    i = 0;
     contador_aux_1 = 0;
-    contador_aux_2 = 0;
+    contadorAuxB = 0;
     coluna_piE = 0;
     //int m=0;
     soma_seno = 0;
@@ -547,10 +557,12 @@ Serial.println(sci(soma_offset,4));
                     //*************************************************   
 
 void HabilitaDRDY(){
+                    //Serial.println("HabilitaDRDY");
                     // Desabilita interrupção do botão de início de medição
                     detachInterrupt(digitalPinToInterrupt(buttonPin8));
                     // Habilita interrupção LeADC para  leitura de dados do AD7762
                     attachInterrupt(digitalPinToInterrupt(DRDY), leADC, FALLING);
+                                        
                   }
 
                     //***************************************************
@@ -561,12 +573,16 @@ void HabilitaDRDY(){
                   
 
 void leADC() {
-               contadorAmostra++;                                       //  contador de amostras
+              //Serial.println("leADC");
+               //contadorAmostra++;                                       //  contador de amostras
                                                                         // Palavra de controle do portD para Habilitar a leitura do AD7762
+
+               i++;
                REG_PIOD_ODSR = 0x00000004;                              // CS = 0, DRDW = 0 e RSET = 1 habilita leitura
                
-               vetor_Amostra[contadorAmostra] = REG_PIOC_PDSR;          // lê os 32 bits da palavra 1 (MSD) no registrador  portC
+               //vetor_Amostra[contadorAmostra] = REG_PIOC_PDSR;          // lê os 32 bits da palavra 1 (MSD) no registrador  portC
                                                                         // e armazena na matriz "vetor_Amostra"
+               vetor_Amostra[i] = REG_PIOC_PDSR;
 
                                                                         // Palavra de controle do portD para desabilitar CI AD7762
                REG_PIOD_ODSR = 0x00000007;                              // CS = 1, DRDW = 1 e RSET = 1 desabilita leitura
@@ -574,9 +590,10 @@ void leADC() {
                                                                         // Palavra de controle do portD para Habilitar a leitura do AD7762
                REG_PIOD_ODSR = 0x00000004;                              // CS = 0, DRDW = 0 e RSET = 1 habilita leitura
                
-               vetor_segunda_palavra[contadorAmostra] = REG_PIOC_PDSR;  // lê os 32 bits da palavra 2 (LSD) no registrador  portC
+               //vetor_segunda_palavra[contadorAmostra] = REG_PIOC_PDSR;  // lê os 32 bits da palavra 2 (LSD) no registrador  portC
                                                                         // e armazena na matriz "vetor_segunda_palavra" 
-               
+
+               vetor_segunda_palavra[i] = REG_PIOC_PDSR;
                                                                         // Palavra de controle do portD para Habilitar a leitura do AD7762
                 REG_PIOD_ODSR = 0x00000007;                             // CS = 1, DRDW = 1 e RSET = 1 desabilita leitura
                  
@@ -648,8 +665,8 @@ void receiveEvent(int quantidade_bytes_esperados) { // Este código é executado
 
 
 
-
-
+Serial.println(contador_aux_1);
+Serial.println(contadorAuxB);
  //faseAmenosB =  faseTOTALchA  - faseTOTALchB;
     Serial.println("Variavel recebida do canal B:");
     //Serial.println(variavel_float, DEC);
@@ -681,5 +698,10 @@ Serial.println(sci(offsetTOTALchB,4));
 //Tempo_T = 0;
 
 faseTOTALchA =0;
+contadorAuxB = 0;
+
+Serial.println(contador_aux_1);
+Serial.println(contadorAuxB);
+
       
 }
