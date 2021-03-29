@@ -569,6 +569,10 @@ Serial.println(sci(offsetTOTAL,4));
                       ampTOTAL = 0;
                       ampTOTALchB = 0;
                       faseTOTALchA =0;
+                      faseTOTALchB = 0;
+                      offsetTOTAL = 0;
+                      offsetTOTALchB = 0;
+                      
     
 }
 //**********************************************************************************************************************************

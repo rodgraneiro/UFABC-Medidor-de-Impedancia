@@ -293,19 +293,22 @@ void setup() {   //*********************INÍCIO SETUP***************************
 
 void loop() {
     
-main:
+//main:
           //**** Habilita interrupção do botão que dispara a Medição das N_amostras
          attachInterrupt(digitalPinToInterrupt(buttonPin8), HabilitaDRDY, RISING); // Habilita interrupção do botão de início de medição
                                                                                    // e vai para interrupção LeAdc
  
-inicio: 
+//inicio: 
           // Realiza a leitura das Nr_de_Amostras enquanto a interrupção "HabilitaDRDY" estiver habilitada
           while(contadorAmostra < Nr_de_Amostras){
                                                   NOP();
+                                                  //Serial.println(Nr_de_Amostras);
+                                                   // Serial.println(contadorAmostra);
                                                   }
-                                                  
+                                                
           //*** Desabilita interrupção p/ aquisição de amostras                                      
           detachInterrupt(digitalPinToInterrupt(DRDY));
+          //Serial.println("Desabilita interrupção DRDY"); 
 
                   //*************************************************************
                   // Rearranjar 32 bits "NÃO CONSECUTIVOS" do portC do Arduino em 24 bits CONSECUTIVOS
@@ -328,7 +331,7 @@ inicio:
                   // Palavra 2  |. |. |. |. |. |. |. |. |. |. |. |. |V |V |V |V |V |V |V |V |. |. |. |. |. |. |. |. |. |. |. |. | 
                   //-------------------------------------------------------------------------------------------------------------     
         
-    for(contador_aux_1 = 0; contador_aux_1 <= Nr_de_Amostras; contador_aux_1++) {
+    for(contador_aux_1 = 0; contador_aux_1 < Nr_de_Amostras; contador_aux_1++) {
                             //*******************************************************************
                             // Primeira palavra com os 16 bits mais significativos (de 23 à 8)
                             //*******************************************************************
@@ -369,7 +372,8 @@ inicio:
                              // da segunda palavra armazenados na variavel low24
 
                                 vetor_Amostra[contador_aux_1] = vetor_Amostra[contador_aux_1] << 8 | low24; // Amostra discretizada com 24 bits; 
-                                   
+                               //Serial.println(Nr_de_Amostras);
+                              // Serial.println(contadorAmostra);    
                              } 
 
 
@@ -379,7 +383,7 @@ inicio:
                             // conversão para tensão em volts
                             //**************************************************
      
-   for(contador_aux_2 = 0; contador_aux_2 < Nr_de_Amostras; contador_aux_2++){ 
+   for(contador_aux_2 = 0; contador_aux_2 < Nr_de_Amostras - 1; contador_aux_2++){ 
 
                           // O bit 23 indentifica o sinal da amostra: "1" para negativo e "0" para positivo.
 
@@ -401,6 +405,7 @@ inicio:
                                                   converte_volts[contador_aux_2] = (semiciclo_pos*300e-9)/Rsentinela;
                                                   Serial.println(sci(converte_volts[contador_aux_2],4));
                                                   }
+                                                  //Serial.println(contador_aux_2); 
                                     }  
 
 
@@ -511,7 +516,7 @@ inicio:
                           byte1 = aux;                          // parte inteira da variável no formato float                    
                                                                 // Ajustando o número depois da vírgula
                           ampTOTAL -= aux;                      // Deixa apenas o número depois da vírgula
-                          ampTOTAL *= 10000;                    // Multiplica por 10k para pegar 4 dígitos após a vírgula
+                          ampTOTAL *= 1000000;                    // Multiplica por 10k para pegar 4 dígitos após a vírgula
                           aux = (unsigned int) ampTOTAL;        // Pega somente o valor antes da vírgula
                           byte4 = aux;                          // byte4
                           byte3 = (aux>>8);                     // byte3
@@ -522,7 +527,7 @@ inicio:
                           byte5 = aux;                          // parte inteira da variável no formato float
                                                                 // Ajustando o número depois da vírgula
                           faseTOTAL -= aux;                     // Deixa apenas o número depois da vírgula
-                          faseTOTAL *= 10000;                   // Multiplica por 10k para pegar 4 dígitos após a vírgula
+                          faseTOTAL *= 1000000;                   // Multiplica por 10k para pegar 4 dígitos após a vírgula
                           aux = (unsigned int) faseTOTAL;       // Pega somente o valor antes da vírgula
                           byte8 = aux;                          // byte8
                           byte7 = (aux>>8);                     // byte7
@@ -533,7 +538,7 @@ inicio:
                           byte9 = aux;                           // parte inteira da variável no formato float
                                                                  // Ajustando o número depois da vírgula
                           offsetTOTAL -= aux;                    // Deixa apenas o número depois da vírgula
-                          offsetTOTAL *= 10000;                  // Multiplica por 10k para pegar 4 dígitos após a vírgula
+                          offsetTOTAL *= 1000000;                  // Multiplica por 10k para pegar 4 dígitos após a vírgula
                           aux = (unsigned int) offsetTOTAL;      // Pega somente o valor antes da vírgula
                           byte12 = aux;                          // byte12
                           byte11 = (aux>>8);                     // byte11
@@ -581,6 +586,7 @@ inicio:
 
    
           digitalWrite(habilitaMaster, LOW);
+          contadorAmostra = 0;
           contadorSetup = 0;
           contador_aux_1 = 0;
           contador_aux_2 = 0;
@@ -593,15 +599,29 @@ inicio:
           cDC = 0;
           ampTOTAL = 0;
           faseTOTAL = 0;
-          cDCbTOTAL = 0;
+          //cDCbTOTAL = 0;
+          offsetTOTAL = 0;
           int semicicloneg = 0;
           int semiciclopos = 0;
           byte1 = 0;
           byte2 = 0;
           byte3 = 0;
           byte4 = 0;
+
+          byte5 = 0;
+          byte6 = 0;
+          byte7 = 0;
+          byte8 = 0;
+
+          byte9 = 0;
+          byte10 = 0;
+          byte11 = 0;
+          byte12 = 0;
+          byte13 = 0;
+          
           aux = 0;
           variavel_float = 0;
+          //Serial.println(contadorAmostra); 
        
 } // Final do loop()
 //**********************************************************************************************************************************
@@ -613,6 +633,7 @@ inicio:
                     //*************************************************    
 
 void HabilitaDRDY(){
+                     //Serial.println("HabilitaDRDY");
                     // Desabilita interrupção do botão de início de medição
                     detachInterrupt(digitalPinToInterrupt(buttonPin8));
                     // Habilita interrupção LeADC para  leitura de dados do AD7762
@@ -625,7 +646,7 @@ void HabilitaDRDY(){
                     //*************************************************    
 
 void leADC() {
-              contadorAmostra++;                                        //  contador de amostras
+              //contadorAmostra++;                                      //  contador de amostras
                                                                         // Palavra de controle do portD para Habilitar a leitura do AD7762
               REG_PIOD_ODSR = 0x00000004;                               // CS = 0, DRDW = 0 e RESET = 1 habilita leitura
                 
@@ -644,5 +665,7 @@ void leADC() {
                                                                         
                                                                         // Palavra de controle do portD para Habilitar a leitura do AD7762
             REG_PIOD_ODSR = 0x00000007;                                 // CS = 1, DRDW = 1 e RESET = 1 desabilita leitura
+
+            contadorAmostra++; 
   
             }
