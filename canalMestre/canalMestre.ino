@@ -47,18 +47,19 @@ int coluna_piE = 0;
 //float cDCb = 0;
 //float cDCTOTAL = 0;
 //float cDCbTOTAL = 0;
-float offsetTOTALchB = 0;
+float offsetTOTALchSlave = 0;
 float amplitude = 0;
 float ampTOTAL = 0;
-float ampTOTALchB = 0;
+float ampTOTALchSlave = 0;
 float impedancia_Z = 0;
 float impedancia_fase = 0;
 float fase = 0;
 float faseTOTAL = 0;
 float faseTOTALchA = 0;
 float faseAmenosB = 0;
-float faseTOTALchB = 0;
-byte sinalcDCchB =0;
+float faseTOTALchSlave = 0;
+byte sinal_offset_Slave =0;
+byte sinal_fase_Slave = 0;
 unsigned long Tempo_T =0;
 unsigned long Tempo_Inter =0;
 
@@ -73,11 +74,11 @@ float soma_offset = 0;
 float offsetTOTAL = 0;
 
   float variavel_float;
-  byte byte1, byte2, byte3, byte4, byte5, byte6, byte7, byte8, byte9, byte10, byte11, byte12, byte13;
+  byte byte1, byte2, byte3, byte4, byte5, byte6, byte7, byte8, byte9, byte10, byte11, byte12, byte13, byte14;
   unsigned int aux1;
   unsigned int aux2;
   unsigned int aux3;
-  int quantidade_bytes_esperados = 13;
+  int quantidade_bytes_esperados = 14;
 
   
 
@@ -475,10 +476,10 @@ void loop() {
 
                           ampTOTAL =ampTOTAL/3;          // Média da amplitude
                           faseTOTAL = faseTOTAL/3;       // Média da fase
-       if (faseTOTAL < 0) {                              // verifica se o ângulo é negatifo
+      // if (faseTOTAL < 0) {                              // verifica se o ângulo é negatifo
                                                          // converte em ângulo positivo
-                           faseTOTAL = 360 + faseTOTAL;
-                          } 
+                          // faseTOTAL = 360 + faseTOTAL;
+                          //} 
 
                            offsetTOTAL = offsetTOTAL/3; // média do Offset
 
@@ -527,11 +528,11 @@ Serial.println(sci(offsetTOTAL,4));
                           Serial.print("amplitude - fase - offset ");
                           
                       Serial.print("  ;  ");
-                      Serial.print(sci(ampTOTALchB,4));
+                      Serial.print(sci(ampTOTALchSlave,4));
                       Serial.print("  ;  ");
-                      Serial.print(sci(faseTOTALchB,4));
+                      Serial.print(sci(faseTOTALchSlave,4));
                       Serial.print("  ;  ");
-                      Serial.println(sci(offsetTOTALchB,4));
+                      Serial.println(sci(offsetTOTALchSlave,4));
                       //Serial.println(sci(faseTOTALchA,4));
                       //Serial.println(sci(faseTOTALchB,4));
                       //Serial.println(sci(impedancia_Z,4));
@@ -540,23 +541,29 @@ Serial.println(sci(offsetTOTAL,4));
                       
                       //contado
 
-        impedancia_Z = ampTOTAL / ampTOTALchB;
-        impedancia_fase = faseTOTALchA - faseTOTALchB;
+        impedancia_Z = ampTOTAL / ampTOTALchSlave;
+        impedancia_fase = faseTOTALchA - faseTOTALchSlave;
         
 
       // ************ DISPLAY **********************************
       //Envia os dados calculados para o display
     
-        lcd.begin(16, 2);       // Define o número de colunas e linhas do LCD
-        lcd.clear();            // Limpa a tela
-        lcd.setCursor(1, 0);    // Posiciona o cursor na coluna 1, linha 0;
-        lcd.print("Z=");        // Escrever "Z=" no display
-        lcd.setCursor(3, 0);    // Posiciona o cursor na coluna 3, linha 0;
-        lcd.print(impedancia_Z,4);  // Escrever valor da Impedância "X.XXXX"
-        lcd.setCursor(1, 1);    // Posiciona o cursor na coluna 1, linha 1;
-        lcd.print("F=");        // Escrever "F=" no display
-        lcd.setCursor(3, 1);    // Posiciona o cursor na coluna 7, linha 1;
-        lcd.print(impedancia_fase,4); // Escrever valor da fase "XX.X"
+        lcd.begin(16, 2);             // Define o número de colunas e linhas do LCD
+        lcd.clear();                  // Limpa a tela
+        lcd.setCursor(1, 0);          // Posiciona o cursor na coluna 1, linha 0;
+        lcd.print("Z =");             // Escrever "Z =" no display
+        lcd.setCursor(5, 0);          // Posiciona o cursor na coluna 5, linha 0;
+        lcd.print(impedancia_Z,4);    // Escrever valor da Impedância "X.XXXX"
+        lcd.setCursor(16, 0);         // Posiciona o cursor na coluna 16, linha 1;
+        lcd.write(B11110100);         // ômega
+        lcd.setCursor(1, 1);          // Posiciona o cursor na coluna 1, linha 1;
+        lcd.write(B11110010);         // theta
+        lcd.setCursor(2, 1);          // Posiciona o cursor na coluna 2, linha 1;
+        lcd.print(" =");              // Escrever " =" no display
+        lcd.setCursor(5, 1);          // Posiciona o cursor na coluna 5, linha 1;
+        lcd.print(impedancia_fase,2); // Escrever valor da fase "XX.X"
+        lcd.setCursor(16, 1);         // Posiciona o cursor na coluna 16, linha 1;
+        lcd.write(B1101111);          // graus
 
 
                       Serial.print(" IMPEDANCIA - FASE ");
@@ -567,11 +574,11 @@ Serial.println(sci(offsetTOTAL,4));
 
 
                       ampTOTAL = 0;
-                      ampTOTALchB = 0;
+                      ampTOTALchSlave = 0;
                       faseTOTALchA =0;
-                      faseTOTALchB = 0;
+                      faseTOTALchSlave = 0;
                       offsetTOTAL = 0;
-                      offsetTOTALchB = 0;
+                      offsetTOTALchSlave = 0;
                       
     
 }
@@ -646,33 +653,37 @@ void receiveEvent(int quantidade_bytes_esperados) {
     byte11 = Wire.read(); 
     byte12 = Wire.read();
 
-    byte13 = Wire.read();
+    byte13 = Wire.read();                           // sinal do offset ch Slave
+    byte14 = Wire.read();                           // sinal da fase ch Slave
 
      
 
     //**********************************************************
     // Ajustando os bytes recebidos para obeter a variável_float
     //**********************************************************
-    aux1 = (byte2<<16) | (byte3<<8) | byte4;        // Ajusta a parte fracionáia (depois da vírgula)
-    ampTOTALchB = (float) (aux1*0.000001);            // Atribui a parte fracionária, depois da vírgula 
+    aux1 = (byte2<<16) | (byte3<<8) | byte4;                    // Ajusta a parte fracionáia (depois da vírgula)
+    ampTOTALchSlave = (float) (aux1*0.000001);                  // Atribui a parte fracionária, depois da vírgula 
     aux1 = byte1; 
-    ampTOTALchB += aux1;                            // Atribui a parte iteira
+    ampTOTALchSlave += aux1;                                    // Atribui a parte iteira
 
-    aux2 = (byte6<<16) | (byte7<<8) | byte8;        // Ajusta a parte fracionáia (depois da vírgula)
-    faseTOTALchB = (float) (aux2*0.000001);           // Atribui a parte fracionária, depois da vírgula 
+    aux2 = (byte6<<16) | (byte7<<8) | byte8;                    // Ajusta a parte fracionáia (depois da vírgula)
+    faseTOTALchSlave = (float) (aux2*0.000001);                 // Atribui a parte fracionária, depois da vírgula 
     aux2 = byte5; 
-    faseTOTALchB += aux2;                           // Atribui a parte inteira
+    faseTOTALchSlave += aux2;                                   // Atribui a parte inteira
 
-    aux3 = (byte10<<16) | (byte11<<8) | byte12;     // Ajusta a parte fracionáia (depois da vírgula)
-    offsetTOTALchB = (float) (aux3*0.000001);           // Atribui a parte fracionária, depois da vírgula 
+    aux3 = (byte10<<16) | (byte11<<8) | byte12;                 // Ajusta a parte fracionáia (depois da vírgula)
+    offsetTOTALchSlave = (float) (aux3*0.000001);               // Atribui a parte fracionária, depois da vírgula 
     aux3 = byte9; 
-    offsetTOTALchB += aux3;                           // Atribui a parte inteira
+    offsetTOTALchSlave += aux3;                                 // Atribui a parte inteira
 
-    sinalcDCchB = byte13;
+    sinal_offset_Slave = byte13;                                // sinal do offset ch Slave                             
+    sinal_fase_Slave = byte14;                                  // sinal da fase ch Slave
 
-    if (sinalcDCchB == 0) {                         // verifica se o ângulo é negatifo
-            offsetTOTALchB = offsetTOTALchB * (-1); // Multiplicar por -1
+    if (sinal_offset_Slave == 0) {                              // verifica se o ângulo é negativo
+            offsetTOTALchSlave = offsetTOTALchSlave * (-1);     // Multiplicar por -1
                           } 
-
+   if (sinal_fase_Slave == 0) {                                 // verifica se o fase é negativa
+            faseTOTALchSlave = faseTOTALchSlave * (-1);         // Multiplicar por -1
+                          } 
       
 }

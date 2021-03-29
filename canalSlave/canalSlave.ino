@@ -71,9 +71,10 @@ float soma_cosseno = 0;
 
 int NrMed = 0;
 int sinal_offset;
+int sinal_fase;
 
 float variavel_float = 0;
-byte byte1, byte2, byte3, byte4, byte5, byte6, byte7, byte8, byte9, byte10, byte11, byte12, byte13;
+byte byte1, byte2, byte3, byte4, byte5, byte6, byte7, byte8, byte9, byte10, byte11, byte12, byte13, byte14;
 unsigned int aux;
   
 
@@ -467,16 +468,26 @@ void loop() {
                           faseTOTAL = faseTOTAL/3; // Média da fase
                            if (faseTOTAL < 0) { // verifica se o ângulo é negatifo
                                                // converte em ângulo positivo
-                                               faseTOTAL = 360 + faseTOTAL;
-                                               } 
+                                               // faseTOTAL = 360 + faseTOTAL;
+                                               faseTOTAL = faseTOTAL * (-1);
+                                               int sinal_fase = 0;                  // A fase é negativa
+                                               }
+                                                else{
+                                               int sinal_fase = 1;                  // a fase é positiva
+                                               }
+
+
+
+
+                                                
           
                          offsetTOTAL = offsetTOTAL/3; // média do Offset
                           if (offsetTOTAL < 0) {  // verifica se o DC é negatifo
                                                offsetTOTAL = offsetTOTAL * (-1);
-                                               int sinal_offset = 0; 
+                                               int sinal_offset = 0;              // O offset é negativo
                                                } 
                                                else{
-                                               int sinal_offset = 1;
+                                               int sinal_offset = 1;              // o offset é positivo
                                                }
 
 
@@ -545,6 +556,7 @@ void loop() {
                           byte10 = (aux>>16);                    // byte10
                         
                           byte13 = sinal_offset;                 // (positivo = 1 ; negativo = 0)
+                          byte14 = sinal_fase;                   // (positivo = 1 ; negativo = 0)
 
 
                           //*********************************************************************************************
@@ -571,6 +583,7 @@ void loop() {
                         Wire.write(byte12);
                       
                         Wire.write(byte13);                   // Envia sinal do offset
+                        Wire.write(byte14);                   // Envia sinal do offset
                         
                         Wire.endTransmission();               // Termina a transmissão 
                       
@@ -618,6 +631,7 @@ void loop() {
           byte11 = 0;
           byte12 = 0;
           byte13 = 0;
+          byte14 = 0;
           
           aux = 0;
           variavel_float = 0;
