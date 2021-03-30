@@ -70,8 +70,8 @@ float soma_seno = 0;
 float soma_cosseno = 0;
 
 int NrMed = 0;
-int sinal_offset;
-int sinal_fase;
+byte sinal_offset;
+byte sinal_fase;
 
 float variavel_float = 0;
 byte byte1, byte2, byte3, byte4, byte5, byte6, byte7, byte8, byte9, byte10, byte11, byte12, byte13, byte14;
@@ -384,7 +384,7 @@ void loop() {
                             // conversão para tensão em volts
                             //**************************************************
      
-   for(contador_aux_2 = 0; contador_aux_2 < Nr_de_Amostras - 1; contador_aux_2++){ 
+   for(contador_aux_2 = 0; contador_aux_2 <= Nr_de_Amostras - 1; contador_aux_2++){ 
 
                           // O bit 23 indentifica o sinal da amostra: "1" para negativo e "0" para positivo.
 
@@ -470,10 +470,10 @@ void loop() {
                                                // converte em ângulo positivo
                                                // faseTOTAL = 360 + faseTOTAL;
                                                faseTOTAL = faseTOTAL * (-1);
-                                               int sinal_fase = 0;                  // A fase é negativa
+                                               sinal_fase = 0;                  // A fase é negativa
                                                }
-                                                else{
-                                               int sinal_fase = 1;                  // a fase é positiva
+                                           else{
+                                               sinal_fase = 1;                  // a fase é positiva
                                                }
 
 
@@ -484,10 +484,10 @@ void loop() {
                          offsetTOTAL = offsetTOTAL/3; // média do Offset
                           if (offsetTOTAL < 0) {  // verifica se o DC é negatifo
                                                offsetTOTAL = offsetTOTAL * (-1);
-                                               int sinal_offset = 0;              // O offset é negativo
+                                               sinal_offset = 0;              // O offset é negativo
                                                } 
-                                               else{
-                                               int sinal_offset = 1;              // o offset é positivo
+                                           else{
+                                               sinal_offset = 1;              // o offset é positivo
                                                }
 
 
@@ -635,7 +635,9 @@ void loop() {
           
           aux = 0;
           variavel_float = 0;
-          //Serial.println(contadorAmostra); 
+          //Serial.println(contadorAmostra);
+           sinal_offset = 0;
+           sinal_fase = 0; 
        
 } // Final do loop()
 //**********************************************************************************************************************************

@@ -324,9 +324,9 @@ void loop() {
  //inicio:    
             // Realiza a leitura das Nr_de_Amostras enquanto a interrupção "HabilitaDRDY" estiver habilitada
               while(contadorAmostra < Nr_de_Amostras){
-           
+                                                      NOP(); 
                                                     //REG_PIOD_ODSR = 0x00000004;
-                                                    NOP();                                         
+                                                                                             
                                                     }
             //*** Desabilita interrupção p/ aquisição de amostras   
             detachInterrupt(digitalPinToInterrupt(DRDY));
@@ -550,20 +550,20 @@ Serial.println(sci(offsetTOTAL,4));
     
         lcd.begin(16, 2);             // Define o número de colunas e linhas do LCD
         lcd.clear();                  // Limpa a tela
-        lcd.setCursor(1, 0);          // Posiciona o cursor na coluna 1, linha 0;
+        lcd.setCursor(0, 0);          // Posiciona o cursor na coluna 0, linha 0;
         lcd.print("Z =");             // Escrever "Z =" no display
-        lcd.setCursor(5, 0);          // Posiciona o cursor na coluna 5, linha 0;
+        lcd.setCursor(4, 0);          // Posiciona o cursor na coluna 4, linha 0;
         lcd.print(impedancia_Z,4);    // Escrever valor da Impedância "X.XXXX"
-        lcd.setCursor(16, 0);         // Posiciona o cursor na coluna 16, linha 1;
+        lcd.setCursor(15, 0);         // Posiciona o cursor na coluna 15, linha 1;
         lcd.write(B11110100);         // ômega
-        lcd.setCursor(1, 1);          // Posiciona o cursor na coluna 1, linha 1;
+        lcd.setCursor(0, 1);          // Posiciona o cursor na coluna 0, linha 1;
         lcd.write(B11110010);         // theta
-        lcd.setCursor(2, 1);          // Posiciona o cursor na coluna 2, linha 1;
+        lcd.setCursor(1, 1);          // Posiciona o cursor na coluna 1, linha 1;
         lcd.print(" =");              // Escrever " =" no display
-        lcd.setCursor(5, 1);          // Posiciona o cursor na coluna 5, linha 1;
+        lcd.setCursor(4, 1);          // Posiciona o cursor na coluna 4, linha 1;
         lcd.print(impedancia_fase,2); // Escrever valor da fase "XX.X"
-        lcd.setCursor(16, 1);         // Posiciona o cursor na coluna 16, linha 1;
-        lcd.write(B1101111);          // graus
+        lcd.setCursor(15, 1);         // Posiciona o cursor na coluna 15, linha 1;
+        lcd.write(B11011111);          // graus
 
 
                       Serial.print(" IMPEDANCIA - FASE ");
@@ -579,6 +579,7 @@ Serial.println(sci(offsetTOTAL,4));
                       faseTOTALchSlave = 0;
                       offsetTOTAL = 0;
                       offsetTOTALchSlave = 0;
+                      sinal_fase_Slave = 0;
                       
     
 }
