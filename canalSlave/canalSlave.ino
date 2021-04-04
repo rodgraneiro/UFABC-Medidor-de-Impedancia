@@ -70,11 +70,11 @@ float soma_seno = 0;
 float soma_cosseno = 0;
 
 int NrMed = 0;
-byte sinal_offset;
-byte sinal_fase;
+//byte sinal_offset;
+//byte sinal_fase;
 
 float variavel_float = 0;
-byte byte1, byte2, byte3, byte4, byte5, byte6, byte7, byte8, byte9, byte10, byte11, byte12, byte13, byte14;
+//byte byte1, byte2, byte3, byte4, byte5, byte6, byte7, byte8, byte9, byte10, byte11, byte12, byte13, byte14;
 unsigned int aux;
   
 
@@ -466,7 +466,7 @@ void loop() {
 
                           ampTOTAL =ampTOTAL/3; // Média da amplitude
                           faseTOTAL = faseTOTAL/3; // Média da fase
-                           if (faseTOTAL < 0) { // verifica se o ângulo é negatifo
+                          /* if (faseTOTAL < 0) { // verifica se o ângulo é negatifo
                                                // converte em ângulo positivo
                                                // faseTOTAL = 360 + faseTOTAL;
                                                faseTOTAL = faseTOTAL * (-1);
@@ -474,7 +474,7 @@ void loop() {
                                                }
                                            else{
                                                sinal_fase = 1;                  // a fase é positiva
-                                               }
+                                               }*/
 
 
 
@@ -482,13 +482,13 @@ void loop() {
                                                 
           
                          offsetTOTAL = offsetTOTAL/3; // média do Offset
-                          if (offsetTOTAL < 0) {  // verifica se o DC é negatifo
+                         /* if (offsetTOTAL < 0) {  // verifica se o DC é negatifo
                                                offsetTOTAL = offsetTOTAL * (-1);
                                                sinal_offset = 0;              // O offset é negativo
                                                } 
                                            else{
                                                sinal_offset = 1;              // o offset é positivo
-                                               }
+                                               }*/
 
 
                           // Imprimir dados no monitor serial
@@ -503,7 +503,7 @@ void loop() {
             
                           delay(2000);
 
-
+                          /*
                           //*******************************************************************
                           // PREPARAÇÃO DOS DADOS PARA SEREM ENVIADOS PARA O CANAL MESTRE 
                           // POR MEIO DA COMUNICAÇÃO SERIAL I2C
@@ -556,18 +556,39 @@ void loop() {
                           byte10 = (aux>>16);                    // byte10
                         
                           byte13 = sinal_offset;                 // (positivo = 1 ; negativo = 0)
-                          byte14 = sinal_fase;                   // (positivo = 1 ; negativo = 0)
+                          byte14 = sinal_fase;                   // (positivo = 1 ; negativo = 0)*/
 
 
                           //*********************************************************************************************
                           //  TRANSMISSÃO SERIAL (I2C) DE DADOS
                           //*********************************************************************************************
+
+                         union amplitude_tag {float amplitude_float ; byte amplitude_byte[4];} amplitude_union;            // Coversão foat ampTOTAL em 4 bytes para transmissão serial I2C 
+                         amplitude_union.amplitude_float = ampTOTAL;
+                         union fase_tag {float fase_float ; byte fase_byte[4] ; } fase_union;                              // Coversão foat faseTOTAL em 4 bytes para transmissão serial I2C 
+                         fase_union.fase_float = faseTOTAL;
+                         union offset_tag { float offset_float ; byte offset_byte[4] ; } offset_union;                     // Coversão foat offsetTOTAL em 4 bytes para transmissão serial I2C 
+                         offset_union.offset_float = offsetTOTAL;
                           
 
-                        delay(10);                            // delay 10us
+                        delay(10);                                                                                        // delay 10us
   
-                        Wire.beginTransmission(15);           // Começa transmissão para o mestre 0x0F
-                        Wire.write(byte1);                    // Envia o byte do número antes da vírgua da variável float
+                        Wire.beginTransmission(15);                                                                       // Começa transmissão para o mestre 0x0F
+                        
+                        Wire.write(amplitude_union.amplitude_byte[0]);                    // Envia o bytes da ampTOTAL
+                        Wire.write(amplitude_union.amplitude_byte[1]);                    // 
+                        Wire.write(amplitude_union.amplitude_byte[2]);
+                        Wire.write(amplitude_union.amplitude_byte[3]);
+                        Wire.write(fase_union.fase_byte[0]);                              // Envia o bytes da faseTOTAL
+                        Wire.write(fase_union.fase_byte[1]);                    
+                        Wire.write(fase_union.fase_byte[2]);
+                        Wire.write(fase_union.fase_byte[3]);
+                        Wire.write(offset_union.offset_byte[0]);                          // Envia o bytes do offsetTOTAL
+                        Wire.write(offset_union.offset_byte[1]);                    
+                        Wire.write(offset_union.offset_byte[2]);
+                        Wire.write(offset_union.offset_byte[3]); 
+                          
+                        /*Wire.write(byte1);                    // Envia o byte do número antes da vírgua da variável float
                         Wire.write(byte2);                    // Em seguida envia dados bytes da mantissa ( multiplicada po 10k)
                         Wire.write(byte3);
                         Wire.write(byte4);
@@ -583,7 +604,7 @@ void loop() {
                         Wire.write(byte12);
                       
                         Wire.write(byte13);                   // Envia sinal do offset
-                        Wire.write(byte14);                   // Envia sinal do offset
+                        Wire.write(byte14);                   // Envia sinal do offset*/
                         
                         Wire.endTransmission();               // Termina a transmissão 
                       
@@ -616,7 +637,7 @@ void loop() {
           offsetTOTAL = 0;
           int semicicloneg = 0;
           int semiciclopos = 0;
-          byte1 = 0;
+          /*byte1 = 0;
           byte2 = 0;
           byte3 = 0;
           byte4 = 0;
@@ -631,13 +652,13 @@ void loop() {
           byte11 = 0;
           byte12 = 0;
           byte13 = 0;
-          byte14 = 0;
+          byte14 = 0;*/
           
           aux = 0;
           variavel_float = 0;
           //Serial.println(contadorAmostra);
-           sinal_offset = 0;
-           sinal_fase = 0; 
+           //sinal_offset = 0;
+           //sinal_fase = 0; 
        
 } // Final do loop()
 //**********************************************************************************************************************************

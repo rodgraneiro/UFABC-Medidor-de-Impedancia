@@ -74,11 +74,12 @@ float soma_offset = 0;
 float offsetTOTAL = 0;
 
   float variavel_float;
-  byte byte1, byte2, byte3, byte4, byte5, byte6, byte7, byte8, byte9, byte10, byte11, byte12, byte13, byte14;
+  //byte byte1, byte2, byte3, byte4, byte5, byte6, byte7, byte8, byte9, byte10, byte11, byte12, byte13, byte14;
   unsigned int aux1;
   unsigned int aux2;
   unsigned int aux3;
-  int quantidade_bytes_esperados = 14;
+  int quantidade_bytes_esperados = 12;
+  byte canal_escrvo_data[12];
 
   
 
@@ -636,6 +637,44 @@ void leADC() {
 
 
 void receiveEvent(int quantidade_bytes_esperados) { 
+
+        canal_escrvo_data[0] = Wire.read();                            // Lê os 4 bytes da amplitude enviados pelo escravo 
+        canal_escrvo_data[1] = Wire.read(); 
+        canal_escrvo_data[2] = Wire.read(); 
+        canal_escrvo_data[3] = Wire.read(); 
+       
+        canal_escrvo_data[4] = Wire.read();                            // Lê os 4 bytes da fase enviados pelo escravo 
+        canal_escrvo_data[5] = Wire.read(); 
+        canal_escrvo_data[6] = Wire.read(); 
+        canal_escrvo_data[7] = Wire.read(); 
+    
+        canal_escrvo_data[8] = Wire.read();                            // Lê os 4 bytes do offset enviados pelo escravo 
+        canal_escrvo_data[9] = Wire.read(); 
+        canal_escrvo_data[10] = Wire.read(); 
+        canal_escrvo_data[11] = Wire.read();
+
+             union ampltude_tag {byte amplitude_byte[4]; float amplitude_float;} amplitude_union;   
+                                 amplitude_union.amplitude_byte[0] = canal_escrvo_data[0];
+                                 amplitude_union.amplitude_byte[1] = canal_escrvo_data[1];
+                                 amplitude_union.amplitude_byte[2] = canal_escrvo_data[2];
+                                 amplitude_union.amplitude_byte[3] = canal_escrvo_data[3];   
+                                 float ampTOTALchSlave = amplitude_union.amplitude_float  ;
+
+            union fase_tag {byte fase_byte[4]; float fase_float;} fase_union;   
+                                 fase_union.fase_byte[0] = canal_escrvo_data[4];
+                                 fase_union.fase_byte[1] = canal_escrvo_data[5];
+                                 fase_union.fase_byte[2] = canal_escrvo_data[6];
+                                 fase_union.fase_byte[3] = canal_escrvo_data[7];   
+                                 float faseTOTALchSlave = fase_union.fase_float  ;
+
+           union offset_tag {byte offset_byte[4]; float offset_float;} offset_union;   
+                                 offset_union.offset_byte[0] = canal_escrvo_data[8];
+                                 offset_union.offset_byte[1] = canal_escrvo_data[9];
+                                 offset_union.offset_byte[2] = canal_escrvo_data[10];
+                                 offset_union.offset_byte[3] = canal_escrvo_data[11];   
+                                 float offsetTOTALchSlave = offset_union.offset_float  ;
+    
+    /*
     //delay(100);
                                                     // Este código é executado quando "quantidade_bytes_esperados" foi recebido via I2C
     byte1 = Wire.read();                            // Lê os 4 bytes enviados pelo mestre 
@@ -685,6 +724,6 @@ void receiveEvent(int quantidade_bytes_esperados) {
                           } 
    if (sinal_fase_Slave == 0) {                                 // verifica se o fase é negativa
             faseTOTALchSlave = faseTOTALchSlave * (-1);         // Multiplicar por -1
-                          } 
+                          } */
       
 }
