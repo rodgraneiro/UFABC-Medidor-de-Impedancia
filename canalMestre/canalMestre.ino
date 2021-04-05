@@ -47,17 +47,17 @@ int coluna_piE = 0;
 //float cDCb = 0;
 //float cDCTOTAL = 0;
 //float cDCbTOTAL = 0;
-float offsetTOTALchSlave = 0;
+volatile float offsetTOTALchSlave = 0;
 float amplitude = 0;
 float ampTOTAL = 0;
-float ampTOTALchSlave = 0;
+volatile float ampTOTALchSlave = 0;
 float impedancia_Z = 0;
 float impedancia_fase = 0;
 float fase = 0;
 float faseTOTAL = 0;
 float faseTOTALchA = 0;
 float faseAmenosB = 0;
-float faseTOTALchSlave = 0;
+volatile float faseTOTALchSlave = 0;
 byte sinal_offset_Slave =0;
 byte sinal_fase_Slave = 0;
 unsigned long Tempo_T =0;
@@ -79,7 +79,13 @@ float offsetTOTAL = 0;
   unsigned int aux2;
   unsigned int aux3;
   int quantidade_bytes_esperados = 12;
-  byte canal_escrvo_data[12];
+  byte canal_escravo_data[12];
+  byte amplitude_byte[4]; 
+  float amplitude_float;
+  byte fase_byte[4]; 
+  float fase_float;
+  byte offset_byte[4]; 
+  float offset_float;
 
   
 
@@ -517,6 +523,8 @@ Serial.println(sci(offsetTOTAL,4));
     
 
  //*****************************************************************************************
+
+
        
         
 
@@ -638,41 +646,75 @@ void leADC() {
 
 void receiveEvent(int quantidade_bytes_esperados) { 
 
-        canal_escrvo_data[0] = Wire.read();                            // Lê os 4 bytes da amplitude enviados pelo escravo 
-        canal_escrvo_data[1] = Wire.read(); 
-        canal_escrvo_data[2] = Wire.read(); 
-        canal_escrvo_data[3] = Wire.read(); 
+        canal_escravo_data[0] = Wire.read();                            // Lê os 4 bytes da amplitude enviados pelo escravo 
+        canal_escravo_data[1] = Wire.read(); 
+        canal_escravo_data[2] = Wire.read(); 
+        canal_escravo_data[3] = Wire.read(); 
        
-        canal_escrvo_data[4] = Wire.read();                            // Lê os 4 bytes da fase enviados pelo escravo 
-        canal_escrvo_data[5] = Wire.read(); 
-        canal_escrvo_data[6] = Wire.read(); 
-        canal_escrvo_data[7] = Wire.read(); 
+        canal_escravo_data[4] = Wire.read();                            // Lê os 4 bytes da fase enviados pelo escravo 
+        canal_escravo_data[5] = Wire.read(); 
+        canal_escravo_data[6] = Wire.read(); 
+        canal_escravo_data[7] = Wire.read(); 
     
-        canal_escrvo_data[8] = Wire.read();                            // Lê os 4 bytes do offset enviados pelo escravo 
-        canal_escrvo_data[9] = Wire.read(); 
-        canal_escrvo_data[10] = Wire.read(); 
-        canal_escrvo_data[11] = Wire.read();
+        canal_escravo_data[8] = Wire.read();                            // Lê os 4 bytes do offset enviados pelo escravo 
+        canal_escravo_data[9] = Wire.read(); 
+        canal_escravo_data[10] = Wire.read(); 
+        canal_escravo_data[11] = Wire.read();
 
-             union ampltude_tag {byte amplitude_byte[4]; float amplitude_float;} amplitude_union;   
-                                 amplitude_union.amplitude_byte[0] = canal_escrvo_data[0];
-                                 amplitude_union.amplitude_byte[1] = canal_escrvo_data[1];
-                                 amplitude_union.amplitude_byte[2] = canal_escrvo_data[2];
-                                 amplitude_union.amplitude_byte[3] = canal_escrvo_data[3];   
-                                 float ampTOTALchSlave = amplitude_union.amplitude_float  ;
-
+              //delay(100);
+            union amplitude_tag {byte amplitude_byte[4]; float amplitude_float;} amplitude_union;   
+                                 amplitude_union.amplitude_byte[0] = canal_escravo_data[0];
+                                 amplitude_union.amplitude_byte[1] = canal_escravo_data[1];
+                                 amplitude_union.amplitude_byte[2] = canal_escravo_data[2];
+                                 amplitude_union.amplitude_byte[3] = canal_escravo_data[3];   
+                                 float AMPLITUDE = amplitude_union.amplitude_float  ;
+                                 ampTOTALchSlave = AMPLITUDE;
+            //delay(100);
             union fase_tag {byte fase_byte[4]; float fase_float;} fase_union;   
-                                 fase_union.fase_byte[0] = canal_escrvo_data[4];
-                                 fase_union.fase_byte[1] = canal_escrvo_data[5];
-                                 fase_union.fase_byte[2] = canal_escrvo_data[6];
-                                 fase_union.fase_byte[3] = canal_escrvo_data[7];   
-                                 float faseTOTALchSlave = fase_union.fase_float  ;
-
+                                 fase_union.fase_byte[0] = canal_escravo_data[4];
+                                 fase_union.fase_byte[1] = canal_escravo_data[5];
+                                 fase_union.fase_byte[2] = canal_escravo_data[6];
+                                 fase_union.fase_byte[3] = canal_escravo_data[7];   
+                                 float FASE = fase_union.fase_float  ;
+                                 faseTOTALchSlave = FASE;
+          //delay(100);
            union offset_tag {byte offset_byte[4]; float offset_float;} offset_union;   
-                                 offset_union.offset_byte[0] = canal_escrvo_data[8];
-                                 offset_union.offset_byte[1] = canal_escrvo_data[9];
-                                 offset_union.offset_byte[2] = canal_escrvo_data[10];
-                                 offset_union.offset_byte[3] = canal_escrvo_data[11];   
-                                 float offsetTOTALchSlave = offset_union.offset_float  ;
+                                 offset_union.offset_byte[0] = canal_escravo_data[8];
+                                 offset_union.offset_byte[1] = canal_escravo_data[9];
+                                 offset_union.offset_byte[2] = canal_escravo_data[10];
+                                 offset_union.offset_byte[3] = canal_escravo_data[11];   
+                                 float OFFSET = offset_union.offset_float  ;
+                                 offsetTOTALchSlave = OFFSET;
+                                 //delay(100);   
+                                /* Serial.print(amplitude_union.amplitude_byte[0]);
+                                  Serial.print(" ; ");
+                                  Serial.print(amplitude_union.amplitude_byte[1]);
+                                  Serial.print(" ; ");
+                                   Serial.print(amplitude_union.amplitude_byte[2]);
+                                   Serial.print(" ; ");
+                                    Serial.print(amplitude_union.amplitude_byte[3]);
+                                      Serial.print(" ; ");
+                                    Serial.println(sci(ampTOTALchSlave, 5));
+                                    //delay(100);
+                                    Serial.print(fase_union.fase_byte[0]);
+                                  Serial.print(" ; ");
+                                  Serial.print(fase_union.fase_byte[1]);
+                                  Serial.print(" ; ");
+                                   Serial.print(fase_union.fase_byte[2]);
+                                   Serial.print(" ; ");
+                                    Serial.print(fase_union.fase_byte[3]);
+                                      Serial.print(" ; ");
+                                    Serial.println(sci(faseTOTALchSlave,4));
+                                    //delay(100);
+                                    Serial.print(offset_union.offset_byte[0]);
+                                  Serial.print(" ; ");
+                                  Serial.print(offset_union.offset_byte[1]);
+                                  Serial.print(" ; ");
+                                   Serial.print(offset_union.offset_byte[2]);
+                                   Serial.print(" ; ");
+                                    Serial.print(offset_union.offset_byte[3]);
+                                      Serial.print(" ; ");
+                                    Serial.println(sci(offsetTOTALchSlave, 4));*/
     
     /*
     //delay(100);
