@@ -40,6 +40,8 @@ volatile int contadorSetup = 0;
 volatile int contadorAmostra = 0;
 volatile int contador_aux_1 = 0;
 volatile int contador_aux_2 = 0;
+volatile int contador_aux_3 = 0;
+
 
 float fator = 0.0000006;
 float converte_volts[100];
@@ -302,7 +304,7 @@ void loop() {
 //inicio: 
           // Realiza a leitura das Nr_de_Amostras enquanto a interrupção "HabilitaDRDY" estiver habilitada
           while(contadorAmostra < Nr_de_Amostras){
-                                                  NOP();
+                                                  //NOP();
                                                   //Serial.println(Nr_de_Amostras);
                                                    // Serial.println(contadorAmostra);
                                                   }
@@ -419,9 +421,9 @@ void loop() {
                           // Determinar Amplitude, fase e offset. Serão utilizados os três últimos períodos
                           // para evitar transientes do início da medição;
 
- for(contador_aux_2 = 60; contador_aux_2 < 90; contador_aux_2 = contador_aux_2 + 10){ // Nr de periodos 
+ for(contador_aux_3 = 60; contador_aux_3 < 90; contador_aux_3 = (contador_aux_3 + 10)){ // Nr de periodos 
                           for (coluna_piE = 0; coluna_piE < 10; coluna_piE++) { // Nr de amostras
-                                                                              int ptos_periodo = contador_aux_2 + coluna_piE; // Nr de amostras de cada periodo
+                                                                              int ptos_periodo = contador_aux_3 + coluna_piE; // Nr de amostras de cada periodo
                                                                               
                                                                               // Multiplica a matriz do sinal convertido pela matriz pseudo inversa piE
                                                                               soma_seno += (float)converte_volts[ptos_periodo]*(float)piEs[coluna_piE]; 
@@ -624,6 +626,7 @@ void loop() {
           contadorSetup = 0;
           contador_aux_1 = 0;
           contador_aux_2 = 0;
+          contador_aux_3 = 0;
           coluna_piE = 0;
           ptos_periodo = 0;
           soma_seno = 0;

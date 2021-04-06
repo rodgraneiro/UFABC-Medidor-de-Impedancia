@@ -37,7 +37,8 @@ volatile int contadorSetup = 0;
 volatile int contadorAmostra = 0;
 volatile int Transmissao_OK = 0;
 volatile int contador_aux_1 = 0;
-volatile int contadorAuxB = 0;
+volatile int contador_aux_2 = 0;
+volatile int contador_aux_3 = 0;
 float fator = 0.0000006;
 float converte_volts[100];
 
@@ -331,7 +332,7 @@ void loop() {
  //inicio:    
             // Realiza a leitura das Nr_de_Amostras enquanto a interrupção "HabilitaDRDY" estiver habilitada
               while(contadorAmostra < Nr_de_Amostras){
-                                                      NOP(); 
+                                                      //NOP(); 
                                                     //REG_PIOD_ODSR = 0x00000004;
                                                                                              
                                                     }
@@ -411,27 +412,27 @@ void loop() {
 
 
 
-   for(contadorAuxB = 0; contadorAuxB <= Nr_de_Amostras -1; contadorAuxB++){
+   for(contador_aux_2 = 0; contador_aux_2 <= Nr_de_Amostras - 1; contador_aux_2++){
 
                               // O bit 23 indentifica o sinal da amostra: "1" para negativo e "0" para positivo.
                            
                               // Verifica estado do bit 23 aplicando a operação lógica "AND" por meio da máscara 0x800000.
-                              sinal_negativo = vetor_Amostra[contadorAuxB] & 0x800000;
+                              sinal_negativo = vetor_Amostra[contador_aux_2] & 0x800000;
 
                               // Se estado do bit 23 igual a "1", aplicar operação lógica de "complemento de 2" e multiplicar por (-1).
                               // Em seguida multiplicar pelo fator de conversão para volts
                               if(sinal_negativo == 0x800000){ 
-                                                  semiciclo_neg  = ((~vetor_Amostra[contadorAuxB] + 0x1)) & 0xffffff; // lê amostra e aplica operação "complemento de 2"
-                                                  converte_volts[contadorAuxB] = -(semiciclo_neg*630e-9);             // converte pata volts e multiplicar por -1
-                                                  Serial.println(sci(converte_volts[contadorAuxB],4));                // Envia para o Monitor Serial
+                                                  semiciclo_neg  = ((~vetor_Amostra[contador_aux_2] + 0x1)) & 0xffffff; // lê amostra e aplica operação "complemento de 2"
+                                                  converte_volts[contador_aux_2] = -(semiciclo_neg*630e-9);             // converte pata volts e multiplicar por -1
+                                                  Serial.println(sci(converte_volts[contador_aux_2],4));                // Envia para o Monitor Serial
     
                                                   }
 
                              // Se estado do bit 23 igual a "0", aplicar fator de conversão para volts   
                                              else{
-                                                  semiciclo_pos = vetor_Amostra[contadorAuxB];                        // lê amostra
-                                                  converte_volts[contadorAuxB] = (semiciclo_pos*630e-9);              // converte pata volts
-                                                  Serial.println(sci(converte_volts[contadorAuxB],4));                // Envia para o Monitor Serial
+                                                  semiciclo_pos = vetor_Amostra[contador_aux_2];                        // lê amostra
+                                                  converte_volts[contador_aux_2] = (semiciclo_pos*630e-9);              // converte pata volts
+                                                  Serial.println(sci(converte_volts[contador_aux_2],4));                // Envia para o Monitor Serial
                   
                                                  }
                          }
@@ -446,9 +447,9 @@ void loop() {
                           // Determinar Amplitude, fase e offset. Serão utilizados os três últimos períodos
                           // para evitar transientes do início da medição;
                           
- for(contadorAuxB = 60; contadorAuxB < 90; contadorAuxB = (contadorAuxB + 10)){ 
+ for(contador_aux_3 = 60; contador_aux_3 < 90; contador_aux_3 = (contador_aux_3 + 10)){ 
                           for (coluna_piE = 0; coluna_piE < 10; coluna_piE++) {
-                                                    ptos_periodo = contadorAuxB + coluna_piE;
+                                                    ptos_periodo = contador_aux_3 + coluna_piE;
 
                                                     // Multiplica a matriz do sinal convertido pela matriz pseudo inversa piE
                                                     soma_seno += (float)converte_volts[ptos_periodo]*(float)piEs[coluna_piE]; 
@@ -511,7 +512,8 @@ Serial.println(sci(offsetTOTAL,4));
     
     contadorAmostra = 0;
     contador_aux_1 = 0;
-    contadorAuxB = 0;
+    contador_aux_2;
+    contador_aux_3 = 0;
     coluna_piE = 0;
     soma_seno = 0;
     soma_cosseno = 0;
