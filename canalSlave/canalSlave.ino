@@ -337,7 +337,7 @@ void loop() {
           vetor_Amostra[contador_aux_1] = vetor_Amostra[contador_aux_1] >> 2;         // Desloca dois bits p direita para elininar bits "0" e "1"
           
           // separa os 8 bits menos significaticos da primrira palavra
-          low8 = vetor_Amostra[contador_aux_1] & 0xff; 
+          low8 = vetor_Amostra[contador_aux_1] & 0x000000ff; 
           
           //Remove os bits "10 e 11" (Lixo do meio da primeira palavra) deslocando 10 bits para direita
           vetor_Amostra[contador_aux_1] = vetor_Amostra[contador_aux_1] >> 10;
@@ -358,13 +358,14 @@ void loop() {
           
           // Desloca 12 bits à direita separando os 8 bits menos significaticos da palavra de 24 bits 
           low24  =  low24 >> 12;
+          low24  =  low24 & 0x000000ff;
           
           // Rearranjar a amostra discretizada com resolução de 24 bits
           // deslocando os 8 bits da primeira palavra à esquerda e 
           // aplicando a operação lógica "OU" com os 8 bits menos significativos
           // da segunda palavra armazenados na variavel low24
           
-          vetor_Amostra[contador_aux_1] = vetor_Amostra[contador_aux_1] << 8 | low24; // Amostra discretizada com 24 bits; 
+          vetor_Amostra[contador_aux_1] = vetor_Amostra[contador_aux_1] << 8 | low24;         // Amostra discretizada com 24 bits; 
                 
     }     // Final laço Rearranjar 32 bits NÃO CONSECUTIVOS
 
@@ -375,19 +376,19 @@ void loop() {
           // conversão para tensão em volts
           //**************************************************
           
-    for(contador_aux_2 = 0; contador_aux_2 <= Nr_de_Amostras - 1; contador_aux_2++){ // Laço verificar sinal - número formato complemento de 2
+    for(contador_aux_2 = 0; contador_aux_2 <= Nr_de_Amostras - 1; contador_aux_2++){            // Laço verificar sinal - número formato complemento de 2
           
           // O bit 23 indentifica o sinal da amostra: "1" para negativo e "0" para positivo.
           
           // Verifica estado do bit 23 aplicando a operação lógica "AND" por meio da máscara 0x800000.
-          sinal_negativo = vetor_Amostra[contador_aux_2] & 0x800000;
+          sinal_negativo = vetor_Amostra[contador_aux_2] & 0x00800000;
           
           // Se estado do bit 23 igual a "1", aplicar operação lógica de "complemento de 2" e multiplicar por (-1).
           // Em seguida multiplicar pelo fator de conversão para volts
           if(sinal_negativo == 0x800000){ 
-              semiciclo_neg  = ((~vetor_Amostra[contador_aux_2] + 0x1)) & 0xffffff; // "complemento de 2"
+              semiciclo_neg  = ((~vetor_Amostra[contador_aux_2] + 0x1)) & 0xffffff;             // "complemento de 2"
               converte_volts[contador_aux_2] = -(semiciclo_neg*fator_conv_corrente)/Rsentinela;
-              Serial.println(sci(converte_volts[contador_aux_2],4));
+              //Serial.println(sci(converte_volts[contador_aux_2],4));
           
           }
           
@@ -395,12 +396,20 @@ void loop() {
           else{
               semiciclo_pos = vetor_Amostra[contador_aux_2]; // * fator;
               converte_volts[contador_aux_2] = (semiciclo_pos*fator_conv_corrente)/Rsentinela;
-              Serial.println(sci(converte_volts[contador_aux_2],4));
+              //Serial.println(sci(converte_volts[contador_aux_2],4));
           }
            
     }     // Final laço verificar sinal - número formato complemento de 2  
 
-
+         contador_aux_2 = 0;
+         Serial.println("Valor convertido X valor decimal");                                    // imprime amostras p debug
+    for(contador_aux_2 = 0; contador_aux_2 <= Nr_de_Amostras - 1; contador_aux_2++){            // imprime amostras p debug
+          
+          Serial.print(sci(converte_volts[contador_aux_2],4));
+          Serial.print("  ;  ");
+          Serial.println(vetor_Amostra[contador_aux_2]);
+          }
+ 
 
 
           //**********************************************************
@@ -470,20 +479,45 @@ void loop() {
           //*********************************************************************************************
           //  TRANSMISSÃO SERIAL (I2C) DE DADOS
           //*********************************************************************************************
+
           
-          union amplitude_tag {float amplitude_float ; byte amplitude_byte[4];} amplitude_union;            // Coversão foat ampTOTAL em 4 bytes para transmissão serial I2C 
+          union Nr_IEEE754_union {float as_float ; byte as_byte[4];} amplitude_union;            // Coversão foat ampTOTAL em 4 bytes para transmissão serial I2C 
+          amplitude_union.as_float = ampTOTAL;
+          union Nr_IEEE754_union fase_union;                              // Coversão foat faseTOTAL em 4 bytes para transmissão serial I2C 
+          fase_union.as_float = faseTOTAL;
+          union Nr_IEEE754_union offset_union;                     // Coversão foat offsetTOTAL em 4 bytes para transmissão serial I2C 
+          offset_union.as_float = offsetTOTAL;
+             
+          /*union amplitude_tag {float amplitude_float ; byte amplitude_byte[4];} amplitude_union;            // Coversão foat ampTOTAL em 4 bytes para transmissão serial I2C 
           amplitude_union.amplitude_float = ampTOTAL;
           union fase_tag {float fase_float ; byte fase_byte[4] ; } fase_union;                              // Coversão foat faseTOTAL em 4 bytes para transmissão serial I2C 
           fase_union.fase_float = faseTOTAL;
           union offset_tag { float offset_float ; byte offset_byte[4] ; } offset_union;                     // Coversão foat offsetTOTAL em 4 bytes para transmissão serial I2C 
-          offset_union.offset_float = offsetTOTAL;
+          offset_union.offset_float = offsetTOTAL;*/
           
           
           delay(10);                                                                                        // delay 10us
           
           Wire.beginTransmission(15);                                                                       // Começa transmissão para o mestre 0x0F
           
-          Wire.write(amplitude_union.amplitude_byte[0]);                                                    // Envia o bytes da ampTOTAL
+          Wire.write(amplitude_union.as_byte[0]);                                                    // Envia o bytes da ampTOTAL
+          Wire.write(amplitude_union.as_byte[1]);                                              
+          Wire.write(amplitude_union.as_byte[2]);
+          Wire.write(amplitude_union.as_byte[3]);
+          
+          Wire.write(fase_union.as_byte[0]);                                                              // Envia o bytes da faseTOTAL
+          Wire.write(fase_union.as_byte[1]);                    
+          Wire.write(fase_union.as_byte[2]);
+          Wire.write(fase_union.as_byte[3]);
+          
+          Wire.write(offset_union.as_byte[0]);                                                          // Envia o bytes do offsetTOTAL
+          Wire.write(offset_union.as_byte[1]);                    
+          Wire.write(offset_union.as_byte[2]);
+          Wire.write(offset_union.as_byte[3]);    
+
+
+          
+          /*Wire.write(amplitude_union.amplitude_byte[0]);                                                    // Envia o bytes da ampTOTAL
           Wire.write(amplitude_union.amplitude_byte[1]);                                              
           Wire.write(amplitude_union.amplitude_byte[2]);
           Wire.write(amplitude_union.amplitude_byte[3]);
@@ -496,7 +530,7 @@ void loop() {
           Wire.write(offset_union.offset_byte[0]);                                                          // Envia o bytes do offsetTOTAL
           Wire.write(offset_union.offset_byte[1]);                    
           Wire.write(offset_union.offset_byte[2]);
-          Wire.write(offset_union.offset_byte[3]);    
+          Wire.write(offset_union.offset_byte[3]); */   
           
           Wire.endTransmission();                                                                           // Termina a transmissão 
           

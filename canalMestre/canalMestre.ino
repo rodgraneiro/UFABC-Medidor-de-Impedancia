@@ -361,7 +361,7 @@ void loop() {
                vetor_Amostra[contador_aux_1] = vetor_Amostra[contador_aux_1] >> 2;       // Desloca dois bits p direita para elininar bits "0" e "1"
               
                // separa os 8 bits menos significaticos da primrira palavra
-               low8 = vetor_Amostra[contador_aux_1] & 0xff;                               //mask and save lower 8 bits
+               low8 = vetor_Amostra[contador_aux_1] & 0x000000ff;                               //mask and save lower 8 bits
               
                // Remove os bits "10 e 11" (Lixo do meio da primeira palavra) deslocando 10 bits para direita
                vetor_Amostra[contador_aux_1] = vetor_Amostra[contador_aux_1] >> 10;
@@ -383,6 +383,7 @@ void loop() {
                 
                  // Desloca 12 bits à direita separando os 8 bits menos significaticos da palavra de 24 bits
                  low24  =  low24 >> 12;
+                 low24  =  low24 & 0x000000ff;
                 
                  // Rearranjar a amostra discretizada com resolução de 24 bits
                  // deslocando os 8 bits da primeira palavra à esquerda e 
@@ -406,22 +407,34 @@ void loop() {
                 // O bit 23 indentifica o sinal da amostra: "1" para negativo e "0" para positivo.
                 
                 // Verifica estado do bit 23 aplicando a operação lógica "AND" por meio da máscara 0x800000.
-                sinal_negativo = vetor_Amostra[contador_aux_2] & 0x800000;
+                sinal_negativo = vetor_Amostra[contador_aux_2] & 0x00800000;
                 
                 // Se estado do bit 23 igual a "1", aplicar operação lógica de "complemento de 2" e multiplicar por (-1).
                 // Em seguida multiplicar pelo fator de conversão para volts
                 if(sinal_negativo == 0x800000){ 
                   semiciclo_neg  = ((~vetor_Amostra[contador_aux_2] + 0x1)) & 0xffffff;       // lê amostra e aplica operação "complemento de 2"
                   converte_volts[contador_aux_2] = -(semiciclo_neg*fator_conv_volts);         // converte para volts e multiplicar por -1
-                  Serial.println(sci(converte_volts[contador_aux_2],4));                      // Envia para o Monitor Serial
+                  //Serial.println(sci(converte_volts[contador_aux_2],4));                      // Envia para o Monitor Serial
                 }
                 // Se estado do bit 23 igual a "0", aplicar fator de conversão para volts   
                 else{
                   semiciclo_pos = vetor_Amostra[contador_aux_2];                              // lê amostra
                   converte_volts[contador_aux_2] = (semiciclo_pos*fator_conv_volts);          // converte pata volts
-                  Serial.println(sci(converte_volts[contador_aux_2],4));                      // Envia para o Monitor Serial            
+                  //Serial.println(sci(converte_volts[contador_aux_2],4));                      // Envia para o Monitor Serial            
                 }
   } // Final do Laço verificação sinal da amostra em complemento de 2 
+
+              contador_aux_2 = 0;
+              Serial.println("Valor convertido X valor decimal");                                    // imprime amostras p debug
+    for(contador_aux_2 = 0; contador_aux_2 <= Nr_de_Amostras - 1; contador_aux_2++){            // imprime amostras p debug
+              Serial.print(sci(converte_volts[contador_aux_2],4));
+              Serial.print("  ;  ");
+              Serial.println(vetor_Amostra[contador_aux_2]);
+    }
+
+
+
+  
                         
 
 
@@ -615,28 +628,28 @@ void receiveEvent(int quantidade_bytes_esperados) {
               canal_escravo_data[11] = Wire.read();
 
              
-            union amplitude_tag {byte amplitude_byte[4]; float amplitude_float;} amplitude_union;   
-             amplitude_union.amplitude_byte[0] = canal_escravo_data[0];
-             amplitude_union.amplitude_byte[1] = canal_escravo_data[1];
-             amplitude_union.amplitude_byte[2] = canal_escravo_data[2];
-             amplitude_union.amplitude_byte[3] = canal_escravo_data[3];   
-             float AMPLITUDE = amplitude_union.amplitude_float  ;
+            union Nr_IEEE754_union {byte as_byte[4]; float as_float;} amplitude_union;  //Nr float formato IEEE754 de 32 |Sinal|Expoente|Mantissa| 
+             amplitude_union.as_byte[0] = canal_escravo_data[0];
+             amplitude_union.as_byte[1] = canal_escravo_data[1];
+             amplitude_union.as_byte[2] = canal_escravo_data[2];
+             amplitude_union.as_byte[3] = canal_escravo_data[3];   
+             float AMPLITUDE = amplitude_union.as_float  ;
              ampTOTALchSlave = AMPLITUDE;
            
-            union fase_tag {byte fase_byte[4]; float fase_float;} fase_union;   
-             fase_union.fase_byte[0] = canal_escravo_data[4];
-             fase_union.fase_byte[1] = canal_escravo_data[5];
-             fase_union.fase_byte[2] = canal_escravo_data[6];
-             fase_union.fase_byte[3] = canal_escravo_data[7];   
-             float FASE = fase_union.fase_float  ;
+            union Nr_IEEE754_union fase_union;   
+             fase_union.as_byte[0] = canal_escravo_data[4];
+             fase_union.as_byte[1] = canal_escravo_data[5];
+             fase_union.as_byte[2] = canal_escravo_data[6];
+             fase_union.as_byte[3] = canal_escravo_data[7];   
+             float FASE = fase_union.as_float  ;
              faseTOTALchSlave = FASE;
           
-           union offset_tag {byte offset_byte[4]; float offset_float;} offset_union;   
-             offset_union.offset_byte[0] = canal_escravo_data[8];
-             offset_union.offset_byte[1] = canal_escravo_data[9];
-             offset_union.offset_byte[2] = canal_escravo_data[10];
-             offset_union.offset_byte[3] = canal_escravo_data[11];   
-             float OFFSET = offset_union.offset_float  ;
+           union Nr_IEEE754_union offset_union;   
+             offset_union.as_byte[0] = canal_escravo_data[8];
+             offset_union.as_byte[1] = canal_escravo_data[9];
+             offset_union.as_byte[2] = canal_escravo_data[10];
+             offset_union.as_byte[3] = canal_escravo_data[11];   
+             float OFFSET = offset_union.as_float  ;
              offsetTOTALchSlave = OFFSET;
              
 }
