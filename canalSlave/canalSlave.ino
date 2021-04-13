@@ -75,10 +75,7 @@ float soma_seno = 0;
 float soma_cosseno = 0;
 
 int NrMed = 0;
-//byte sinal_offset;
-//byte sinal_fase;
 
-//float variavel_float = 0;
 unsigned int aux;
   
 
@@ -295,7 +292,7 @@ void setup() {   //*********************INÍCIO SETUP***************************
 
 
 void loop() {
-    //Serial.println(contadorAmostra); 
+   
 
           //**** Habilita interrupção do botão que dispara a Medição das N_amostras
          
@@ -303,18 +300,18 @@ void loop() {
                                                                                    // e vai para interrupção LeAdc 
           // Realiza a leitura das Nr_de_Amostras enquanto a interrupção "HabilitaDRDY" estiver habilitada
           while(contadorAmostra < Nr_de_Amostras){
-                                                  //Serial.println(contadorAmostra);
+                                                  
                                                   //contadorAmostra++;
                                                   //REG_PIOD_ODSR = 0x00000004;
                                                  }
            
-            //Serial.println("bosta"); 
+           
                                     
           //*** Desabilita interrupção p/ aquisição de amostras                                      
           detachInterrupt(digitalPinToInterrupt(DRDY));
-          //Serial.println(contadorAmostra); 
+         
 
-//Serial.println("merda"); 
+
 
           //*************************************************************
           // Rearranjar 32 bits "NÃO CONSECUTIVOS" do portC do Arduino em 24 bits CONSECUTIVOS
@@ -500,56 +497,33 @@ void loop() {
           amplitude_union.as_float = ampTOTAL;
           union Nr_IEEE754_union fase_union;                              // Coversão foat faseTOTAL em 4 bytes para transmissão serial I2C 
           fase_union.as_float = faseTOTAL;
-          union Nr_IEEE754_union offset_union;                     // Coversão foat offsetTOTAL em 4 bytes para transmissão serial I2C 
+          union Nr_IEEE754_union offset_union;                            // Coversão foat offsetTOTAL em 4 bytes para transmissão serial I2C 
           offset_union.as_float = offsetTOTAL;
              
-          /*union amplitude_tag {float amplitude_float ; byte amplitude_byte[4];} amplitude_union;            // Coversão foat ampTOTAL em 4 bytes para transmissão serial I2C 
-          amplitude_union.amplitude_float = ampTOTAL;
-          union fase_tag {float fase_float ; byte fase_byte[4] ; } fase_union;                              // Coversão foat faseTOTAL em 4 bytes para transmissão serial I2C 
-          fase_union.fase_float = faseTOTAL;
-          union offset_tag { float offset_float ; byte offset_byte[4] ; } offset_union;                     // Coversão foat offsetTOTAL em 4 bytes para transmissão serial I2C 
-          offset_union.offset_float = offsetTOTAL;*/
+        
+          delay(10);                                                      // delay 10us
           
+          Wire.beginTransmission(15);                                     // Começa transmissão para o mestre 0x0F
           
-          delay(10);                                                                                        // delay 10us
-          
-          Wire.beginTransmission(15);                                                                       // Começa transmissão para o mestre 0x0F
-          
-          Wire.write(amplitude_union.as_byte[0]);                                                    // Envia o bytes da ampTOTAL
+          Wire.write(amplitude_union.as_byte[0]);                         // Envia o bytes da ampTOTAL
           Wire.write(amplitude_union.as_byte[1]);                                              
           Wire.write(amplitude_union.as_byte[2]);
           Wire.write(amplitude_union.as_byte[3]);
           
-          Wire.write(fase_union.as_byte[0]);                                                              // Envia o bytes da faseTOTAL
+          Wire.write(fase_union.as_byte[0]);                              // Envia o bytes da faseTOTAL
           Wire.write(fase_union.as_byte[1]);                    
           Wire.write(fase_union.as_byte[2]);
           Wire.write(fase_union.as_byte[3]);
           
-          Wire.write(offset_union.as_byte[0]);                                                          // Envia o bytes do offsetTOTAL
+          Wire.write(offset_union.as_byte[0]);                            // Envia o bytes do offsetTOTAL
           Wire.write(offset_union.as_byte[1]);                    
           Wire.write(offset_union.as_byte[2]);
           Wire.write(offset_union.as_byte[3]);    
 
-
+               
+          Wire.endTransmission();                                        // Termina a transmissão 
           
-          /*Wire.write(amplitude_union.amplitude_byte[0]);                                                    // Envia o bytes da ampTOTAL
-          Wire.write(amplitude_union.amplitude_byte[1]);                                              
-          Wire.write(amplitude_union.amplitude_byte[2]);
-          Wire.write(amplitude_union.amplitude_byte[3]);
-          
-          Wire.write(fase_union.fase_byte[0]);                                                              // Envia o bytes da faseTOTAL
-          Wire.write(fase_union.fase_byte[1]);                    
-          Wire.write(fase_union.fase_byte[2]);
-          Wire.write(fase_union.fase_byte[3]);
-          
-          Wire.write(offset_union.offset_byte[0]);                                                          // Envia o bytes do offsetTOTAL
-          Wire.write(offset_union.offset_byte[1]);                    
-          Wire.write(offset_union.offset_byte[2]);
-          Wire.write(offset_union.offset_byte[3]); */   
-          
-          Wire.endTransmission();                                                                           // Termina a transmissão 
-          
-          delay(1000);                          // delay 1s                            
+          delay(1000);                                                    // delay 1s                            
    
 
           //********************************************
@@ -570,15 +544,13 @@ void loop() {
           soma_cosseno = 0;
           amplitude = 0;
           fase = 0;
-          //cDC = 0;
           ampTOTAL = 0;
           faseTOTAL = 0;
-          //cDCbTOTAL = 0;
           offsetTOTAL = 0;
           semiciclo_neg = 0;
           semiciclo_pos = 0;
           aux = 0;
-          //variavel_float = 0;
+         
           
        
 } // Final do loop()
@@ -604,21 +576,17 @@ void HabilitaDRDY(){
           //*************************************************    
 
 void leADC() {
-             //Serial.println("  ;  ");
+            
           // Palavra de controle do portD para Habilitar a leitura do AD7762
-          //long i = 0;
-                //if(contadorAmostra < 10){
-               //contadorAmostra++;
-                //}
-                //else{
+         
           REG_PIOD_ODSR = 0x00000004;                                         // CS = 0, DRDW = 0 e RESET = 1 habilita leitura
           
           vetor_Amostra[contadorAmostra] = REG_PIOC_PDSR;                     // lê os 32 bits da palavra 1 (MSD) no registrador  portC
-                                                                    // e armazena na matriz "vetor_Amostra"
+                                                                              // e armazena na matriz "vetor_Amostra"
                     
           // Palavra de controle do portD para desabilitar CI AD7762
           REG_PIOD_ODSR = 0x00000007;                                         // CS = 1, DRDW = 1 e RESET = 1 desabilita leitura
-          //delayMicroseconds(1);
+         
           NOP();
           NOP();
           NOP();
@@ -639,8 +607,8 @@ void leADC() {
           
           // Palavra de controle do portD para Habilitar a leitura do AD7762
           REG_PIOD_ODSR = 0x00000007;                                         // CS = 1, DRDW = 1 e RESET = 1 desabilita leitura
-          //Serial.println(vetor_Amostra[contadorAmostra]);
+          
           //tempo_exec[contadorAmostra]= micros();
           contadorAmostra++;                                                  //  contador de amostras
-                //}
+               
 }

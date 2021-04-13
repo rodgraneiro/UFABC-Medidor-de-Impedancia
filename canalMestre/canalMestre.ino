@@ -607,11 +607,7 @@ void HabilitaDRDY(){
                   
 
 void leADC() {
-                //long i = 0;
-                //if(contadorAmostra < 10){
-               //contadorAmostra++;
-                //}
-                //else{
+                
                REG_PIOD_ODSR = 0x00000004;                              // CS = 0, DRDW = 0 e RSET = 1 habilita leitura
                
                vetor_Amostra[contadorAmostra] = REG_PIOC_PDSR;          // lê os 32 bits da palavra 1 (MSD) no registrador  portC
@@ -646,7 +642,7 @@ void leADC() {
                REG_PIOD_ODSR = 0x00000007;                              // CS = 1, DRDW = 1 e RSET = 1 desabilita leitura
                //tempo_exec[contadorAmostra]= micros();
                contadorAmostra++;                                       //  contador de amostras
-                //}
+               
                
 }
 
