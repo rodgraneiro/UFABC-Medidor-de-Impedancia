@@ -24,10 +24,11 @@ const int CS = 25;                        // Port D0 Arduino -> Chip Select AD77
 const int RDWR = 26;                      // Port D1 Arduino -> Read/Write AD7762 pin 39
 const int RESET = 27;                     // Port D2 Arduino -> Reset AD7762 pin 37
 const int DRDY = 23;                      // Port A14 Arduino -> Data Ready Output AD7762 pin 38
+//const int DRDY = 14;                      // Port D4 Arduino -> Data Ready Output AD7762 pin 38
 const int SYNC = 24;                      // Port A15 Arduino -> Synchronization Input AD7762 pin 36
 volatile int Nr_de_Amostras = 100;
-volatile uint32_t vetor_Amostra[100];
-volatile uint32_t vetor_segunda_palavra[100];
+volatile uint32_t vetor_Amostra[100] = {0};
+volatile uint32_t vetor_segunda_palavra[100] = {0};
 volatile uint32_t sinal_negativo = 0;
 volatile uint32_t semiciclo_neg = 0;
 volatile uint32_t semiciclo_pos = 0;
@@ -40,7 +41,7 @@ int contador_aux_1 = 0;
 int contador_aux_2 = 0;
 int contador_aux_3 = 0;
 //float fator = 0.0000006;
-float converte_volts[100];
+float converte_volts[100] = {0};
 
 int ptos_periodo = 0;
 int coluna_piE = 0;
@@ -84,6 +85,8 @@ float fase_float;
 byte offset_byte[4]; 
 float offset_float;
 float fator_conv_volts = 630e-9;
+unsigned long tempo_inicio = millis();
+unsigned long tempo_exec[100] = {0};
 
   
 
@@ -309,6 +312,12 @@ void setup() {   //*********************INÍCIO SETUP***************************
               delay(500);
               digitalWrite(SYNC, HIGH);
               delay(100);
+
+
+
+
+
+              
     }         //**********************FINAL de void setup() ****************************
     
               //******************************************************************************
@@ -316,12 +325,14 @@ void setup() {   //*********************INÍCIO SETUP***************************
               //******************************************************************************
 
 void loop() {
+              
               //**** Habilita interrupção do botão que dispara a Medição das N_amostras
               attachInterrupt(digitalPinToInterrupt(buttonPin8), HabilitaDRDY, RISING);     // Habilita interrupção do botão de início de medição
                                                                                             // e vai para interrupção LeAdc              
               // Realiza a leitura das Nr_de_Amostras enquanto a interrupção "HabilitaDRDY" estiver habilitada
               while(contadorAmostra < Nr_de_Amostras){
-                                                            //Não faz nada                                    
+                                                        //REG_PIOD_ODSR = 0x00000004;
+                                                        //tempo_exec[contadorAmostra]= micros();                                     
                                                      }
               //*** Desabilita interrupção p/ aquisição de amostras   
               detachInterrupt(digitalPinToInterrupt(DRDY));
@@ -426,10 +437,14 @@ void loop() {
 
               contador_aux_2 = 0;
               Serial.println("Valor convertido X valor decimal");                                    // imprime amostras p debug
-    for(contador_aux_2 = 0; contador_aux_2 <= Nr_de_Amostras - 1; contador_aux_2++){            // imprime amostras p debug
+    for(contador_aux_2 = 0; contador_aux_2 <= Nr_de_Amostras - 1; contador_aux_2++){                 // imprime amostras p debug
+              Serial.print(tempo_exec[contador_aux_2]);
+              Serial.print("  ;  ");   
               Serial.print(sci(converte_volts[contador_aux_2],4));
               Serial.print("  ;  ");
-              Serial.println(vetor_Amostra[contador_aux_2]);
+              Serial.print(vetor_Amostra[contador_aux_2]);
+              Serial.print("  ;  ");
+              Serial.println(vetor_Amostra[contador_aux_2], BIN);
     }
 
 
@@ -573,9 +588,13 @@ void loop() {
             //*************************************************   
 
 void HabilitaDRDY(){
-            
+            //long i = 0;
             // Desabilita interrupção do botão de início de medição
             detachInterrupt(digitalPinToInterrupt(buttonPin8));
+            //delayMicroseconds(30);
+            
+           
+           
             // Habilita interrupção LeADC para  leitura de dados do AD7762
             attachInterrupt(digitalPinToInterrupt(DRDY), leADC, FALLING);
 }
@@ -588,7 +607,11 @@ void HabilitaDRDY(){
                   
 
 void leADC() {
-              
+                //long i = 0;
+                //if(contadorAmostra < 10){
+               //contadorAmostra++;
+                //}
+                //else{
                REG_PIOD_ODSR = 0x00000004;                              // CS = 0, DRDW = 0 e RSET = 1 habilita leitura
                
                vetor_Amostra[contadorAmostra] = REG_PIOC_PDSR;          // lê os 32 bits da palavra 1 (MSD) no registrador  portC
@@ -596,6 +619,22 @@ void leADC() {
 
                                                                         // Palavra de controle do portD para desabilitar CI AD7762
                REG_PIOD_ODSR = 0x00000007;                              // CS = 1, DRDW = 1 e RSET = 1 desabilita leitura
+
+                
+               
+                NOP();
+                NOP();
+                NOP();
+                NOP();
+                NOP();
+                NOP();
+                NOP();
+                NOP();
+                NOP();
+                NOP();
+                                          
+               
+               
 
                                                                         // Palavra de controle do portD para Habilitar a leitura do AD7762
                REG_PIOD_ODSR = 0x00000004;                              // CS = 0, DRDW = 0 e RSET = 1 habilita leitura
@@ -605,7 +644,10 @@ void leADC() {
 
                                                                         // Palavra de controle do portD para Habilitar a leitura do AD7762
                REG_PIOD_ODSR = 0x00000007;                              // CS = 1, DRDW = 1 e RSET = 1 desabilita leitura
+               //tempo_exec[contadorAmostra]= micros();
                contadorAmostra++;                                       //  contador de amostras
+                //}
+               
 }
 
 
