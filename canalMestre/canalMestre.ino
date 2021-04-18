@@ -602,6 +602,7 @@ void HabilitaDRDY(){
 
                   
 
+<<<<<<< HEAD
 void leADC() { 
     detachInterrupt(digitalPinToInterrupt(DRDY));
     long i = 0;
@@ -655,6 +656,46 @@ void leADC() {
             //attachInterrupt(digitalPinToInterrupt(DRDY), leADC, FALLING);
             attachInterrupt(digitalPinToInterrupt(buttonPin8), HabilitaDRDY, RISING); 
         }             
+=======
+void leADC() {
+                
+               REG_PIOD_ODSR = 0x00000004;                              // CS = 0, DRDW = 0 e RSET = 1 habilita leitura
+               
+               vetor_Amostra[contadorAmostra] = REG_PIOC_PDSR;          // lê os 32 bits da palavra 1 (MSD) no registrador  portC
+                                                                        // e armazena na matriz "vetor_Amostra"
+
+                                                                        // Palavra de controle do portD para desabilitar CI AD7762
+               REG_PIOD_ODSR = 0x00000007;                              // CS = 1, DRDW = 1 e RSET = 1 desabilita leitura
+
+                
+               
+                NOP();
+                NOP();
+                NOP();
+                NOP();
+                NOP();
+                NOP();
+                NOP();
+                NOP();
+                NOP();
+                NOP();
+                                          
+               
+               
+
+                                                                        // Palavra de controle do portD para Habilitar a leitura do AD7762
+               REG_PIOD_ODSR = 0x00000004;                              // CS = 0, DRDW = 0 e RSET = 1 habilita leitura
+               
+               vetor_segunda_palavra[contadorAmostra] = REG_PIOC_PDSR;  // lê os 32 bits da palavra 2 (LSD) no registrador  portC
+                                                                        // e armazena na matriz "vetor_segunda_palavra" 
+
+                                                                        // Palavra de controle do portD para Habilitar a leitura do AD7762
+               REG_PIOD_ODSR = 0x00000007;                              // CS = 1, DRDW = 1 e RSET = 1 desabilita leitura
+               //tempo_exec[contadorAmostra]= micros();
+               contadorAmostra++;                                       //  contador de amostras
+               
+               
+>>>>>>> b12761a450df467d11e5638fb8d9ce91becb09b1
 }
 
 
