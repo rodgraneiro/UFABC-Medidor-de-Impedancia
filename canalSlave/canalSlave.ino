@@ -148,7 +148,7 @@ void setup() {   //*********************INÍCIO SETUP***************************
           //************************************************
     
     
-    for (int contadorSetup = 0; contadorSetup < 100; contadorSetup ++) { // Laço setup  
+    for (int contadorSetup = 0; contadorSetup < 10; contadorSetup ++) { // Laço setup  
     
           // Envia Endereço Registrador2 p/ Bus de Dados**************************
           digitalWrite(D0, LOW); //Endereço Registrador 2  0x0002
@@ -183,8 +183,8 @@ void setup() {   //*********************INÍCIO SETUP***************************
           // set LPWR = 0 seta power no modo normal
           //******************************************************
         
-          digitalWrite(D0, HIGH); //DIPD
-          digitalWrite(D1, LOW);// "1"
+          digitalWrite(D0, LOW); //DIPD
+          digitalWrite(D1, HIGH);// "1"
           digitalWrite(D2, LOW);//LPWR
           digitalWrite(D3, LOW);//PD
           digitalWrite(D4, HIGH);// Default 9B
@@ -231,7 +231,7 @@ void setup() {   //*********************INÍCIO SETUP***************************
                
           delay(10);
           digitalWrite(CS, LOW);
-          delay(1);
+          //delay(1);
           digitalWrite(CS, HIGH);
           //delay(100);
           //***********************************************************
@@ -240,7 +240,7 @@ void setup() {   //*********************INÍCIO SETUP***************************
           //***********************************************
           // ESCREVE WORD REG 1 0X001D
           // DEC2, DEC1, DEC0 = 0X4 PARA DECIMACAO 16X
-          digitalWrite(D0, LOW);  //DEC0 = 1 ja ta high
+          digitalWrite(D0, HIGH);  //DEC0 = 1 ja ta high
           digitalWrite(D1, HIGH);  // DEC1 = 0 ja ta low
           digitalWrite(D2, LOW); // DEC2 = 1
           digitalWrite(D3, HIGH); // tem que ser 1 (high)
@@ -307,14 +307,13 @@ void loop() {
                                                   //contadorAmostra++;
                                                   //REG_PIOD_ODSR = 0x00000004;
                                                  }
+          contador_aux_1 = 0;
            
-            //Serial.println("bosta"); 
+          
                                     
           //*** Desabilita interrupção p/ aquisição de amostras                                      
           detachInterrupt(digitalPinToInterrupt(DRDY));
-          //Serial.println(contadorAmostra); 
-
-//Serial.println("merda"); 
+          
 
           //*************************************************************
           // Rearranjar 32 bits "NÃO CONSECUTIVOS" do portC do Arduino em 24 bits CONSECUTIVOS
@@ -604,43 +603,57 @@ void HabilitaDRDY(){
           //*************************************************    
 
 void leADC() {
-             //Serial.println("  ;  ");
-          // Palavra de controle do portD para Habilitar a leitura do AD7762
-          //long i = 0;
-                //if(contadorAmostra < 10){
-               //contadorAmostra++;
-                //}
-                //else{
-          REG_PIOD_ODSR = 0x00000004;                                         // CS = 0, DRDW = 0 e RESET = 1 habilita leitura
-          
-          vetor_Amostra[contadorAmostra] = REG_PIOC_PDSR;                     // lê os 32 bits da palavra 1 (MSD) no registrador  portC
-                                                                    // e armazena na matriz "vetor_Amostra"
-                    
-          // Palavra de controle do portD para desabilitar CI AD7762
-          REG_PIOD_ODSR = 0x00000007;                                         // CS = 1, DRDW = 1 e RESET = 1 desabilita leitura
-          //delayMicroseconds(1);
-          NOP();
-          NOP();
-          NOP();
-          NOP();
-          NOP();
-          NOP();
-          NOP();
-          NOP();
-          NOP();
-          NOP();
-          
-          // Palavra de controle do portD para Habilitar a leitura do AD7762
-          REG_PIOD_ODSR = 0x00000004;                                         // CS = 0, DRDW = 0 e RESET = 1 habilita leitura
-          
-          
-          vetor_segunda_palavra[contadorAmostra] = REG_PIOC_PDSR;             // lê os 32 bits da palavra 2 (LSD) no registrador  portC
-                                                                              // e armazena na matriz "vetor_segunda_palavra" 
-          
-          // Palavra de controle do portD para Habilitar a leitura do AD7762
-          REG_PIOD_ODSR = 0x00000007;                                         // CS = 1, DRDW = 1 e RESET = 1 desabilita leitura
-          //Serial.println(vetor_Amostra[contadorAmostra]);
-          //tempo_exec[contadorAmostra]= micros();
-          contadorAmostra++;                                                  //  contador de amostras
-                //}
+            detachInterrupt(digitalPinToInterrupt(DRDY));
+              long i = 0;
+              //delayMicroseconds(8);
+                  for(i = 0; i <= 195; i++){
+                      asm("nop \n");
+                  }
+              
+              while(contadorAmostra < Nr_de_Amostras){ 
+               
+                //delayMicroseconds(1);                                
+                                                     
+                REG_PIOD_ODSR = 0x00000004;                              // CS = 0, DRDW = 0 e RSET = 1 habilita leitura
+               
+               vetor_Amostra[contadorAmostra] = REG_PIOC_PDSR;          // lê os 32 bits da palavra 1 (MSD) no registrador  portC
+                                                                        // e armazena na matriz "vetor_Amostra"
+                                                                        // Palavra de controle do portD para desabilitar CI AD7762
+               REG_PIOD_ODSR = 0x00000007;                              // CS = 1, DRDW = 1 e RSET = 1 desabilita leitura
+                NOP();
+                NOP();
+                NOP();
+                NOP();
+                NOP();
+                NOP();
+                NOP();
+                NOP();
+                NOP();
+                NOP();
+                
+                NOP();
+                NOP();
+                NOP();
+                NOP();
+                NOP();
+                NOP();
+                NOP();
+                NOP();
+                NOP();
+                NOP();
+             REG_PIOD_ODSR = 0x00000004;                              // CS = 0, DRDW = 0 e RSET = 1 habilita leitur             
+               vetor_segunda_palavra[contadorAmostra] = REG_PIOC_PDSR;  // lê os 32 bits da palavra 2 (LSD) no registrador  portC
+                                                                        // e armazena na matriz "vetor_segunda_palavra" 
+                                                                        // Palavra de controle do portD para Habilitar a leitura do AD7762
+               REG_PIOD_ODSR = 0x00000007;                              // CS = 1, DRDW = 1 e RSET = 1 desabilita leitura              
+               contadorAmostra++;                                       //  contador de amostras 
+                               
+              for(i = 0; i <= 40; i++){
+                      asm("nop \n");
+              }
+             
+              //delayMicroseconds(7);
+              //attachInterrupt(digitalPinToInterrupt(DRDY), leADC, FALLING);
+               attachInterrupt(digitalPinToInterrupt(buttonPin8), HabilitaDRDY, RISING); 
+              }             
 }
