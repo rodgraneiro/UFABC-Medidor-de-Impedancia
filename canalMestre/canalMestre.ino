@@ -206,7 +206,7 @@ void setup() {   //*********************INÍCIO SETUP***************************
               digitalWrite(D2, LOW);    //LPWR
               digitalWrite(D3, LOW);    //PD
               digitalWrite(D4, HIGH);   // Default 9B
-              digitalWrite(D5, LOW);    //CDIV
+              digitalWrite(D5, HIGH);    //CDIV
               digitalWrite(D6, LOW);    //Default 9B
               digitalWrite(D7, HIGH);   //Default 9B
               digitalWrite(D8, LOW);
@@ -261,7 +261,7 @@ void setup() {   //*********************INÍCIO SETUP***************************
               // ESCREVE WORD REG 1 0X001D
               // DEC2, DEC1, DEC0 = 0X4 PARA DECIMACAO 16X
               digitalWrite(D0, HIGH);      // DEC0 = 1 
-              digitalWrite(D1, HIGH);     // DEC1 = 0 
+              digitalWrite(D1, LOW);     // DEC1 = 0 
               digitalWrite(D2, LOW);      // DEC2 = 1
               digitalWrite(D3, HIGH);     // tem que ser 1 (high)
               digitalWrite(D4, HIGH);     // BYP F3
@@ -602,12 +602,11 @@ void HabilitaDRDY(){
 
                   
 
-<<<<<<< HEAD
 void leADC() { 
     detachInterrupt(digitalPinToInterrupt(DRDY));
     long i = 0;
     
-        for(i = 0; i <= 160; i++){
+        for(i = 0; i <= 21; i++){
             asm("nop \n");
         }
     
@@ -623,14 +622,15 @@ void leADC() {
             NOP();
             NOP();
             NOP();
+           /* NOP();
             NOP();
             NOP();
             NOP();
             NOP();
             NOP();
-            NOP();
-            NOP();
+            NOP();*/
             
+           /* NOP();
             NOP();
             NOP();
             NOP();
@@ -639,8 +639,7 @@ void leADC() {
             NOP();
             NOP();
             NOP();
-            NOP();
-            NOP();
+            NOP();*/
             REG_PIOD_ODSR = 0x00000004;                              // CS = 0, DRDW = 0 e RSET = 1 habilita leitur             
             vetor_segunda_palavra[contadorAmostra] = REG_PIOC_PDSR;  // lê os 32 bits da palavra 2 (LSD) no registrador  portC
                                                               // e armazena na matriz "vetor_segunda_palavra" 
@@ -648,55 +647,19 @@ void leADC() {
             REG_PIOD_ODSR = 0x00000007;                              // CS = 1, DRDW = 1 e RSET = 1 desabilita leitura              
             contadorAmostra++;                                       //  contador de amostras 
                      
-                for(i = 0; i <= 16; i++){
+                //for(i = 0; i <= 16; i++){
+                for(i = 0; i <= 10; i++){
                     asm("nop \n");
                 }
             
             //delayMicroseconds(7);
             //attachInterrupt(digitalPinToInterrupt(DRDY), leADC, FALLING);
-            attachInterrupt(digitalPinToInterrupt(buttonPin8), HabilitaDRDY, RISING); 
-        }             
-=======
-void leADC() {
-                
-               REG_PIOD_ODSR = 0x00000004;                              // CS = 0, DRDW = 0 e RSET = 1 habilita leitura
-               
-               vetor_Amostra[contadorAmostra] = REG_PIOC_PDSR;          // lê os 32 bits da palavra 1 (MSD) no registrador  portC
-                                                                        // e armazena na matriz "vetor_Amostra"
+            //attachInterrupt(digitalPinToInterrupt(buttonPin8), HabilitaDRDY, RISING); 
+            
+        }
+        attachInterrupt(digitalPinToInterrupt(buttonPin8), HabilitaDRDY, RISING); 
+}             
 
-                                                                        // Palavra de controle do portD para desabilitar CI AD7762
-               REG_PIOD_ODSR = 0x00000007;                              // CS = 1, DRDW = 1 e RSET = 1 desabilita leitura
-
-                
-               
-                NOP();
-                NOP();
-                NOP();
-                NOP();
-                NOP();
-                NOP();
-                NOP();
-                NOP();
-                NOP();
-                NOP();
-                                          
-               
-               
-
-                                                                        // Palavra de controle do portD para Habilitar a leitura do AD7762
-               REG_PIOD_ODSR = 0x00000004;                              // CS = 0, DRDW = 0 e RSET = 1 habilita leitura
-               
-               vetor_segunda_palavra[contadorAmostra] = REG_PIOC_PDSR;  // lê os 32 bits da palavra 2 (LSD) no registrador  portC
-                                                                        // e armazena na matriz "vetor_segunda_palavra" 
-
-                                                                        // Palavra de controle do portD para Habilitar a leitura do AD7762
-               REG_PIOD_ODSR = 0x00000007;                              // CS = 1, DRDW = 1 e RSET = 1 desabilita leitura
-               //tempo_exec[contadorAmostra]= micros();
-               contadorAmostra++;                                       //  contador de amostras
-               
-               
->>>>>>> b12761a450df467d11e5638fb8d9ce91becb09b1
-}
 
 
 
