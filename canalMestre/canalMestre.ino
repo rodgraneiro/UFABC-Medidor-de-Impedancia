@@ -170,7 +170,7 @@ void setup() {   //*********************INÍCIO SETUP***************************
               delay(100);
               //************************************************
   
-  for (contadorSetup = 0; contadorSetup < 100; contadorSetup++) {  // Laço setup
+  for (contadorSetup = 0; contadorSetup < 10; contadorSetup++) {  // Laço setup
   
               // Envia Endereço Registrador2 p/ Bus de Dados**************************
               digitalWrite(D0, LOW);      //Endereço Registrador 2  0x0002
@@ -311,7 +311,7 @@ void setup() {   //*********************INÍCIO SETUP***************************
               pinMode(D14, INPUT);
               pinMode(D15, INPUT);
               
-              delay(500);
+              delay(100);
               contadorAmostra = 0;
           
           

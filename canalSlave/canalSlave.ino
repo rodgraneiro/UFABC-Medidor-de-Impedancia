@@ -532,7 +532,7 @@ void loop() {
                
           Wire.endTransmission();                                        // Termina a transmissão 
           
-          delay(1000);                                                    // delay 1s                            
+          delay(500);                                                    // delay 1s                            
    
 
           //********************************************
