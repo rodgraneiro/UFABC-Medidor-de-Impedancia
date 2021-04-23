@@ -59,7 +59,7 @@ volatile float faseTOTALchSlave = 0;
 //byte sinal_offset_Slave =0;
 //byte sinal_fase_Slave = 0;
 //unsigned long Tempo_T =0;
-//unsigned long Tempo_Inter =0;
+long Nr_medicao =0;
 
 //*****************************Matriz pseudo inversa 10 ptos excitação 31,25kHz - Sample Rate 312,5kHz
 //float piEs [] = {0.117557050458495, 0.190211303259031, 0.190211303259031, 0.117557050458495, 2.44929359829470e-17, -0.117557050458495, -0.190211303259031, -0.190211303259031, -0.117557050458495, -4.89858719658942e-17};
@@ -567,8 +567,11 @@ void loop() {
               lcd.print(impedancia_fase,2); // Escrever valor da fase "XX.X"
               lcd.setCursor(15, 1);         // Posiciona o cursor na coluna 15, linha 1;
               lcd.write(B11011111);          // graus
-  
-  
+
+              Nr_medicao = Nr_medicao + 1;
+              
+              Serial.print(Nr_medicao);
+              Serial.print("  ;  ");
               Serial.print(" IMPEDANCIA - FASE ");
               Serial.print("  ;  ");
               Serial.print(sci(impedancia_Z,4));
@@ -612,7 +615,7 @@ void HabilitaDRDY(){
 void leADC() { 
     detachInterrupt(digitalPinToInterrupt(DRDY));
     long i = 0;
-        for(i = 0; i <= 21; i++){                                                   // Delay para calibração dosoncronismos
+        for(i = 0; i <= 58; i++){                                                   // Delay para calibração dosoncronismos
             asm("nop \n");
         }
         while(contadorAmostra < Nr_de_Amostras){ 
