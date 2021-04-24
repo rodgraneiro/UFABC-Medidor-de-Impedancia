@@ -443,7 +443,7 @@ void loop() {
   } // Final do Laço verificação sinal da amostra em complemento de 2 
 
               contador_aux_2 = 0;
-              Serial.println("Valor convertido X valor decimal");                                    // imprime amostras p debug
+              /*Serial.println("Valor convertido X valor decimal");                                    // imprime amostras p debug
     for(contador_aux_2 = 0; contador_aux_2 <= Nr_de_Amostras - 1; contador_aux_2++){                 // imprime amostras p debug
               Serial.print(tempo_exec[contador_aux_2]);
               Serial.print("  ;  ");   
@@ -452,7 +452,7 @@ void loop() {
               Serial.print(vetor_Amostra[contador_aux_2]);
               Serial.print("  ;  ");
               Serial.println(vetor_Amostra[contador_aux_2], BIN);
-    }
+    }*/
 
 
 
@@ -478,13 +478,13 @@ void loop() {
              }
                 amplitude = 2*sqrt(sq(soma_seno)+sq(soma_cosseno))/2;    // Cálculo da amplitude
                 fase = atan2(soma_cosseno , soma_seno)*(180/M_PI);       // Cálculo da fase
-                Serial.print("amplitude e fase DC");
+                /*Serial.print("amplitude e fase DC");
                 Serial.print("  ;  ");
                 Serial.print(sci(amplitude,4));
                 Serial.print("  ;  ");
                 Serial.print(sci(fase,4));
                 Serial.print("  ;  ");
-                Serial.println(sci(soma_offset,4));
+                Serial.println(sci(soma_offset,4));*/
                 ampTOTAL = ampTOTAL + amplitude;
                 faseTOTAL = faseTOTAL + fase;
                 offsetTOTAL =  offsetTOTAL + soma_offset;
@@ -508,15 +508,15 @@ void loop() {
               // Para debug
 
  
-              Serial.print("amplitude - fase - TOTAL ");
+              /*Serial.print("amplitude - fase - TOTAL ");
               Serial.print("  ;  ");
               Serial.print(sci(ampTOTAL,4));
               Serial.print("  ;  ");
               Serial.print(sci(faseTOTAL,4));
               Serial.print("  ;  ");
-              Serial.println(sci(offsetTOTAL,4));
+              Serial.println(sci(offsetTOTAL,4));*/
               
-              delay(2000);
+              delay(3000);
               contadorAmostra = 0;
               contador_aux_1 = 0;
               contador_aux_2;
@@ -534,14 +534,14 @@ void loop() {
               delay(200);
 
               //***************************
-              Serial.println("Variaveis recebidas do canal ESCRAVO:");
+              /*Serial.println("Variaveis recebidas do canal ESCRAVO:");
               Serial.print("amplitude - fase - offset ");
               Serial.print("  ;  ");
               Serial.print(sci(ampTOTALchSlave,4));
               Serial.print("  ;  ");
               Serial.print(sci(faseTOTALchSlave,4));
               Serial.print("  ;  ");
-              Serial.println(sci(offsetTOTALchSlave,4));
+              Serial.println(sci(offsetTOTALchSlave,4));*/
               
               // Cálculo da impedância e ângulo theta              
               impedancia_Z = ampTOTAL / ampTOTALchSlave;             // Cálculo da impedância
@@ -576,7 +576,9 @@ void loop() {
               Serial.print("  ;  ");
               Serial.print(sci(impedancia_Z,4));
               Serial.print("  ;  ");
-              Serial.println(sci(impedancia_fase,4));
+              //Serial.println(sci(impedancia_fase,4));
+              Serial.println(impedancia_fase,4);
+
 
 
               ampTOTAL = 0;
@@ -615,7 +617,7 @@ void HabilitaDRDY(){
 void leADC() { 
     detachInterrupt(digitalPinToInterrupt(DRDY));
     long i = 0;
-        for(i = 0; i <= 58; i++){                                                   // Delay para calibração dosoncronismos
+        for(i = 0; i <= 93; i++){                                                   // Delay para calibração dosoncronismos
             asm("nop \n");
         }
         while(contadorAmostra < Nr_de_Amostras){ 

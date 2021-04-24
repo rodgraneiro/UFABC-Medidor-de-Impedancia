@@ -48,6 +48,7 @@ float fator_conv_corrente = 300e-9;
 float converte_volts[100];
 unsigned long tempo_inicio = millis();
 unsigned long tempo_exec[100] = {0};
+long Nr_medicao = 0;
 
 
 int ptos_periodo = 0;
@@ -483,9 +484,12 @@ void loop() {
           ampTOTAL =ampTOTAL/3; // Média da amplitude
           faseTOTAL = faseTOTAL/3; // Média da fase
           offsetTOTAL = offsetTOTAL/3; // média do Offset
-         
+          
+          Nr_medicao = Nr_medicao + 1;
 
           // Imprimir dados no monitor serial
+          Serial.print(Nr_medicao);
+          Serial.print("  ;  ");
           Serial.print("amplitude - fase - TOTAL ");
           Serial.print("  ;  ");
           Serial.print(sci(ampTOTAL,4));
@@ -587,7 +591,7 @@ void HabilitaDRDY(){
 void leADC() {
     detachInterrupt(digitalPinToInterrupt(DRDY));
     long i = 0;  
-        for(i = 0; i <= 78; i++){
+        for(i = 0; i <= 100; i++){
             asm("nop \n");
         }  
         while(contadorAmostra < Nr_de_Amostras){                              
