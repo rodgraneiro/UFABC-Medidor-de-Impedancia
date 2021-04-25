@@ -442,17 +442,20 @@ void loop() {
                 }
   } // Final do Laço verificação sinal da amostra em complemento de 2 
 
+              Nr_medicao = Nr_medicao + 1;
               contador_aux_2 = 0;
-              /*Serial.println("Valor convertido X valor decimal");                                    // imprime amostras p debug
+              Serial.println("Valor convertido X valor decimal");                                    // imprime amostras p debug
     for(contador_aux_2 = 0; contador_aux_2 <= Nr_de_Amostras - 1; contador_aux_2++){                 // imprime amostras p debug
-              Serial.print(tempo_exec[contador_aux_2]);
-              Serial.print("  ;  ");   
-              Serial.print(sci(converte_volts[contador_aux_2],4));
+              Serial.print(Nr_medicao);
               Serial.print("  ;  ");
-              Serial.print(vetor_Amostra[contador_aux_2]);
-              Serial.print("  ;  ");
-              Serial.println(vetor_Amostra[contador_aux_2], BIN);
-    }*/
+              //Serial.print(tempo_exec[contador_aux_2]);
+              //Serial.print("  ;  ");   
+              Serial.println(sci(converte_volts[contador_aux_2],4));
+              //Serial.print("  ;  ");
+              //Serial.print(vetor_Amostra[contador_aux_2]);
+              //Serial.print("  ;  ");
+              //Serial.println(vetor_Amostra[contador_aux_2], BIN);
+    }
 
 
 
@@ -468,7 +471,7 @@ void loop() {
                 // Determinar Amplitude, fase e offset. Serão utilizados os três últimos períodos
                 // para evitar transientes do início da medição;
                           
-  for(contador_aux_3 = 60; contador_aux_3 < 90; contador_aux_3 = (contador_aux_3 + 10)){ // Laço Matriz pseudo inversa
+  for(contador_aux_3 = 0; contador_aux_3 <= 90; contador_aux_3 = (contador_aux_3 + 10)){ // Laço Matriz pseudo inversa
             for (coluna_piE = 0; coluna_piE < 10; coluna_piE++) {
                 ptos_periodo = contador_aux_3 + coluna_piE;
                 // Multiplica a matriz do sinal convertido pela matriz pseudo inversa piE
@@ -478,13 +481,15 @@ void loop() {
              }
                 amplitude = 2*sqrt(sq(soma_seno)+sq(soma_cosseno))/2;    // Cálculo da amplitude
                 fase = atan2(soma_cosseno , soma_seno)*(180/M_PI);       // Cálculo da fase
-                /*Serial.print("amplitude e fase DC");
+                Serial.print(Nr_medicao);
+                Serial.print("  ;  ");
+                Serial.print("amplitude e fase DC");
                 Serial.print("  ;  ");
                 Serial.print(sci(amplitude,4));
                 Serial.print("  ;  ");
                 Serial.print(sci(fase,4));
                 Serial.print("  ;  ");
-                Serial.println(sci(soma_offset,4));*/
+                Serial.println(sci(soma_offset,4));
                 ampTOTAL = ampTOTAL + amplitude;
                 faseTOTAL = faseTOTAL + fase;
                 offsetTOTAL =  offsetTOTAL + soma_offset;
@@ -500,21 +505,22 @@ void loop() {
               // Calcular média da ampltude, fase e offsset
               //*******************************************
               
-              ampTOTAL =ampTOTAL/3;             // Média da amplitude
-              faseTOTAL = faseTOTAL/3;          // Média da fase
-              offsetTOTAL = offsetTOTAL/3;      // média do Offset
+              ampTOTAL =ampTOTAL/10;             // Média da amplitude
+              faseTOTAL = faseTOTAL/10;          // Média da fase
+              offsetTOTAL = offsetTOTAL/10;      // média do Offset
               faseTOTALchA = faseTOTAL;
 
               // Para debug
 
- 
-              /*Serial.print("amplitude - fase - TOTAL ");
+              Serial.print(Nr_medicao);
+              Serial.print("  ;  ");
+              Serial.print("amplitude - fase - TOTAL ");
               Serial.print("  ;  ");
               Serial.print(sci(ampTOTAL,4));
               Serial.print("  ;  ");
               Serial.print(sci(faseTOTAL,4));
               Serial.print("  ;  ");
-              Serial.println(sci(offsetTOTAL,4));*/
+              Serial.println(sci(offsetTOTAL,4));
               
               delay(3000);
               contadorAmostra = 0;
@@ -534,14 +540,18 @@ void loop() {
               delay(200);
 
               //***************************
-              /*Serial.println("Variaveis recebidas do canal ESCRAVO:");
+              Serial.print(Nr_medicao);
+              Serial.print("  ;  ");
+              Serial.println("Variaveis recebidas do canal ESCRAVO:");
+              Serial.print(Nr_medicao);
+              Serial.print("  ;  ");
               Serial.print("amplitude - fase - offset ");
               Serial.print("  ;  ");
               Serial.print(sci(ampTOTALchSlave,4));
               Serial.print("  ;  ");
               Serial.print(sci(faseTOTALchSlave,4));
               Serial.print("  ;  ");
-              Serial.println(sci(offsetTOTALchSlave,4));*/
+              Serial.println(sci(offsetTOTALchSlave,4));
               
               // Cálculo da impedância e ângulo theta              
               impedancia_Z = ampTOTAL / ampTOTALchSlave;             // Cálculo da impedância
@@ -568,7 +578,7 @@ void loop() {
               lcd.setCursor(15, 1);         // Posiciona o cursor na coluna 15, linha 1;
               lcd.write(B11011111);          // graus
 
-              Nr_medicao = Nr_medicao + 1;
+              //Nr_medicao = Nr_medicao + 1;
               
               Serial.print(Nr_medicao);
               Serial.print("  ;  ");

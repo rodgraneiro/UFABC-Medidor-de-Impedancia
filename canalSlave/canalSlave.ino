@@ -419,17 +419,19 @@ void loop() {
           }
            
     }     // Final laço verificar sinal - número formato complemento de 2  
-
-         contador_aux_2 = 0;
-         Serial.println("Valor convertido X valor decimal");                                    // imprime amostras p debug
+    
+           Nr_medicao = Nr_medicao + 1;
+           contador_aux_2 = 0;
+        // Serial.println("Valor convertido X valor decimal");                                    // imprime amostras p debug
     for(contador_aux_2 = 0; contador_aux_2 <= Nr_de_Amostras - 1; contador_aux_2++){            // imprime amostras p debug
-          Serial.print(tempo_exec[contador_aux_2]);
+            Serial.print(Nr_medicao);
+          //Serial.print(tempo_exec[contador_aux_2]);
           Serial.print("  ;  ");
-          Serial.print(sci(converte_volts[contador_aux_2],4));
-          Serial.print("  ;  ");
-          Serial.print(vetor_Amostra[contador_aux_2]);
-          Serial.print("  ;  ");
-          Serial.println(vetor_Amostra[contador_aux_2], BIN);
+          Serial.println(sci(converte_volts[contador_aux_2],4));
+          //Serial.print("  ;  ");
+          //Serial.print(vetor_Amostra[contador_aux_2]);
+          //Serial.print("  ;  ");
+          //Serial.println(vetor_Amostra[contador_aux_2], BIN);
           }
  
 
@@ -441,7 +443,7 @@ void loop() {
           // Determinar Amplitude, fase e offset. Serão utilizados os três últimos períodos
           // para evitar transientes do início da medição;
           
-    for(contador_aux_3 = 60; contador_aux_3 < 90; contador_aux_3 = (contador_aux_3 + 10)){ // Laço demodulação por quadratura
+    for(contador_aux_3 = 0; contador_aux_3 <= 90; contador_aux_3 = (contador_aux_3 + 10)){ // Laço demodulação por quadratura
           for (coluna_piE = 0; coluna_piE < 10; coluna_piE++) { // Nr de amostras
               int ptos_periodo = contador_aux_3 + coluna_piE; // Nr de amostras de cada periodo
               
@@ -456,6 +458,8 @@ void loop() {
           fase = atan2(soma_cosseno , soma_seno)*(180/M_PI);    // cálculo da fase
           
           // Imprime dados no monitor serial
+          Serial.print(Nr_medicao);
+          Serial.print("  ;  ");
           Serial.print("amplitude e fase DC");
           Serial.print("  ;  ");
           Serial.print(sci(amplitude,4));
@@ -481,11 +485,11 @@ void loop() {
           // Calcular média da ampltude, fase e offsset
           //*******************************************
           
-          ampTOTAL =ampTOTAL/3; // Média da amplitude
-          faseTOTAL = faseTOTAL/3; // Média da fase
-          offsetTOTAL = offsetTOTAL/3; // média do Offset
+          ampTOTAL =ampTOTAL/10; // Média da amplitude
+          faseTOTAL = faseTOTAL/10; // Média da fase
+          offsetTOTAL = offsetTOTAL/10; // média do Offset
           
-          Nr_medicao = Nr_medicao + 1;
+          //Nr_medicao = Nr_medicao + 1;
 
           // Imprimir dados no monitor serial
           Serial.print(Nr_medicao);
@@ -591,7 +595,7 @@ void HabilitaDRDY(){
 void leADC() {
     detachInterrupt(digitalPinToInterrupt(DRDY));
     long i = 0;  
-        for(i = 0; i <= 100; i++){
+        for(i = 0; i <= 101; i++){
             asm("nop \n");
         }  
         while(contadorAmostra < Nr_de_Amostras){                              
