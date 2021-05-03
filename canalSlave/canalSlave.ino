@@ -109,7 +109,8 @@ void setup() {   //*********************INÍCIO SETUP***************************
           pinMode(buttonPin8, INPUT);         // initialize the pushbutton pin as an input:
           pinMode(habilitaMaster, OUTPUT);    // initialize the pushbutton pin as an input:
           digitalWrite(habilitaMaster, LOW);  // habilita Master:
-          Serial.begin(115200);
+          //Serial.begin(115200);
+          Serial.begin(9600);
           Wire.begin(); //               
           
           
@@ -595,7 +596,7 @@ void HabilitaDRDY(){
 void leADC() {
     detachInterrupt(digitalPinToInterrupt(DRDY));
     long i = 0;  
-        for(i = 0; i <= 101; i++){
+        for(i = 0; i <= 131; i++){
             asm("nop \n");
         }  
         while(contadorAmostra < Nr_de_Amostras){                              

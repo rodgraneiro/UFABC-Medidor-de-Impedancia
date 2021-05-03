@@ -120,7 +120,8 @@ const int D15 = 44;             // Port C19
 void setup() {   //*********************INÍCIO SETUP**********************************8
     
               pinMode(buttonPin8, INPUT);     // Inicializa pino do pushbutton como input:
-              Serial.begin(115200);
+              //Serial.begin(115200);
+              Serial.begin(9600);
               Wire.begin(15);                 // Endereço canalSlave
               Wire.onReceive(receiveEvent);   // register event
               
@@ -627,7 +628,7 @@ void HabilitaDRDY(){
 void leADC() { 
     detachInterrupt(digitalPinToInterrupt(DRDY));
     long i = 0;
-        for(i = 0; i <= 93; i++){                                                   // Delay para calibração dosoncronismos
+        for(i = 0; i <= 100; i++){                                                   // Delay para calibração dosoncronismos
             asm("nop \n");
         }
         while(contadorAmostra < Nr_de_Amostras){ 
