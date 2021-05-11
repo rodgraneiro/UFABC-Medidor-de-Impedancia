@@ -425,10 +425,10 @@ void loop() {
            contador_aux_2 = 0;
         // Serial.println("Valor convertido X valor decimal");                                    // imprime amostras p debug
     for(contador_aux_2 = 0; contador_aux_2 <= Nr_de_Amostras - 1; contador_aux_2++){            // imprime amostras p debug
-            Serial.print(Nr_medicao);
+           // Serial.print(Nr_medicao);
           //Serial.print(tempo_exec[contador_aux_2]);
-          Serial.print("  ;  ");
-          Serial.println(sci(converte_volts[contador_aux_2],4));
+          //Serial.print("  ;  ");
+          Serial.println(converte_volts[contador_aux_2],8);
           //Serial.print("  ;  ");
           //Serial.print(vetor_Amostra[contador_aux_2]);
           //Serial.print("  ;  ");
@@ -457,9 +457,13 @@ void loop() {
           
           amplitude = 2*sqrt(sq(soma_seno)+sq(soma_cosseno))/2; // Cálculo da amplitude
           fase = atan2(soma_cosseno , soma_seno)*(180/M_PI);    // cálculo da fase
+
+          if(fase < 0){ 
+              fase = fase + 360;
+          }
           
           // Imprime dados no monitor serial
-          Serial.print(Nr_medicao);
+         /* Serial.print(Nr_medicao);
           Serial.print("  ;  ");
           Serial.print("amplitude e fase DC");
           Serial.print("  ;  ");
@@ -467,7 +471,10 @@ void loop() {
           Serial.print("  ;  ");
           Serial.print(sci(fase,4));
           Serial.print("  ;  ");
-          Serial.println(sci(soma_offset,4));
+          Serial.println(sci(soma_offset,4));*/
+
+         //Serial.println("impedancia_Z");
+         //Serial.println("fase");
           
           // Soma dos dados para o cálculo de média estatística
           ampTOTAL = ampTOTAL + amplitude;
@@ -493,7 +500,7 @@ void loop() {
           //Nr_medicao = Nr_medicao + 1;
 
           // Imprimir dados no monitor serial
-          Serial.print(Nr_medicao);
+          /*Serial.print(Nr_medicao);
           Serial.print("  ;  ");
           Serial.print("amplitude - fase - TOTAL ");
           Serial.print("  ;  ");
@@ -501,11 +508,11 @@ void loop() {
           Serial.print("  ;  ");
           Serial.print(sci(faseTOTAL,4));
           Serial.print("  ;  ");
-          Serial.println(sci(offsetTOTAL,4));
+          Serial.println(sci(offsetTOTAL,4));*/
           //Serial.println(REG_CKGR_MCFR);
-          
           delay(2000);
-
+          Serial.println(fase);
+          Serial.println(fase);
           //*********************************************************************************************
           //  TRANSMISSÃO SERIAL (I2C) DE DADOS
           //*********************************************************************************************
@@ -596,7 +603,7 @@ void HabilitaDRDY(){
 void leADC() {
     detachInterrupt(digitalPinToInterrupt(DRDY));
     long i = 0;  
-        for(i = 0; i <= 131; i++){
+        for(i = 0; i <= 129; i++){
             asm("nop \n");
         }  
         while(contadorAmostra < Nr_de_Amostras){                              

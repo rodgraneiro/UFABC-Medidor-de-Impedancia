@@ -445,13 +445,14 @@ void loop() {
 
               Nr_medicao = Nr_medicao + 1;
               contador_aux_2 = 0;
-              Serial.println("Valor convertido X valor decimal");                                    // imprime amostras p debug
+              //Serial.println("Valor convertido X valor decimal");                                    // imprime amostras p debug
     for(contador_aux_2 = 0; contador_aux_2 <= Nr_de_Amostras - 1; contador_aux_2++){                 // imprime amostras p debug
-              Serial.print(Nr_medicao);
-              Serial.print("  ;  ");
+             // Serial.print(Nr_medicao);
+              //Serial.print("  ;  ");
               //Serial.print(tempo_exec[contador_aux_2]);
               //Serial.print("  ;  ");   
-              Serial.println(sci(converte_volts[contador_aux_2],4));
+              Serial.println(converte_volts[contador_aux_2],4);
+              //Serial.print("\n");
               //Serial.print("  ;  ");
               //Serial.print(vetor_Amostra[contador_aux_2]);
               //Serial.print("  ;  ");
@@ -482,7 +483,11 @@ void loop() {
              }
                 amplitude = 2*sqrt(sq(soma_seno)+sq(soma_cosseno))/2;    // Cálculo da amplitude
                 fase = atan2(soma_cosseno , soma_seno)*(180/M_PI);       // Cálculo da fase
-                Serial.print(Nr_medicao);
+
+            if(fase < 0){ 
+                 fase = fase + 360;
+            }
+                /*Serial.print(Nr_medicao);
                 Serial.print("  ;  ");
                 Serial.print("amplitude e fase DC");
                 Serial.print("  ;  ");
@@ -490,7 +495,7 @@ void loop() {
                 Serial.print("  ;  ");
                 Serial.print(sci(fase,4));
                 Serial.print("  ;  ");
-                Serial.println(sci(soma_offset,4));
+                Serial.println(sci(soma_offset,4));*/
                 ampTOTAL = ampTOTAL + amplitude;
                 faseTOTAL = faseTOTAL + fase;
                 offsetTOTAL =  offsetTOTAL + soma_offset;
@@ -513,7 +518,7 @@ void loop() {
 
               // Para debug
 
-              Serial.print(Nr_medicao);
+              /*Serial.print(Nr_medicao);
               Serial.print("  ;  ");
               Serial.print("amplitude - fase - TOTAL ");
               Serial.print("  ;  ");
@@ -521,7 +526,7 @@ void loop() {
               Serial.print("  ;  ");
               Serial.print(sci(faseTOTAL,4));
               Serial.print("  ;  ");
-              Serial.println(sci(offsetTOTAL,4));
+              Serial.println(sci(offsetTOTAL,4));*/
               
               delay(3000);
               contadorAmostra = 0;
@@ -541,7 +546,7 @@ void loop() {
               delay(200);
 
               //***************************
-              Serial.print(Nr_medicao);
+              /*Serial.print(Nr_medicao);
               Serial.print("  ;  ");
               Serial.println("Variaveis recebidas do canal ESCRAVO:");
               Serial.print(Nr_medicao);
@@ -552,7 +557,7 @@ void loop() {
               Serial.print("  ;  ");
               Serial.print(sci(faseTOTALchSlave,4));
               Serial.print("  ;  ");
-              Serial.println(sci(offsetTOTALchSlave,4));
+              Serial.println(sci(offsetTOTALchSlave,4));*/
               
               // Cálculo da impedância e ângulo theta              
               impedancia_Z = ampTOTAL / ampTOTALchSlave;             // Cálculo da impedância
@@ -581,12 +586,12 @@ void loop() {
 
               //Nr_medicao = Nr_medicao + 1;
               
-              Serial.print(Nr_medicao);
-              Serial.print("  ;  ");
-              Serial.print(" IMPEDANCIA - FASE ");
-              Serial.print("  ;  ");
-              Serial.print(sci(impedancia_Z,4));
-              Serial.print("  ;  ");
+              //Serial.print(Nr_medicao);
+              //Serial.print("  ;  ");
+              //Serial.print(" IMPEDANCIA - FASE ");
+              //Serial.print("  ;  ");
+              Serial.println(impedancia_Z,4);
+              //Serial.print("  ;  ");
               //Serial.println(sci(impedancia_fase,4));
               Serial.println(impedancia_fase,4);
 
@@ -628,7 +633,7 @@ void HabilitaDRDY(){
 void leADC() { 
     detachInterrupt(digitalPinToInterrupt(DRDY));
     long i = 0;
-        for(i = 0; i <= 100; i++){                                                   // Delay para calibração dosoncronismos
+        for(i = 0; i <= 103; i++){                                                   // Delay para calibração dosoncronismos
             asm("nop \n");
         }
         while(contadorAmostra < Nr_de_Amostras){ 
@@ -640,13 +645,15 @@ void leADC() {
             NOP();
             NOP();
             NOP();
+            NOP();
+            NOP();
             REG_PIOD_ODSR = 0x00000004;                                             // CS = 0, DRDW = 0 e RSET = 1 habilita leitur             
             vetor_segunda_palavra[contadorAmostra] = REG_PIOC_PDSR;                 // lê os 32 bits da palavra 2 (LSD) no registrador  portC
                                                                                     // e armazena na matriz "vetor_segunda_palavra" 
                                                                                     // Palavra de controle do portD para Habilitar a leitura do AD7762
             REG_PIOD_ODSR = 0x00000007;                                             // CS = 1, DRDW = 1 e RSET = 1 desabilita leitura              
             contadorAmostra++;                                                      //  contador de amostras                                                      
-                for(i = 0; i <= 10; i++){                                           // Delay para calibração dosoncronismos
+                for(i = 0; i <= 12; i++){                                           // Delay para calibração dosoncronismos
                     asm("nop \n");
                 }         
         }
