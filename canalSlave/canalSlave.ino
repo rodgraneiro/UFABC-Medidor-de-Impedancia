@@ -55,12 +55,12 @@ int ptos_periodo = 0;
 int coluna_piE = 0;
 //float cDC = 0;
 float soma_offset = 0;
-float offsetTOTAL = 0;
+volatile float offsetTOTAL = 0;
 //float cDCbTOTAL = 0;
 float amplitude = 0;
-float ampTOTAL = 0;
+volatile float ampTOTAL = 0;
 float fase = 0;
-float faseTOTAL = 0;
+volatile float faseTOTAL = 0;
 
 
 
@@ -111,7 +111,8 @@ void setup() {   //*********************INÍCIO SETUP***************************
           digitalWrite(habilitaMaster, LOW);  // habilita Master:
           //Serial.begin(115200);
           Serial.begin(9600);
-          Wire.begin(); //               
+          Wire.begin(8); // 
+          Wire.onRequest(requestEvent); // register event              
           
           
           // Configuração de Ports para iniciar AD7762 
@@ -510,25 +511,25 @@ void loop() {
           Serial.print("  ;  ");
           Serial.println(sci(offsetTOTAL,4));*/
           //Serial.println(REG_CKGR_MCFR);
-          delay(2000);
-          Serial.println(fase);
-          Serial.println(fase);
+          delay(200);
+          //Serial.println(fase);
+          //Serial.println(fase);
           //*********************************************************************************************
           //  TRANSMISSÃO SERIAL (I2C) DE DADOS
           //*********************************************************************************************
 
           
-          union Nr_IEEE754_union {float as_float ; byte as_byte[4];} amplitude_union;            // Coversão foat ampTOTAL em 4 bytes para transmissão serial I2C 
-          amplitude_union.as_float = ampTOTAL;
-          union Nr_IEEE754_union fase_union;                              // Coversão foat faseTOTAL em 4 bytes para transmissão serial I2C 
-          fase_union.as_float = faseTOTAL;
-          union Nr_IEEE754_union offset_union;                            // Coversão foat offsetTOTAL em 4 bytes para transmissão serial I2C 
-          offset_union.as_float = offsetTOTAL;
+          //union Nr_IEEE754_union {float as_float ; byte as_byte[4];} volatile amplitude_union;            // Coversão foat ampTOTAL em 4 bytes para transmissão serial I2C 
+          //amplitude_union.as_float = ampTOTAL;
+          //union Nr_IEEE754_union volatile fase_union;                              // Coversão foat faseTOTAL em 4 bytes para transmissão serial I2C 
+          //fase_union.as_float = faseTOTAL;
+          //union Nr_IEEE754_union volatile offset_union;                            //volatile Coversão foat offsetTOTAL em 4 bytes para transmissão serial I2C 
+          //offset_union.as_float = offsetTOTAL;
              
         
           delay(10);                                                      // delay 10us
           
-          Wire.beginTransmission(15);                                     // Começa transmissão para o mestre 0x0F
+          /*Wire.beginTransmission(15);                                     // Começa transmissão para o mestre 0x0F
           
           Wire.write(amplitude_union.as_byte[0]);                         // Envia o bytes da ampTOTAL
           Wire.write(amplitude_union.as_byte[1]);                                              
@@ -548,7 +549,7 @@ void loop() {
                
           Wire.endTransmission();                                        // Termina a transmissão 
           
-          delay(500);                                                    // delay 1s                            
+          delay(500);*/                                                    // delay 1s                            
    
 
           //********************************************
@@ -569,9 +570,9 @@ void loop() {
           soma_cosseno = 0;
           amplitude = 0;
           fase = 0;
-          ampTOTAL = 0;
-          faseTOTAL = 0;
-          offsetTOTAL = 0;
+          //ampTOTAL = 0;
+          //faseTOTAL = 0;
+          //offsetTOTAL = 0;
           semiciclo_neg = 0;
           semiciclo_pos = 0;
           aux = 0;
@@ -629,3 +630,39 @@ void leADC() {
         }             
     attachInterrupt(digitalPinToInterrupt(buttonPin8), HabilitaDRDY, RISING);              
 }
+
+
+void requestEvent() {
+
+union Nr_IEEE754_union {float as_float ; byte as_byte[4];} amplitude_union;            // Coversão foat ampTOTAL em 4 bytes para transmissão serial I2C 
+amplitude_union.as_float = ampTOTAL;
+union Nr_IEEE754_union fase_union;                              // Coversão foat faseTOTAL em 4 bytes para transmissão serial I2C 
+fase_union.as_float = faseTOTAL;
+union Nr_IEEE754_union offset_union;                            // Coversão foat offsetTOTAL em 4 bytes para transmissão serial I2C 
+offset_union.as_float = offsetTOTAL;
+
+Wire.write(amplitude_union.as_byte[0]);                         // Envia o bytes da ampTOTAL
+Wire.write(amplitude_union.as_byte[1]);                                              
+Wire.write(amplitude_union.as_byte[2]);
+Wire.write(amplitude_union.as_byte[3]);
+
+Wire.write(fase_union.as_byte[0]);                              // Envia o bytes da faseTOTAL
+Wire.write(fase_union.as_byte[1]);                    
+Wire.write(fase_union.as_byte[2]);
+Wire.write(fase_union.as_byte[3]);
+
+Wire.write(offset_union.as_byte[0]);                            // Envia o bytes do offsetTOTAL
+Wire.write(offset_union.as_byte[1]);                    
+Wire.write(offset_union.as_byte[2]);
+Wire.write(offset_union.as_byte[3]); 
+ampTOTAL = 0;
+faseTOTAL = 0;
+offsetTOTAL = 0;
+}
+   
+/*
+delay(500); //                                                  // delay 1s   
+ampTOTAL = 0;
+faseTOTAL = 0;
+offsetTOTAL = 0; 
+}*/

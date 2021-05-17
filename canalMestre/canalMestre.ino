@@ -122,8 +122,8 @@ void setup() {   //*********************INÍCIO SETUP***************************
               pinMode(buttonPin8, INPUT);     // Inicializa pino do pushbutton como input:
               //Serial.begin(115200);
               Serial.begin(9600);
-              Wire.begin(15);                 // Endereço canalSlave
-              Wire.onReceive(receiveEvent);   // register event
+              Wire.begin();                 // Endereço canalSlave
+              //Wire.onReceive(receiveEvent);   // register event
               
               
               //***************inicia LCD 
@@ -528,7 +528,7 @@ void loop() {
               Serial.print("  ;  ");
               Serial.println(sci(offsetTOTAL,4));*/
               
-              delay(3000);
+              delay(300);
               contadorAmostra = 0;
               contador_aux_1 = 0;
               contador_aux_2;
@@ -544,13 +544,57 @@ void loop() {
               //*****************************************************************************************
               
               delay(200);
+              
+Wire.requestFrom(8, 12);    // request 6 bytes from slave device #8
 
+while(Wire.available()) { // slave may send less than requested
+
+canal_escravo_data[0] = Wire.read();                            // Lê os 4 bytes da amplitude enviados pelo escravo 
+canal_escravo_data[1] = Wire.read(); 
+canal_escravo_data[2] = Wire.read(); 
+canal_escravo_data[3] = Wire.read(); 
+
+canal_escravo_data[4] = Wire.read();                            // Lê os 4 bytes da fase enviados pelo escravo 
+canal_escravo_data[5] = Wire.read(); 
+canal_escravo_data[6] = Wire.read(); 
+canal_escravo_data[7] = Wire.read(); 
+
+canal_escravo_data[8] = Wire.read();                            // Lê os 4 bytes do offset enviados pelo escravo 
+canal_escravo_data[9] = Wire.read(); 
+canal_escravo_data[10] = Wire.read(); 
+canal_escravo_data[11] = Wire.read();           
+}
+
+ delay(200);
+union Nr_IEEE754_union {byte as_byte[4]; float as_float;} amplitude_union;  //Nr float formato IEEE754 de 32 |Sinal|Expoente|Mantissa| 
+amplitude_union.as_byte[0] = canal_escravo_data[0];
+amplitude_union.as_byte[1] = canal_escravo_data[1];
+amplitude_union.as_byte[2] = canal_escravo_data[2];
+amplitude_union.as_byte[3] = canal_escravo_data[3];   
+float AMPLITUDE = amplitude_union.as_float  ;
+ampTOTALchSlave = AMPLITUDE;
+
+union Nr_IEEE754_union fase_union;   
+fase_union.as_byte[0] = canal_escravo_data[4];
+fase_union.as_byte[1] = canal_escravo_data[5];
+fase_union.as_byte[2] = canal_escravo_data[6];
+fase_union.as_byte[3] = canal_escravo_data[7];   
+float FASE = fase_union.as_float  ;
+faseTOTALchSlave = FASE;
+
+union Nr_IEEE754_union offset_union;   
+offset_union.as_byte[0] = canal_escravo_data[8];
+offset_union.as_byte[1] = canal_escravo_data[9];
+offset_union.as_byte[2] = canal_escravo_data[10];
+offset_union.as_byte[3] = canal_escravo_data[11];   
+float OFFSET = offset_union.as_float  ;
+offsetTOTALchSlave = OFFSET;
               //***************************
-              /*Serial.print(Nr_medicao);
-              Serial.print("  ;  ");
+              /* //Serial.print(Nr_medicao);
+              //Serial.print("  ;  ");
               Serial.println("Variaveis recebidas do canal ESCRAVO:");
-              Serial.print(Nr_medicao);
-              Serial.print("  ;  ");
+              //Serial.print(Nr_medicao);
+              //Serial.print("  ;  ");
               Serial.print("amplitude - fase - offset ");
               Serial.print("  ;  ");
               Serial.print(sci(ampTOTALchSlave,4));
@@ -590,10 +634,10 @@ void loop() {
               //Serial.print("  ;  ");
               //Serial.print(" IMPEDANCIA - FASE ");
               //Serial.print("  ;  ");
-              Serial.println(impedancia_Z,4);
+              //Serial.println(impedancia_Z,4);
               //Serial.print("  ;  ");
               //Serial.println(sci(impedancia_fase,4));
-              Serial.println(impedancia_fase,4);
+              //Serial.println(impedancia_fase,4);
 
 
 
@@ -633,7 +677,7 @@ void HabilitaDRDY(){
 void leADC() { 
     detachInterrupt(digitalPinToInterrupt(DRDY));
     long i = 0;
-        for(i = 0; i <= 103; i++){                                                   // Delay para calibração dosoncronismos
+        for(i = 0; i <= 90; i++){                                                   // Delay para calibração dosoncronismos
             asm("nop \n");
         }
         while(contadorAmostra < Nr_de_Amostras){ 
@@ -663,7 +707,7 @@ void leADC() {
 
 
 
-void receiveEvent(int quantidade_bytes_esperados) { 
+/*void receiveEvent(int quantidade_bytes_esperados) { 
 
               canal_escravo_data[0] = Wire.read();                            // Lê os 4 bytes da amplitude enviados pelo escravo 
               canal_escravo_data[1] = Wire.read(); 
@@ -705,4 +749,18 @@ void receiveEvent(int quantidade_bytes_esperados) {
              float OFFSET = offset_union.as_float  ;
              offsetTOTALchSlave = OFFSET;
              
+}*/
+
+void serialEvent(){
+  if(Serial.available() > 0){
+    char cmd = Serial.read();
+    if(cmd == 'B'){
+     lcd.setCursor(15, 1);         // Posiciona o cursor na coluna 15, linha 1;
+     lcd.write("E");          // graus
+     // Serial.println("impedancia_Z");
+    }
+    if(cmd == 'L'){
+      Serial.println("slave");
+    }
+  }
 }
