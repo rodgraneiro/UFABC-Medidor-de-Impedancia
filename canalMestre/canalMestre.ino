@@ -116,6 +116,8 @@ const int D13 = 46;             // Port C17
 const int D14 = 45;             // Port C18
 const int D15 = 44;             // Port C19
 
+char dataToSend;
+
 
 void setup() {   //*********************INÍCIO SETUP**********************************8
     
@@ -334,6 +336,8 @@ void setup() {   //*********************INÍCIO SETUP***************************
               //******************************************************************************
 
 void loop() {
+
+           
               
               //**** Habilita interrupção do botão que dispara a Medição das N_amostras
               attachInterrupt(digitalPinToInterrupt(buttonPin8), HabilitaDRDY, RISING);     // Habilita interrupção do botão de início de medição
@@ -446,6 +450,10 @@ void loop() {
               Nr_medicao = Nr_medicao + 1;
               contador_aux_2 = 0;
               //Serial.println("Valor convertido X valor decimal");                                    // imprime amostras p debug
+    
+                
+                  
+                      
     for(contador_aux_2 = 0; contador_aux_2 <= Nr_de_Amostras - 1; contador_aux_2++){                 // imprime amostras p debug
              // Serial.print(Nr_medicao);
               //Serial.print("  ;  ");
@@ -457,9 +465,8 @@ void loop() {
               //Serial.print(vetor_Amostra[contador_aux_2]);
               //Serial.print("  ;  ");
               //Serial.println(vetor_Amostra[contador_aux_2], BIN);
-    }
-
-
+    
+}
 
   
                         
@@ -648,6 +655,23 @@ offsetTOTALchSlave = OFFSET;
               offsetTOTAL = 0;
               offsetTOTALchSlave = 0;
               //sinal_fase_Slave = 0;
+
+
+
+            
+            /*if (Serial.available() > 0)
+            {
+                dataToSend = Serial.read();    
+                
+                    if (dataToSend == 'B')
+                {
+                Serial.println(impedancia_Z);
+                }
+                   else if (dataToSend == 'L')
+                {
+                Serial.println(impedancia_fase);
+            }
+            }*/
                       
     
 }
@@ -677,7 +701,7 @@ void HabilitaDRDY(){
 void leADC() { 
     detachInterrupt(digitalPinToInterrupt(DRDY));
     long i = 0;
-        for(i = 0; i <= 90; i++){                                                   // Delay para calibração dosoncronismos
+        for(i = 0; i <= 70; i++){                                                   // Delay para calibração dosoncronismos
             asm("nop \n");
         }
         while(contadorAmostra < Nr_de_Amostras){ 
@@ -755,12 +779,10 @@ void serialEvent(){
   if(Serial.available() > 0){
     char cmd = Serial.read();
     if(cmd == 'B'){
-     lcd.setCursor(15, 1);         // Posiciona o cursor na coluna 15, linha 1;
-     lcd.write("E");          // graus
-     // Serial.println("impedancia_Z");
-    }
-    if(cmd == 'L'){
-      Serial.println("slave");
+     //lcd.setCursor(15, 1);         // Posiciona o cursor na coluna 15, linha 1;
+     //lcd.write("E");          // graus
+      Serial.println(impedancia_Z,2);
+      Serial.println(impedancia_fase,2);
     }
   }
 }

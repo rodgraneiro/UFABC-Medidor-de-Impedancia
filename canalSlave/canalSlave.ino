@@ -604,7 +604,7 @@ void HabilitaDRDY(){
 void leADC() {
     detachInterrupt(digitalPinToInterrupt(DRDY));
     long i = 0;  
-        for(i = 0; i <= 129; i++){
+        for(i = 0; i <= 119; i++){
             asm("nop \n");
         }  
         while(contadorAmostra < Nr_de_Amostras){                              
@@ -666,3 +666,15 @@ ampTOTAL = 0;
 faseTOTAL = 0;
 offsetTOTAL = 0; 
 }*/
+
+void serialEvent(){
+  if(Serial.available() > 0){
+    char cmd = Serial.read();
+    if(cmd == 'B'){
+     //lcd.setCursor(15, 1);         // Posiciona o cursor na coluna 15, linha 1;
+     //lcd.write("E");          // graus
+      Serial.println(0);
+      Serial.println(0);
+    }
+  }
+}
