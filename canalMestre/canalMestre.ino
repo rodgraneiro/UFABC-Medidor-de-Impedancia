@@ -701,7 +701,7 @@ void HabilitaDRDY(){
 void leADC() { 
     detachInterrupt(digitalPinToInterrupt(DRDY));
     long i = 0;
-        for(i = 0; i <= 70; i++){                                                   // Delay para calibração dosoncronismos
+        for(i = 0; i <= 63; i++){                                                   // Delay para calibração dosoncronismos
             asm("nop \n");
         }
         while(contadorAmostra < Nr_de_Amostras){ 
