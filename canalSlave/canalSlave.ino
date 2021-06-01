@@ -604,7 +604,7 @@ void HabilitaDRDY(){
 void leADC() {
     detachInterrupt(digitalPinToInterrupt(DRDY));
     long i = 0;  
-        for(i = 0; i <= 119; i++){
+        for(i = 0; i <= 66; i++){
             asm("nop \n");
         }  
         while(contadorAmostra < Nr_de_Amostras){                              
@@ -673,8 +673,8 @@ void serialEvent(){
     if(cmd == 'B'){
      //lcd.setCursor(15, 1);         // Posiciona o cursor na coluna 15, linha 1;
      //lcd.write("E");          // graus
-      Serial.println(0);
-      Serial.println(0);
+      //Serial.println(0);
+      //Serial.println(0);
     }
   }
 }
