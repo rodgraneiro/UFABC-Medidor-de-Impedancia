@@ -62,15 +62,15 @@ volatile float faseTOTALchSlave = 0;
 long Nr_medicao =0;
 
 //*****************************Matriz pseudo inversa 10 ptos excitação 31,25kHz - Sample Rate 312,5kHz
-//float piEs [] = {0.117557050458495, 0.190211303259031, 0.190211303259031, 0.117557050458495, 2.44929359829470e-17, -0.117557050458495, -0.190211303259031, -0.190211303259031, -0.117557050458495, -4.89858719658942e-17};
-//float piEc[] = {0.161803398874990, 0.0618033988749894, -0.0618033988749895, -0.161803398874989, -0.200000000000000, -0.161803398874990, -0.0618033988749896, 0.0618033988749895, 0.161803398874990, 0.200000000000000};
-//float piEdc[] = {0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000};
+float piEs [] = {0.117557050458495, 0.190211303259031, 0.190211303259031, 0.117557050458495, 2.44929359829470e-17, -0.117557050458495, -0.190211303259031, -0.190211303259031, -0.117557050458495, -4.89858719658942e-17};
+float piEc[] = {0.161803398874990, 0.0618033988749894, -0.0618033988749895, -0.161803398874989, -0.200000000000000, -0.161803398874990, -0.0618033988749896, 0.0618033988749895, 0.161803398874990, 0.200000000000000};
+float piEdc[] = {0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000};
 
 
 //*****************************Matriz pseudo inversa 10 ptos excitação 125kHz - Sample Rate 625kHz
-float piEs[] = {0,  0.190211303259031, 0.117557050458495, -0.117557050458495,  -0.190211303259031,  -2.26621555905919e-16, 0.190211303259031, 0.117557050458495, -0.117557050458495,  -0.190211303259031};
-float piEc[] = {0.200000000000000, 0.0618033988749895,  -0.161803398874990,  -0.161803398874990,  0.0618033988749895,  0.200000000000000, 0.0618033988749897,  -0.161803398874990,  -0.161803398874990,  0.0618033988749894};
-float piEdc[] = {0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000};
+//float piEs[] = {0,  0.190211303259031, 0.117557050458495, -0.117557050458495,  -0.190211303259031,  -2.26621555905919e-16, 0.190211303259031, 0.117557050458495, -0.117557050458495,  -0.190211303259031};
+//float piEc[] = {0.200000000000000, 0.0618033988749895,  -0.161803398874990,  -0.161803398874990,  0.0618033988749895,  0.200000000000000, 0.0618033988749897,  -0.161803398874990,  -0.161803398874990,  0.0618033988749894};
+//float piEdc[] = {0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000};
 
 
 float soma_seno = 0;
@@ -91,7 +91,7 @@ byte fase_byte[4];
 float fase_float;
 byte offset_byte[4]; 
 float offset_float;
-float fator_conv_volts = 630e-9;
+float fator_conv_volts = 690e-9;
 unsigned long tempo_inicio = millis();
 unsigned long tempo_exec[100] = {0};
 
@@ -121,7 +121,7 @@ char dataToSend;
 
 void setup() {   //*********************INÍCIO SETUP**********************************8
     
-              pinMode(buttonPin8, INPUT);     // Inicializa pino do pushbutton como input:
+              //pinMode(buttonPin8, INPUT);     // Inicializa pino do pushbutton como input:
               //Serial.begin(115200);
               Serial.begin(9600);
               Wire.begin();                 // Endereço canalSlave
@@ -216,7 +216,7 @@ void setup() {   //*********************INÍCIO SETUP***************************
               digitalWrite(D2, LOW);    //LPWR
               digitalWrite(D3, LOW);    //PD
               digitalWrite(D4, HIGH);   // Default 9B
-              digitalWrite(D5, HIGH);    //CDIV
+              digitalWrite(D5, LOW);    //CDIV
               digitalWrite(D6, LOW);    //Default 9B
               digitalWrite(D7, HIGH);   //Default 9B
               digitalWrite(D8, LOW);
@@ -325,7 +325,8 @@ void setup() {   //*********************INÍCIO SETUP***************************
               delay(100);
 
 
-
+               pinMode(buttonPin8, INPUT);     // Inicializa pino do pushbutton como input:
+               delay(1000);
 
 
               
@@ -336,19 +337,23 @@ void setup() {   //*********************INÍCIO SETUP***************************
               //******************************************************************************
 
 void loop() {
-
-           
-              
+                                         
               //**** Habilita interrupção do botão que dispara a Medição das N_amostras
               attachInterrupt(digitalPinToInterrupt(buttonPin8), HabilitaDRDY, RISING);     // Habilita interrupção do botão de início de medição
-                                                                                            // e vai para interrupção LeAdc              
+               //detachInterrupt(digitalPinToInterrupt(DRDY));                                // e vai para interrupção LeAdc              
               // Realiza a leitura das Nr_de_Amostras enquanto a interrupção "HabilitaDRDY" estiver habilitada
-              while(contadorAmostra < Nr_de_Amostras){                                 
+              while(contadorAmostra < Nr_de_Amostras){
+                                                           //Serial.println("banana");
+                                                      //contadorAmostra++;
+                                                      //REG_PIOD_ODSR = 0x00000004;                                 
                                                      }
                 contador_aux_1 = 0;
+                //Serial.println("banana");
               //*** Desabilita interrupção p/ aquisição de amostras   
               detachInterrupt(digitalPinToInterrupt(DRDY));
-  
+              //Serial.println("banana");
+
+                
               //*************************************************************
               // Rearranjar 32 bits "NÃO CONSECUTIVOS" do portC do Arduino em 24 bits CONSECUTIVOS
               // O AD7762 disponibiliza a amostra discretizada com resolução de 24 bits em duas "palavras" de 16 bits.
@@ -461,7 +466,7 @@ void loop() {
               Serial.print(tempo_exec[contador_aux_2]);
               Serial.print("  ;  "); 
               */  
-              Serial.println(converte_volts[contador_aux_2],4);
+              //Serial.println(converte_volts[contador_aux_2],4);
               /*
               Serial.print("\n");
               Serial.print("  ;  ");
@@ -637,7 +642,7 @@ offsetTOTALchSlave = OFFSET;
               lcd.print(impedancia_fase,2); // Escrever valor da fase "XX.X"
               lcd.setCursor(15, 1);         // Posiciona o cursor na coluna 15, linha 1;
               lcd.write(B11011111);          // graus
-
+              
               Nr_medicao = Nr_medicao + 1;
               /*
               Serial.print(Nr_medicao);
@@ -662,7 +667,7 @@ offsetTOTALchSlave = OFFSET;
 
 
             
-            if (Serial.available() > 0)
+            /*if (Serial.available() > 0)
             {
                 dataToSend = Serial.read();    
                 
@@ -674,7 +679,7 @@ offsetTOTALchSlave = OFFSET;
                 {
                 Serial.println(impedancia_fase);
             }
-            }
+            }*/
                       
     
 }
@@ -690,8 +695,11 @@ void HabilitaDRDY(){
             //long i = 0;
             // Desabilita interrupção do botão de início de medição
             detachInterrupt(digitalPinToInterrupt(buttonPin8));
+             //delayMicroseconds(30);
+             // Habilita interrupção LeADC para  leitura de dados do AD7762
             // Habilita interrupção LeADC para  leitura de dados do AD7762
             attachInterrupt(digitalPinToInterrupt(DRDY), leADC, FALLING);
+            //Serial.println("banana");
 }
 
           //***************************************************
@@ -702,29 +710,43 @@ void HabilitaDRDY(){
                   
 
 void leADC() { 
+      
     detachInterrupt(digitalPinToInterrupt(DRDY));
+    
     long i = 0;
-        for(i = 0; i <= 60; i++){                                                   // Delay para calibração dosoncronismos
+        for(i = 0; i <= 85; i++){                                                   // Delay para calibração dosoncronismos
             asm("nop \n");
+             
         }
         while(contadorAmostra < Nr_de_Amostras){ 
             REG_PIOD_ODSR = 0x00000004;                                             // CS = 0, DRDW = 0 e RSET = 1 habilita leitura         
             vetor_Amostra[contadorAmostra] = REG_PIOC_PDSR;                         // lê os 32 bits da palavra 1 (MSD) no registrador  portC
+            for(i = 0; i <= 9; i++){                                               // Delay para calibração dosoncronismos
+            asm("nop \n");
+            }
+
+
+
+
+            
                                                                                     // e armazena na matriz "vetor_Amostra"
                                                                                     // Palavra de controle do portD para desabilitar CI AD7762
             REG_PIOD_ODSR = 0x00000007;                                             // CS = 1, DRDW = 1 e RSET = 1 desabilita leitura
-            NOP();
-            NOP();
-            NOP();
-            NOP();
-            NOP();
+           for(i = 0; i <= 4; i++){                                               // Delay para calibração dosoncronismos
+            asm("nop \n");
+           }
+            
             REG_PIOD_ODSR = 0x00000004;                                             // CS = 0, DRDW = 0 e RSET = 1 habilita leitur             
             vetor_segunda_palavra[contadorAmostra] = REG_PIOC_PDSR;                 // lê os 32 bits da palavra 2 (LSD) no registrador  portC
+            for(i = 0; i <= 9; i++){                                               // Delay para calibração dosoncronismos
+            asm("nop \n");
+           }
                                                                                     // e armazena na matriz "vetor_segunda_palavra" 
                                                                                     // Palavra de controle do portD para Habilitar a leitura do AD7762
             REG_PIOD_ODSR = 0x00000007;                                             // CS = 1, DRDW = 1 e RSET = 1 desabilita leitura              
             contadorAmostra++;                                                      //  contador de amostras                                                      
-                for(i = 0; i <= 12; i++){                                           // Delay para calibração dosoncronismos
+                //for(i = 0; i <= 12; i++){                                           // Delay para calibração dosoncronismos
+                for(i = 0; i <= 23; i++){  
                     asm("nop \n");
                 }         
         }
