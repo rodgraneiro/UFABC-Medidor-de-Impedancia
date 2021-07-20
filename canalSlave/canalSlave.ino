@@ -16,7 +16,7 @@ int habilitaMasterState = 0;  // variable for reading the pushbutton status
 int StartState = 0;           // variable for reading the pushbutton status
 
 #define M_PI 3.141592653589793238462643
-#define Rsentinela 983
+#define Rsentinela 1000
 #define NOP() asm("nop \n")
 
 //********************CONSTANTES E VARIÁVEIS*********************************
@@ -29,9 +29,9 @@ const int RDWR = 26;  // Port D1 Arduino -> Read/Write AD7762 pin 39
 const int RESET = 27; // Port D2 Arduino -> Reset AD7762 pin 37
 const int DRDY = 23;  // Port A14 Arduino -> Data Ready Output AD7762 pin 38
 //const int DRDY = 14;  // Port D4 Arduino -> Data Ready Output AD7762 pin 38
-volatile int Nr_de_Amostras = 100;
-volatile uint32_t vetor_Amostra[100] = {0};
-volatile uint32_t vetor_segunda_palavra[100] = {0};
+volatile int Nr_de_Amostras = 20;
+volatile uint32_t vetor_Amostra[20] = {0};
+volatile uint32_t vetor_segunda_palavra[20] = {0};
 volatile uint32_t sinal_negativo = 0;
 volatile uint32_t semiciclo_neg = 0;
 volatile uint32_t semiciclo_pos = 0;
@@ -44,10 +44,10 @@ volatile int contador_aux_2 = 0;
 volatile int contador_aux_3 = 0;
 
 
-float fator_conv_corrente = 315e-9;
-float converte_volts[100];
+float fator_conv_corrente = 2.8873e-7;
+float converte_volts[20];
 unsigned long tempo_inicio = millis();
-unsigned long tempo_exec[100] = {0};
+unsigned long tempo_exec[20] = {0};
 long Nr_medicao = 0;
 
 
@@ -435,6 +435,10 @@ void loop() {
           //Serial.print(vetor_Amostra[contador_aux_2]);
           //Serial.print("  ;  ");
           //Serial.println(vetor_Amostra[contador_aux_2], BIN);
+           //Serial.print(vetor_Amostra[contador_aux_2], BIN);
+              //Serial.print(" ");
+              //Serial.println(vetor_Amostra[contador_aux_2]);
+              //Serial.println(converte_volts[contador_aux_2],8);
           }
  
 
@@ -446,7 +450,7 @@ void loop() {
           // Determinar Amplitude, fase e offset. Serão utilizados os três últimos períodos
           // para evitar transientes do início da medição;
           
-    for(contador_aux_3 = 0; contador_aux_3 <= 90; contador_aux_3 = (contador_aux_3 + 10)){ // Laço demodulação por quadratura
+    for(contador_aux_3 = 0; contador_aux_3 <= 10; contador_aux_3 = (contador_aux_3 + 10)){ // Laço demodulação por quadratura
           for (coluna_piE = 0; coluna_piE < 10; coluna_piE++) { // Nr de amostras
               int ptos_periodo = contador_aux_3 + coluna_piE; // Nr de amostras de cada periodo
               
@@ -465,15 +469,15 @@ void loop() {
           }
           
           // Imprime dados no monitor serial
-         /* Serial.print(Nr_medicao);
-          Serial.print("  ;  ");
-          Serial.print("amplitude e fase DC");
-          Serial.print("  ;  ");
-          Serial.print(sci(amplitude,4));
-          Serial.print("  ;  ");
-          Serial.print(sci(fase,4));
-          Serial.print("  ;  ");
-          Serial.println(sci(soma_offset,4));*/
+         //Serial.print(Nr_medicao);
+          //Serial.print("  ;  ");
+          //Serial.print("amplitude e fase DC");
+          //Serial.print("  ;  ");
+          //Serial.print(sci(amplitude,4));
+          //Serial.print("  ;  ");
+          //Serial.print(sci(fase,4));
+          //Serial.print("  ;  ");
+          //Serial.println(sci(soma_offset,4));
 
          //Serial.println("impedancia_Z");
          //Serial.println("fase");
@@ -495,24 +499,24 @@ void loop() {
           // Calcular média da ampltude, fase e offsset
           //*******************************************
           
-          ampTOTAL =ampTOTAL/10; // Média da amplitude
-          faseTOTAL = faseTOTAL/10; // Média da fase
-          offsetTOTAL = offsetTOTAL/10; // média do Offset
+          ampTOTAL =ampTOTAL/2; // Média da amplitude
+          faseTOTAL = faseTOTAL/2; // Média da fase
+          offsetTOTAL = offsetTOTAL/2; // média do Offset
           
           //Nr_medicao = Nr_medicao + 1;
 
           // Imprimir dados no monitor serial
-          /*Serial.print(Nr_medicao);
-          Serial.print("  ;  ");
-          Serial.print("amplitude - fase - TOTAL ");
-          Serial.print("  ;  ");
-          Serial.print(sci(ampTOTAL,4));
-          Serial.print("  ;  ");
-          Serial.print(sci(faseTOTAL,4));
-          Serial.print("  ;  ");
-          Serial.println(sci(offsetTOTAL,4));*/
+          //Serial.print(Nr_medicao);
+          //Serial.print("  ;  ");
+          //Serial.print("amplitude - fase - TOTAL ");
+          //Serial.print("  ;  ");
+          //Serial.print(sci(ampTOTAL,4));
+          //Serial.print("  ;  ");
+          //Serial.print(sci(faseTOTAL,4));
+          //Serial.print("  ;  ");
+          //Serial.println(sci(offsetTOTAL,4));
           //Serial.println(REG_CKGR_MCFR);
-          delay(200);
+          //delay(200);
           //Serial.println(fase);
           //Serial.println(fase);
           //*********************************************************************************************
@@ -605,7 +609,7 @@ void HabilitaDRDY(){
 void leADC() {
     detachInterrupt(digitalPinToInterrupt(DRDY));
     long i = 0;  
-        for(i = 0; i <= 89; i++){
+        for(i = 0; i <= 54; i++){
             asm("nop \n");
         }  
         while(contadorAmostra < Nr_de_Amostras){                              
