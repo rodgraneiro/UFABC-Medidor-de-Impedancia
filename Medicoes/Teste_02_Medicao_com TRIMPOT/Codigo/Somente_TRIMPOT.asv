@@ -1,0 +1,101 @@
+clear;
+file_TRIMPOT = importdata('SoTRIMPOT.txt');
+file_nome_TRIMPOT = ('SoTRIMPOT.txt');
+% file_RESISTORES = importdata('SoTRIMPOT.txt');
+% file_nome_RESISTORES = ('SoTRIMPOT.txt');
+%legend({'test_line'}, 'Interpreter', 'none');
+TRIMPOTvalue = file_TRIMPOT(:, 1);
+TRIMPOTfase = file_TRIMPOT(:, 3);
+Z_TRIMPOT_MIE = file_TRIMPOT(:, 2);
+% RESISTORvalue = file_RESISTORES(:, 1);
+% Z_RESISTOR_MIE = file_RESISTORES(:, 2);
+% RESISTORfase = file_RESISTORES(:, 3);
+
+% fase = file_impedancia(:, 4);
+% new_r = 0;
+
+nrows = length(file_TRIMPOT);
+subplot(2,1,1);
+plot(TRIMPOTvalue, Z_TRIMPOT_MIE, ':ob');
+
+grid on;
+%legend('IMPEDÂNCIA TRIMPOT','IMPEDÂNCIA RESISTORES')
+title('MEDIÇÃO DE IMPEDÂNCIA - RESISTÊNCIA TRIMPOTs');
+xlabel('RESISTÊNCIA [\Omega] - CALCULADA PARA FREQUÊNCIA DE 31250Hz')
+ylabel('IMPEDÂNCIA [\Omega] - MIE')
+%axis equal
+
+[p,S] = polyfit(TRIMPOTvalue,Z_TRIMPOT_MIE,1);
+[y_fit,delta] = polyval(p,TRIMPOTvalue,S);
+hold on;
+plot(TRIMPOTvalue,y_fit,'k-');
+
+%legend('sin(x)','cos(x)','Location','northwest')
+
+% [q,T] = polyfit(RESISTORvalue,Z_RESISTOR_MIE,1);
+% [y_fitR,delta] = polyval(q,RESISTORvalue,T);
+% hold on;
+%plot(RESISTORvalue,y_fitR,'g-');
+legend('RESISTÊNCIA TRIMPOTs','Eq1 da reta');
+a = p(:,1);
+b = p(:,2);
+% c = q(:,1);
+% e = q(:,2);
+ %%%%%%%%%%%%%%%%%%%
+%text(a,0,'\leftarrow sin(\pi)')
+%plot(1:10)
+subplot(2,1,2);
+plot(TRIMPOTvalue, TRIMPOTfase, ':ob');
+%axis equal
+grid on;
+%legend('FASE TRIMPOT','FASE RESISTORES');
+title('MEDIÇÕES DE FASE 1 e 2 DOS CAPACITORES');
+xlabel('REATÂNCIA [\Omega] - CALCULADA PARA FREQUÊNCIA DE 31250Hz');
+ylabel('FASE [°] - MIE')
+[r,W] = polyfit(TRIMPOTvalue,TRIMPOTfase,1);
+[y_fit_fase_TRIMPOT,delta] = polyval(r,TRIMPOTvalue,W);
+hold on;
+plot(TRIMPOTvalue,y_fit_fase_TRIMPOT,'k-');
+
+
+
+f = r(:,1);
+g = r(:,2);
+
+
+
+
+legend('FASE MEDIÇÃO 1','FASE MEDIÇÃO 2','Eq1 da reta MEDIÇÃO 1 (fase)', 'Eq2 da reta MEDIÇÃO 2 (fase)');
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+dim = [.7 .75 .01 .01];
+s0 = 'y1 = ';
+s = num2str(a);
+s1 = 'x+';
+s2 = num2str(b);
+str = strcat(s0,s,s1,s2);
+d = annotation('textbox',dim, 'String',str,'FitBoxToText','on');
+d.Color = 'black';
+d.FontSize = 16;
+
+
+
+dim = [.7 .35 .01 .01];
+s0 = 'y1 = ';
+sf = num2str(f);
+s1 = 'x';
+sf2 = num2str(g);
+str = strcat(s0,sf,s1,sf2);
+d = annotation('textbox',dim, 'String',str,'FitBoxToText','on');
+d.Color = 'black';
+d.FontSize = 16;
+
+dim = [.7 .3 .01 .01];
+v0 = 'y2 = ';
+vf = num2str(i);
+v1 = 'x';
+vf2 = num2str(j);
+str = strcat(v0,vf,v1,vf2);
+d = annotation('textbox',dim, 'String',str,'FitBoxToText','on');
+d.Color = 'green';
+d.FontSize = 16;
