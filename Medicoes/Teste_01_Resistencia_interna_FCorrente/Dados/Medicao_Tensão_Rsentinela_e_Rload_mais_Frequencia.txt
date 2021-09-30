@@ -1,0 +1,3 @@
+Rsentinela	Delta_V	Rload	Delta_V	Frequencia
+[OHM]	[mVp-p]	[OHM]	[mVp-p]	[Hz]
+57,0	104	55,8	214	31640
