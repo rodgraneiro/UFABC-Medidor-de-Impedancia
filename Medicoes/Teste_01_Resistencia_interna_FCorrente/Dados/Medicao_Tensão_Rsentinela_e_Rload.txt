@@ -1,2 +1,0 @@
-Rsentinela	mVpp	Rload	mVpp
-57,0	104	55,8	214
