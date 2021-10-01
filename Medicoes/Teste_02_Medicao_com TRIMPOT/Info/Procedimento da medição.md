@@ -13,8 +13,8 @@ o quarcentil superior e inferor das amostras. Os cálculos foram efetuados no Ma
 A curva de Impedância Multímetro vs Impedância MIE (/Info/Curva_Z_Fase_TRIMPOT) foi efetuada atraves 
 do código em Matlab no arquivo /Codigo/Somente_TRIMPOT.m e pode ser vista a seguir.
 
-![Impedância Multímetro vs Impedância MIE](Curva_Z_Fase_TRIMPOT.jpg) 
+![Impedância Multímetro vs Impedância MIE](C:\Users\rodgr\Documents\GitHub\UFABC-Medidor-de-Impedancia\Medicoes\Teste_02_Medicao_com TRIMPOT\Info\Figuras/Curva_Z_Fase_TRIMPOT.jpg) 
 
-![TRIMPOT 3006P 103](trimpot3006P.jpg)
+![TRIMPOT 3006P 103](C:\Users\rodgr\Documents\GitHub\UFABC-Medidor-de-Impedancia\Medicoes\Teste_02_Medicao_com TRIMPOT\Info\Figuras/trimpot3006P.jpg)
 
 
