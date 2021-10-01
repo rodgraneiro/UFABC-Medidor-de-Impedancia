@@ -4,13 +4,13 @@ com passos de 100 Ohms . Obs.: A partir da resistência de 1K o teste foi realiz
 com auxílio de resistores conectados em série com o trimpot de 1K para atingir a 
 resistividade de 2,5KOhms.
 Cada ponto da curva representa a média trimada de mil medições efetuada pelo MIE.
-Os arquivos com os dados da medição etão armazenados no arquivo DADOS no formato TXT.
+Os arquivos com os dados da medição estão armazenados no arquivo /Dados no formato TXT.
 
 Para calcular as médias trimadas no Matlab foi utilizado a arquivo /Codigo/SortMatlab_tst_new.m 
 onde os dados foram armazenados manualmente no arquivo /Dados/SoTRIMPOT.txt.
 
 A curva do arquivo /Info/Curva_Z_Fase_TRIMPOT.jpg foi elaborada no Matlab através do
 arquivo /Codigo/Somente_TRIMPOT.m
-![](Curva_Z_Fase_TRIMPOT.jpg)
+![Curva de impedância Z e fase em do trimpot](Curva_Z_Fase_TRIMPOT.jpg)
 
 
