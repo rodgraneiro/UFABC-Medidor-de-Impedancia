@@ -11,6 +11,6 @@ onde os dados foram armazenados manualmente no arquivo /Dados/SoTRIMPOT.txt.
 
 A curva do arquivo /Info/Curva_Z_Fase_TRIMPOT.jpg foi elaborada no Matlab através do
 arquivo /Codigo/Somente_TRIMPOT.m
-![](Curva_Z_Fase_TRIMPOT.jpj)
+![](Curva_Z_Fase_TRIMPOT.jpg)
 
 
