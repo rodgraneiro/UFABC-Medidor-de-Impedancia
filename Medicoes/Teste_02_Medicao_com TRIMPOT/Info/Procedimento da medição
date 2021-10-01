@@ -1,0 +1,10 @@
+Teste de medição de impedância de um trimpot tipo 3006p 103 (1K).
+Foram aquiquiridos 26 pontos de medição variando dezero à 2500 Ohms 
+com passo de 100 Ohms . Obs.: A partir da resistência de 1K o teste foi realizado 
+com resistores conectados em série com o trimpot de 1K para atingira a 
+resistividade de 2,5KOhms.
+Cada ponto da curva representa a média trimada de mil medições efetuada pelo MIE.
+Os arquivos com os dados da medição etão armazenados no arquivo DADOS no formato TXT.
+O aquivo SoTRIMPOT.txt foi elaborado manualmente anotando-se a média trimada de cada ponto.
+
+
