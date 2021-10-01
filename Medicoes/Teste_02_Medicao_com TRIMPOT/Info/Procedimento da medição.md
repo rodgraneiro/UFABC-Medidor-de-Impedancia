@@ -2,11 +2,13 @@
 
 O arquivo /Dados/SoTRIMPOT.txt contém 26 pontos de medição da
 resistência do trimpot com valores de zero à 2500 Ohms variando em passos de 100 Ohms,
-medidos com um multímetro digital e dos valores de impedância Z e fase medidas com o MIE.
+medidos com um multímetro digital e dos valores de impedância Z e fase medidas com o MIE conforme figura.
 Os valores de resistividade superiores a capacidade nominal do trimpot (1k) foram medidos
 com o auxílio de resistores soldados em série.
 
-Cada ponto de medição é a media trimada de mil medições efetuadas pelo MIE onde foram eliminadas
+![Circuito eletrônico do teste ](Circuito_eletronico_do_teste .jpg)
+
+Cada ponto de medição é a média trimada de mil medições efetuadas pelo MIE onde foram eliminadas
 o quarcentil superior e inferor das amostras. Os cálculos foram efetuados no Matlab através do código 
 /Codigo/SortMatlab_tst_new.m.
 
