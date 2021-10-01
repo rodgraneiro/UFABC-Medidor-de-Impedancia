@@ -8,10 +8,12 @@ com o auxílio de resistores soldados em série.
 
 ![Circuito eletrônico do teste](Circuito_eletronico.jpg)
 
-Cada ponto de medição é a média trimada de mil medições efetuadas pelo MIE onde foram eliminadas
+Cada ponto da curva é a média trimada de mil medições efetuadas pelo MIE onde foram eliminadas
 o quarcentil superior e inferior das amostras. Os cálculos foram efetuados no Matlab através do código 
-/Codigo/SortMatlab_tst_new.m onde cada arquivo "TRIMPOT_r_XXXXXX_2021jul12.txt" foi substituido na
-linha de código número 555.
+/Codigo/SortMatlab_tst_new.m onde cada arquivo "TRIMPOT_r_XXXXXX_2021jul12.txt" foi substituido nas
+linhas de código 2 e 3.
+
+![Exemplo de medição de resistividade de 100 Ohms on trimpot](ExemploMedTrimpot.jpg)
 
 A curva de Impedância Multímetro vs Impedância MIE (/Info/Curva_Z_Fase_TRIMPOT) foi efetuada através 
 do código em Matlab no arquivo /Codigo/Somente_TRIMPOT.m e pode ser vista a seguir.
