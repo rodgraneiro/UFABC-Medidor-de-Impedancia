@@ -11,6 +11,9 @@ onde os dados foram armazenados manualmente no arquivo /Dados/SoTRIMPOT.txt.
 
 A curva do arquivo /Info/Curva_Z_Fase_TRIMPOT.jpg foi elaborada no Matlab através do
 arquivo /Codigo/Somente_TRIMPOT.m
+No eixo X estão representados as medições de resistividade do trimpot (em série com resistor quando
+necessário) medidas com um múltimetro digital. Nos eixos Y estão representados os módulos de impedância Z
+e fase, respectivamente.
 ![Curva de impedância Z e fase em do trimpot](Curva_Z_Fase_TRIMPOT.jpg)
 
 
