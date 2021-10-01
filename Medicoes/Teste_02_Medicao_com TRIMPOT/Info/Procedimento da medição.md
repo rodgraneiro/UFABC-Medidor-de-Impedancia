@@ -15,6 +15,6 @@ do código em Matlab no arquivo /Codigo/Somente_TRIMPOT.m e pode ser vista a seg
 
 ![Impedância Multímetro vs Impedância MIE](\Info\Figuras\Curva_Z_Fase_TRIMPOT.jpg) 
 
-![TRIMPOT 3006P 103](C:\Users\rodgr\Documents\GitHub\UFABC-Medidor-de-Impedancia\Medicoes\Teste_02_Medicao_com TRIMPOT\Info\Figuras/trimpot3006P.jpg)
+![TRIMPOT 3006P 103](C:\Users\rodgr\Documents\GitHub\UFABC-Medidor-de-Impedancia\Medicoes\Teste_02_Medicao_com TRIMPOT\Info\Figuras\trimpot3006P.jpg)
 
 
