@@ -6,7 +6,7 @@ medidos com um multímetro digital e dos valores de impedância Z e fase medidas
 Os valores de resistividade superiores a capacidade nominal do trimpot (1k) foram medidos
 com o auxílio de resistores soldados em série.
 
-![Circuito eletrônico do teste ](Circuito_eletronico_do_teste .jpg)
+![Circuito eletrônico do teste ](Circuito_eletronico_do_teste.jpg)
 
 Cada ponto de medição é a média trimada de mil medições efetuadas pelo MIE onde foram eliminadas
 o quarcentil superior e inferor das amostras. Os cálculos foram efetuados no Matlab através do código 
