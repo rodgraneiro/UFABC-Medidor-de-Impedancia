@@ -1,6 +1,6 @@
 clear;
-file_impedancia = importdata('SoTRIMPOT.txt');
-file_nome = ('SoTRIMPOT.txt')
+file_impedancia = importdata('TRIMPOT_r_104_4R_2021jul12.txt');
+file_nome = ('TRIMPOT_r_104_4R_2021jul12.txt')
 z = file_impedancia(:, 2);
 fase = file_impedancia(:, 3);
 banana = 0;
