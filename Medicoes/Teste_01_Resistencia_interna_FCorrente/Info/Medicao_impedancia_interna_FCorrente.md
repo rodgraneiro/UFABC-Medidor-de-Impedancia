@@ -10,8 +10,11 @@ A Fonte de Corrente gera um sinal de corrente senoidal de
 2mApp com frequência de 31640 Hz.
 
 Medição da frequência com osciloscópio:
-![](Med_Rsent_Terminais_curto.jpg)
+
+![](Frequencia da excitacao.jpg)
+
 Medição da tensão com osciloscópio:
-![](Med_Rsent_Terminais_curto.jpg)
+
+![](Amplitude_Rsentinela_mais_curto.jpg)
 
 
