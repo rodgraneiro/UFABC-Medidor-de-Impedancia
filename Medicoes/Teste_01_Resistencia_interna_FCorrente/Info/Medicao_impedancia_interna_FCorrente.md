@@ -18,3 +18,8 @@ Medição da tensão com osciloscópio:
 ![](Amplitude_Rsentinela_mais_curto.jpg)
 
 
+$$
+E = mc^2
+$$
+
+$$f(k) = {n \choose k} p^{k} (1-p)^{n-k}$$
