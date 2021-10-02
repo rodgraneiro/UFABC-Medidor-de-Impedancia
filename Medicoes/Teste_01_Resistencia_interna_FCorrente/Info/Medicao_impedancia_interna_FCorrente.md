@@ -11,7 +11,7 @@ A Fonte de Corrente gera um sinal de corrente senoidal de
 
 Medição da frequência com osciloscópio:
 
-![](Frequencia da excitacao.jpg)
+![](Frequencia_de_excitacao.jpg)
 
 Medição da tensão com osciloscópio:
 
