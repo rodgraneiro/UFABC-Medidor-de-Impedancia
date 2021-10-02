@@ -18,8 +18,17 @@ Medição da tensão com osciloscópio:
 ![](Amplitude_Rsentinela_mais_curto.jpg)
 
 
-$$
-E = mc^2
-$$
+<img src="https://latex.codecogs.com/svg.latex?\Large&space;i=\frac{VRsentinela}{Rsentinela}" title=" " />
 
-$$f(k) = {n \choose k} p^{k} (1-p)^{n-k}$$
+<img src="https://latex.codecogs.com/svg.latex?\Large&space;i=\frac{104mVpp}{57}" title="" />
+
+### Portanto a corrente real calculada é i = 1,82 mApp. 
+
+
+Em seguida for efetuada a medição com um resistor de carga de valor medido pelo multímetro de 54.2R conectado
+aos terminais de excitação de corrente conforme apresentado na figura a seguir:
+
+
+
+
+
