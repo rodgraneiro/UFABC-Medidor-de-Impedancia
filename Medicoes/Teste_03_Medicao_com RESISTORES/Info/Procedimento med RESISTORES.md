@@ -10,7 +10,7 @@ Os valores dos resistores medidos com o multímetro são de: 1.1R, 5.1R, 9.8R, 1
 54.8R, 99.5R. 219.8R, 295.8R, 497R, 667R, 987R, 1630R, 1934R, 2350R e zero (curto-circuito dos 
 terminais de excitação de corrente).
 
-![Circuito eletrônico do teste](Circuito_eletronico.jpg)
+![Circuito eletrônico do teste](esquema_eletronico_med_RESISTORES.jpg)
 
 Cada ponto da curva é a média trimada de mil medições efetuadas pelo MIE onde foram eliminadas
 o quarcentil superior e inferior das amostras. Os cálculos foram efetuados no Matlab através do código 
