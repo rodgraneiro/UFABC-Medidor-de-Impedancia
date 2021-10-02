@@ -15,19 +15,15 @@ terminais de excitação de corrente).
 Cada ponto da curva é a média trimada de mil medições efetuadas pelo MIE onde foram eliminadas
 o quarcentil superior e inferior das amostras. Os cálculos foram efetuados no Matlab através do código 
 /Codigo/SortMatlab_tst_new.m onde cada arquivo "tst_mil_FC_cal_Z_XXXXX_resis_7jun21_3new.txt" foi substituido nas
-linhas de código 2 e 3.
+linhas de código 2 e 3. A figura a seguir apresenta um exemplo da cálculo da média trimada.
 
 ![Exemplo de medição de resistividade de 100 Ohms on trimpot](ExemploMedRESISTOR.jpg)
 
-A curva de Impedância Multímetro vs Impedância MIE (/Info/Curva_Z_Fase_TRIMPOT) foi efetuada através 
+A curva de Impedância Multímetro vs Impedância MIE (/Info/curva_Z_fase_RESISTORES.JPG) foi efetuada através 
 do código em Matlab no arquivo /Codigo/Somente_RESISTORES.m e pode ser vista a seguir.
 
-![Impedância Multímetro vs Impedância MIE](Curva_Z_Fase_TRIMPOT.jpg) 
+![Impedância Multímetro vs Impedância MIE](curva_Z_fase_RESISTORES.jpg) 
 
 
-Trimpot utilizado:
-
-
-![TRIMPOT 3006P 103](trimpot3006P.jpg)
 
 
