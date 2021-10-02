@@ -1,10 +1,14 @@
 ## Medição da impedânia dos RESISTORES com o MIE.
 
-O arquivo /Dados/SoTRIMPOT.txt contém 26 pontos de medição da
-resistência do trimpot com valores de zero à 2500 Ohms variando em passos de 100 Ohms
+O arquivo /Dados/SoResistores.txt contém 16 pontos de medição de
+resistência - de resistores comerciais 5% de tolerância variando de zero à 2350 Ohms - 
 medidos com um multímetro digital e dos valores de impedância Z e fase medidas com o MIE conforme figura.
-Os valores de resistividade superiores a capacidade nominal do trimpot (1k) foram medidos
-com o auxílio de resistores soldados em série.
+OBs.: Foram efetuadas algumas assossiações em parlelo com os resistores para atingir o valor 
+de resistência desejado. 
+
+Os valores dos resistores medidos com o multímetro são de: 1.1R, 5.1R, 9.8R, 14.8R, 27.5R,
+54.8R, 99.5R. 219.8R, 295.8R, 497R, 667R, 987R, 1630R, 1934R, 2350R e zero (curto-circuito dos 
+terminais de excitação de corrente).
 
 ![Circuito eletrônico do teste](Circuito_eletronico.jpg)
 
