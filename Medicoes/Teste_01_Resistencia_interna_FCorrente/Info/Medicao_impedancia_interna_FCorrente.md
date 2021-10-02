@@ -1,4 +1,4 @@
-Medição Rsentinela com terminais em curto-circuito
+## Medição Rsentinela com terminais em curto-circuito
 
 A medição foi efetuada através do osciloscopio onde foi
 medida a queda de tensão no resistor sentinela com os 
