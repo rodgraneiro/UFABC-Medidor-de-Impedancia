@@ -28,7 +28,7 @@ Medição da tensão com osciloscópio:
 Em seguida for efetuada a medição com um resistor de carga de valor medido pelo multímetro de 54.2R conectado
 aos terminais de excitação de corrente conforme apresentado na figura a seguir:
 
-
+![](Med_Rsent_Rload_54_8R.jpg)
 
 
 
