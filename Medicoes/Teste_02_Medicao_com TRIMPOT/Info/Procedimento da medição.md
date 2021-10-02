@@ -1,7 +1,7 @@
 ## Medição da impedânia de um trimpot tipo 3006P 103 (1K)com o MIE.
 
 O arquivo /Dados/SoTRIMPOT.txt contém 26 pontos de medição da
-resistência do trimpot com valores de zero à 2500 Ohms variando em passos de 100 Ohms
+resistência do trimpot - com valores de zero à 2500 Ohms variando em passos de 100 Ohms -
 medidos com um multímetro digital e dos valores de impedância Z e fase medidas com o MIE conforme figura.
 Os valores de resistividade superiores a capacidade nominal do trimpot (1k) foram medidos
 com o auxílio de resistores soldados em série.
