@@ -5,6 +5,7 @@ resistência do trimpot com valores de zero à 2500 Ohms variando em passos de 1
 medidos com um multímetro digital e dos valores de impedância Z e fase medidas com o MIE conforme figura.
 Os valores de resistividade superiores a capacidade nominal do trimpot (1k) foram medidos
 com o auxílio de resistores soldados em série.
+A Fonte de Corrente gera uma corrente senoidal de 2mVpp (pico a pico) com frequência de 31250 Hz. 
 
 ![Circuito eletrônico do teste](Circuito_eletronico.jpg)
 
