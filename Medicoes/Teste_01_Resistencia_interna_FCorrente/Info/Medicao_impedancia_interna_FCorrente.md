@@ -52,5 +52,11 @@ levantamento das curvas de superfície 3D (Impedância Z e fase), onde cada resi
 seguintes capacitores capacitores:1.023uF, 470nF, 336.6nF, 226nF, 101.2nF, 47,5nF, 10.31nF
 4.2nF, 3.2nF 2.82nF e 2.53nF.
 
+![](Tabela_Rs_vs_Rload.jpg)
 
+Tabela Rsentinela mais Rload
+
+A seguir temos o gráfico de tensão/corrente  vs Resistência Total
+
+![](Grafi_Tabela_Rs_vs_Rload.jpg)
 
