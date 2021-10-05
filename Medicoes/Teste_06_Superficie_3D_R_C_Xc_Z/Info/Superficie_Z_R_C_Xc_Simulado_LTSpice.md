@@ -32,7 +32,8 @@ FIGURA 4 - Medição MIE impedância Fase (R//C)
 Os dados para cada associação R//C foram simulados conforme circuito eletrônico apresentado na figura 5 por meio do código
 /Codigo/Simu_Z_LTSpice_R_paral_C_freq_31250Hz.asc.
 Os dados de amplitude Z e fase foram anotados manualmente e armazenados no arquivo excel /Dados/Dados_simulacao_Z_LTSpice_R_paral_C.xls, e
-em seguida, os mesmos dados foram introduzidos no código do Matlab no arquivo /Codigo/Plot_R_C_XC_Fase.m para gerar o gráfico de superfície simulado.
+em seguida, os mesmos dados foram introduzidos no código do Matlab no arquivo /Codigo/Plot_R_C_XC_Fase.m para gerar os gráficos de superfície simulados 
+nas figuras 3 e 4.
 
 O cursor 1 apresenta o seguinte cálculo representando a impedância sobre o resistor sentinela:
 
