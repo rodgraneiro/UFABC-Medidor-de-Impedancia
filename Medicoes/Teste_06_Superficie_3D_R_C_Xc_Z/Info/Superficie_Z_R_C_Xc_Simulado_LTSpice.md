@@ -56,4 +56,4 @@ As medições foram efetuadas através do equipamento MIE, cujo código arduino 
 em conjunto com o software Processing I3, através do arquivo Codigo/xxxxxxxxx instalado em um notebook. Cada associação de resistor e capacitor, foram soldade em paralelo
 e conectados aos terminais de excitação do MIE com cabos BANANA-JACARÉ.
 
-Os dados das medições utlizados para montar a representação das superfícies da Impedância/Fase vs Resistência vs Capacitância (figs. 3 e 4) estão armazenados no arquivo /Dados/xxxxxx.txt.
+Os dados das medições utlizadas para montar os gráficos de superfícies da Impedância/Fase vs Resistência vs Capacitância (figs. 3 e 4) estão armazenados no arquivo /Dados/xxxxxx.txt.
