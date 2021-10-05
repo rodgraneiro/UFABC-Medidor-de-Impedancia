@@ -1,4 +1,4 @@
-# Estudo do gráfico de superfície de ZLoad (R//C) com simulado no LTSpice
+# Estudo do gráfico de superfície de ZLoad (R//C) com simulado no LTSpice vs medido no MIE
 
 Nesse estudo foram simulados todas as associações em paralelo entre os resistores e capacitores utilizados na medição
 real com o MIE. O objetivo dessa simulação é de determinar o comportamento esperado do circuito eletrônico 
