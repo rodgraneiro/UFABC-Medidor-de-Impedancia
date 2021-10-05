@@ -52,6 +52,8 @@ FIGURA 5 - Exemplo de simulação LTSpice para impedância de carga R//C.
 
 ## Procedimento de Medição com o MIE.
 
+# SortMatlab_tst_new
+
 As medições foram efetuadas através do equipamento MIE, cujo código arduino encontra-se no aquivo \UFABC-Medidor-de-Impedancia\( CanalMestre.ino e CanalSlave.ino),
 em conjunto com o software Processing I3, através do arquivo Codigo/xxxxxxxxx instalado em um notebook. Cada associação de resistor e capacitor, foram soldade em paralelo
 e conectados aos terminais de excitação do MIE com cabos BANANA-JACARÉ.
