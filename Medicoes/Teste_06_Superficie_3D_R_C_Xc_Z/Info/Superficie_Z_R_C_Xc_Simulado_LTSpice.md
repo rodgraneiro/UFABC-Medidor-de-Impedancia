@@ -4,7 +4,7 @@ Nesse estudo foram simulados todas as associações em paralelo entre os resisto
 real com o MIE. O objetivo dessa simulação é de determinar o comportamento esperado do circuito eletrônico 
 para comparação com a medição efetuada com componentes reais no MIE. O gráfico de simulação pode ser reproduzido através do
 arquivo /Codigo/Surf_Z_Fase_RC_paral_simulado_LTSpice.m (figs. 1 e 2), e o gráfico realizado com o MIE no arquivo /Codigo/Plot_R_C_XC_Fase.m (figs. 3 e 4).
-Cada ponto dos gráficos da medição representam a média trimada de mil medições efetuadas com o MIE para cada associação em paralelo de resistor e capacitor.
+Cada ponto dos gráficos da medição representam a média trimada de mil medições efetuadas com o MIE para cada associação em paralelo entre o resistor e capacitor.
 
 Os resistores são: 1.1R, 5.1R, 9.8R, 14.8R, 27.5R, 54.8R, 99.5R, 219.8R, 297R, 497R, 667R, 1630R, 1941R e 2350R.
 
