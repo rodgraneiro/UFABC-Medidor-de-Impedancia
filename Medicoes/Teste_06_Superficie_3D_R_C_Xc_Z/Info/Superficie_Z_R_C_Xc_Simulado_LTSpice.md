@@ -52,9 +52,8 @@ FIGURA 5 - Exemplo de simulação LTSpice para impedância de carga R//C.
 
 ## Procedimento de Medição com o MIE.
 
-# SortMatlab_tst_new
 
 As medições foram efetuadas através do equipamento MIE, cujo código arduino encontra-se no aquivo \UFABC-Medidor-de-Impedancia\( CanalMestre.ino e CanalSlave.ino),
 em conjunto com o software Processing I3, através do arquivo Codigo/graficoMIE_5.pde instalado em um notebook. Cada associação de resistor e capacitor, foram soldados em paralelo e conectados aos terminais de excitação do MIE com cabos BANANA-JACARÉ.
 
-Os dados das medições utlizadas para montar os gráficos de superfícies da Impedância/Fase vs Resistência vs Capacitância (figs. 3 e 4) estão armazenados no arquivo /Dados/MEDxx_xxx_R_xxxnF_Capacitor_AAAAMMDD.txt e a média trimada desses arquivos foi caculada através so arquivo /Codigo/SortMatlab_tst_new.m
+Os dados das medições utlizadas para montar os gráficos de superfícies da Impedância/Fase vs Resistência vs Capacitância (figs. 3 e 4) estão armazenados nos arquivos /Dados/MEDxx_xxx_R_xxxnF_Capacitor_AAAAMMDD.txt e a média trimada desses arquivos foi caculada através so arquivo /Codigo/SortMatlab_tst_new.m
