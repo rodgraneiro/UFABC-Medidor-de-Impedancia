@@ -25,3 +25,26 @@ FIGURA 3 - Medição MIE impedância Z (R//C)
 FIGURA 4 - Medição MIE impedância Fase (R//C)
 
 ![](Medicao_MIE_R_C_Fase.jpg) 
+
+
+## Procedimento de Simulação no LTSpice
+
+Os dados para cada associação R//C foram simulados conforme circuito eletrônico apresentado na figura 5 por meio do código
+/Codigo/Simu_Z_LTSpice_R_paral_C_freq_31250Hz.asc.
+Os dados de amplitude Z e fase foram anotados manualmente e armazenados no arquivo excel /Dados/Dados_simulacao_Z_LTSpice_R_paral_C.xls, e
+em seguida, os mesmos dados foram introduzidos no código do Matlad do arquivo /Codigo/Plot_R_C_XC_Fase.m para gerar o gráfico de superfície simulado.
+
+O cursor 1 apresenta o seguinte cálculo representando a impedância sobre o resistor sentinela:
+
+((V001)/I(Rsent))- ((V002)/I(Rsent))
+
+Enquanto que o cursor 2 representa a impedância da carga sobre o resistor em paralelo com capacitor através da o seguinte cálculo:
+
+((V002)/I(Rsent))
+
+A figura 5 apresenta um exemplo dessa simulação.
+
+FIGURA 5 - Exemplo de simulação LTSpice para impedância de carga R//C.
+
+![](ExemploMedZloadLTSpice.jpg)
+
