@@ -461,7 +461,7 @@ void loop() {
           }
           
           
-          amplitude = 2*sqrt(sq(soma_seno)+sq(soma_cosseno))/2; // Cálculo da amplitude
+          amplitude = 2*sqrt(sq(soma_seno)+sq(soma_cosseno))/1; // Cálculo da amplitude
           fase = atan2(soma_cosseno , soma_seno)*(180/M_PI);    // cálculo da fase
 
           if(fase < 0){ 
@@ -609,7 +609,7 @@ void HabilitaDRDY(){
 void leADC() {
     detachInterrupt(digitalPinToInterrupt(DRDY));
     long i = 0;  
-        for(i = 0; i <= 54; i++){
+        for(i = 0; i <= 27; i++){
             asm("nop \n");
         }  
         while(contadorAmostra < Nr_de_Amostras){                              

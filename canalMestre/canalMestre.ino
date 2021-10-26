@@ -499,7 +499,7 @@ void loop() {
                 soma_cosseno += (float)converte_volts[ptos_periodo]*(float)piEc[coluna_piE];
                 soma_offset += (float)converte_volts[ptos_periodo]*(float)piEdc[coluna_piE];
              }
-                amplitude = 2*sqrt(sq(soma_seno)+sq(soma_cosseno))/2;    // Cálculo da amplitude
+                amplitude = 2*sqrt(sq(soma_seno)+sq(soma_cosseno))/1;    // Cálculo da amplitude
                 fase = atan2(soma_cosseno , soma_seno)*(180/M_PI);       // Cálculo da fase
 
             if(fase < 0){ 
@@ -719,7 +719,7 @@ void leADC() {
     
     long i = 0;
                                           //for(i = 0; i <=3; i++){                                                   // cal só para Z
-        for(i = 0; i < 22; i++){                                                   // Delay para calibração do sincronismos
+        for(i = 0; i < 5; i++){                                                   // Delay para calibração do sincronismos
             asm("nop \n");
              
         }
