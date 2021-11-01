@@ -609,7 +609,7 @@ void HabilitaDRDY(){
 void leADC() {
     detachInterrupt(digitalPinToInterrupt(DRDY));
     long i = 0;  
-        for(i = 0; i <= 27; i++){
+        for(i = 0; i <= 35; i++){
             asm("nop \n");
         }  
         while(contadorAmostra < Nr_de_Amostras){                              
