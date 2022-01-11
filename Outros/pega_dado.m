@@ -1,4 +1,4 @@
-function [modulo_mean, fase_mean, modulo_sort2, fase_sort2, modulo_teorico, fase_teorico, Z] = pega_dado(nome, R, C)
+function [Zmean, modulo_mean, fase_mean, modulo_sort2, fase_sort2, modulo_teorico, fase_teorico, Z] = pega_dado(nome, R, C)
     % le arquivo
     raw = load(nome);
     modulo = raw(:,2);
@@ -35,4 +35,4 @@ function [modulo_mean, fase_mean, modulo_sort2, fase_sort2, modulo_teorico, fase
     Z = 1/( (1/Zr) + (1/Zc) );
     modulo_teorico = abs(Z);
     fase_teorico = angle(Z)*180/pi;
-endfunction
+end
