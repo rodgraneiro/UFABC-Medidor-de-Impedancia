@@ -4,7 +4,7 @@ clear all; close all; clc; more off;
 nomes_medidas;
 
 
-for n = 1:20
+for n = 1:21
     [Zmean, modulo_mean, fase_mean, modulo1, fase1, modulo_teorico, fase_teorico, Z] = ...
              pega_dado(medidas(n).nome, medidas(n).R, medidas(n).C);
     Zampl_med(n) = modulo_mean;
@@ -27,6 +27,7 @@ title('Amplitude');
 ylabel('|Z| medido [ohm]');
 xlabel('|Z| teorico [ohm]');
 hold on; plot([0 1000], [0 1000], ':r');
+plot([0 1000], [-28 1000-28], ':g');
 set(gca, 'linewidth', 4, 'fontsize', 20)
 subplot(2,2,2);
 plot(Zampl_teo, Zampl_med-Zampl_teo, 'o');
