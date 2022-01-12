@@ -91,7 +91,7 @@ byte fase_byte[4];
 float fase_float;
 byte offset_byte[4]; 
 float offset_float;
-float fator_conv_volts = 2.8873e-7;
+float fator_conv_volts = 3.97725e-7;
 unsigned long tempo_inicio = millis();
 unsigned long tempo_exec[100] = {0};
 

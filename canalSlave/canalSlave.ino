@@ -16,7 +16,7 @@ int habilitaMasterState = 0;  // variable for reading the pushbutton status
 int StartState = 0;           // variable for reading the pushbutton status
 
 #define M_PI 3.141592653589793238462643
-#define Rsentinela 1000
+#define Rsentinela 55.1
 #define NOP() asm("nop \n")
 
 //********************CONSTANTES E VARIÁVEIS*********************************
@@ -44,7 +44,7 @@ volatile int contador_aux_2 = 0;
 volatile int contador_aux_3 = 0;
 
 
-float fator_conv_corrente = 2.8873e-7;
+float fator_conv_corrente = 1.299285e-7;
 float converte_volts[20];
 unsigned long tempo_inicio = millis();
 unsigned long tempo_exec[20] = {0};
@@ -609,7 +609,7 @@ void HabilitaDRDY(){
 void leADC() {
     detachInterrupt(digitalPinToInterrupt(DRDY));
     long i = 0;  
-        for(i = 0; i <= 35; i++){
+        for(i = 0; i <= 31; i++){
             asm("nop \n");
         }  
         while(contadorAmostra < Nr_de_Amostras){                              
