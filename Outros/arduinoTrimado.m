@@ -1,5 +1,5 @@
 clear all; close all; clc; more off; 
-raw = importdata('arduinoTrimado_edit.txt');    %load(file.txt);
+raw = importdata('testetrim4.txt');    %load(file.txt);
 
 unSort_modulo = raw(2:101 ,1);                  %vetor modulo Z un-sorted
 unSort_fase = raw(2:101, 2);                    %vetor fase Z un-sorted

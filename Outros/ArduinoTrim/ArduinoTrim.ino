@@ -22,8 +22,10 @@ void setup() {                                                    // Inicia comu
 }
 
 void loop() {
-SerialUSB.println("Un-sorted Array: ");                           //Gerar vetores randomicamente
-  for (int i = 0; i < arraySize ; i++){
+SerialUSB.print(1);                                       
+SerialUSB.print("  ");
+SerialUSB.println(1);
+  for (int i = 0; i < arraySize ; i++){                           //Gerar vetores randomicamente
     //myArray[i] = i;
     myArray[i] = random(0, 10000)*(0.01);                         // Vetor Z randomico
     myPhase[i] = random(-1000, 1000)*(0.01);                      // Vetor fase randomico
@@ -45,7 +47,9 @@ SerialUSB.println("Un-sorted Array: ");                           //Gerar vetore
          }
       }
       
-SerialUSB.println("Primeiro quartil: ");                                         
+SerialUSB.print(2);                                       
+SerialUSB.print("  ");
+SerialUSB.println(2);                                      
       for ( int x = quartil; x < (arraySize - quartil); x++){    //Remove 1o quartil das extremidades superior e inferior 
         Z_trimed[x - quartil] = myArray[x];                      //Vetor 1o quartil Z trimado 
         Ph_trimed[x - quartil] = myPhase[x];                     //Vetor 10 quartil fase
@@ -67,7 +71,9 @@ SerialUSB.println("Primeiro quartil: ");
          }
 
 
- SerialUSB.println("Segudo quartil: "); 
+SerialUSB.print(3);                                       
+SerialUSB.print("  ");
+SerialUSB.println(3);
     for ( int x = quartil; x < (Primeiroquartil - quartil); x++){ //Remove 2o quartil das extremidades superior e inferior 
         Z2_trimed[x - quartil] = Z_trimed[x];                     //Vetor 2o quartil do modulo Z
         Ph2_trimed[x - quartil] = Ph_trimed[x];                   //Vetor 20 quartil da fase trimada
@@ -87,15 +93,22 @@ SerialUSB.println("Primeiro quartil: ");
   modulo_Z = sqrt(sq(real_part)+sq(imag_part))/1;                               // Converte retangular para polar - modulo Z
   fase_Z = atan2(imag_part , real_part)*(180/M_PI);    // cálculo da fase       //Fase em graus
           
- SerialUSB.println("Sorted Array: ");                                           // Imprime Z e fase sorted
-    printArray();
- 
-SerialUSB.println("RETANGULAR");                                                // Print retangular
+SerialUSB.print(4);                                       
+SerialUSB.print("  ");
+SerialUSB.println(4);                                                           // Imprime Z e fase sorted
+        printArray();
+
+
+SerialUSB.print(5);                                       
+SerialUSB.print("  ");
+SerialUSB.println(5);
         SerialUSB.print(real_part);
         SerialUSB.print(" ");
         SerialUSB.println(imag_part);
 
-SerialUSB.println("POLAR");                                                     // Print Polar
+SerialUSB.print(6);                                                         // Print Polar
+SerialUSB.print("  ");
+SerialUSB.println(6);
         SerialUSB.print(modulo_Z);
         SerialUSB.print(" ");
         SerialUSB.println(fase_Z);
