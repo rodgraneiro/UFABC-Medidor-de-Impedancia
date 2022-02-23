@@ -2,7 +2,7 @@
 
 #include "mysort.h"
 
-//#define DEBUGSERIAL
+#define DEBUGSERIAL
 
 
 const int arraySize = 100;                                        //Array size
@@ -29,7 +29,7 @@ void loop() {
 
     gera_vetor_randomico(myArray, myPhase, arraySize );
     
-    #ifdef DEGUGSERIAL
+    #ifdef DEBUGSERIAL
         SerialUSB.print(1);                                       
         SerialUSB.print("  ");
         SerialUSB.println(1);
@@ -42,7 +42,7 @@ void loop() {
 
     ordena_vetores(myArray, myPhase, arraySize);
 
-    #ifdef DEGUGSERIAL
+    #ifdef DEBUGSERIAL
         SerialUSB.print(2);                                       
         SerialUSB.print("  ");
         SerialUSB.println(2);
@@ -50,7 +50,7 @@ void loop() {
 
     trima_array(myArray, myPhase, Z_trimed, Ph_trimed, arraySize, quartil);
 
-    #ifdef DEGUGSERIAL
+    #ifdef DEBUGSERIAL
         for ( int x = quartil; x < (arraySize - quartil); x++){    //Remove 1o quartil das extremidades superior e inferior 
             SerialUSB.print(Z_trimed[x - quartil]);                  //Imprime Z trimado e fase sorted do 1o quartil
             SerialUSB.print(" ");
@@ -60,7 +60,7 @@ void loop() {
 
     ordena_vetores(Ph_trimed, Z_trimed, Primeiroquartil);
 
-    #ifdef DEGUGSERIAL
+    #ifdef DEBUGSERIAL
         SerialUSB.print(3);                                       
         SerialUSB.print("  ");
         SerialUSB.println(3);    
@@ -68,7 +68,7 @@ void loop() {
 
     trima_array(Z_trimed, Ph_trimed, Z2_trimed, Ph2_trimed, Primeiroquartil, quartil);
 
-    #ifdef DEGUGSERIAL
+    #ifdef DEBUGSERIAL
         for ( int x = quartil; x < (Primeiroquartil - quartil); x++){ //Remove 2o quartil das extremidades superior e inferior 
             SerialUSB.print(Z2_trimed[x - quartil]);                  //Imprime Z e fase trimada  sorted do 2o quartil
             SerialUSB.print(" ");
@@ -78,7 +78,7 @@ void loop() {
 
     media_polar(Z2_trimed, Ph2_trimed, Segundoquartil, &modulo_Z, &fase_Z);
 
-    #ifdef DEGUGSERIAL
+    #ifdef DEBUGSERIAL
         SerialUSB.print(4);                                       
         SerialUSB.print("  ");
         SerialUSB.println(4);                                                           // Imprime Z e fase sorted
@@ -94,7 +94,8 @@ void loop() {
         SerialUSB.println(fase_Z);
     #endif
 
-    delay(7000);                                                                  //delay 7s
+    delay(2000);                                                                  //delay 7s
+     SerialUSB.print("banana");
 }
 
 /*void loop() {
