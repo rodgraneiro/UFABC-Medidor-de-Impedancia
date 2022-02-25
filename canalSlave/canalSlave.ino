@@ -15,7 +15,7 @@ const int Start = 10;         // the number of the pushbutton pin
 int habilitaMasterState = 0;  // variable for reading the pushbutton status
 int StartState = 0;           // variable for reading the pushbutton status
 
-#define M_PI 3.141592653589793238462643
+#define M_PI 3.14159265358979323846264
 #define Rsentinela 55.1
 #define NOP() asm("nop \n")
 
