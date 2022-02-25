@@ -21,7 +21,9 @@ int StartState = 0;           // variable for reading the pushbutton status
 
 //********************CONSTANTES E VARIÁVEIS*********************************
 
-#include "MathHelpers.h" 
+#include "MathHelpers.h"
+#include "myFunctions.h"
+#include "inicialization.h"   
 #include <Wire.h>
 
 const int CS = 25;    // Port D0 Arduino -> Chip Select AD7762 pin 40
@@ -84,23 +86,23 @@ unsigned int aux;
   
 
 // Bus de Dados D0 à D15
-const int D0 = 34; //Port C2 Arduino DUE
-const int D1 = 35; //Port C3
-const int D2 = 36; //Port C4
-const int D3 = 37; //Port C5
-const int D4 = 38; //Port C6
-const int D5 = 39; //Port C7
-const int D6 = 40; //Port C8
-const int D7 = 41; //Port C9
+int D0 = 34; //Port C2 Arduino DUE
+int D1 = 35; //Port C3
+int D2 = 36; //Port C4
+int D3 = 37; //Port C5
+int D4 = 38; //Port C6
+int D5 = 39; //Port C7
+int D6 = 40; //Port C8
+int D7 = 41; //Port C9
 //*************
-const int D8 = 51; //Port C12
-const int D9 = 50; //Port C13
-const int D10 = 49; //Port C14
-const int D11 = 48; //Port C15
-const int D12 = 47; //Port C16
-const int D13 = 46; //Port C17
-const int D14 = 45; //Port C18
-const int D15 = 44; //Port  C19
+int D8 = 51; //Port C12
+int D9 = 50; //Port C13
+int D10 = 49; //Port C14
+int D11 = 48; //Port C15
+int D12 = 47; //Port C16
+int D13 = 46; //Port C17
+int D14 = 45; //Port C18
+int D15 = 44; //Port  C19
 
 //DISPLAY
 
@@ -122,10 +124,12 @@ void setup() {   //*********************INÍCIO SETUP***************************
           pinMode(DRDY, INPUT);      // Port A14 do Arduino Due
           
           //
-          digitalWrite(RESET, HIGH);
+          /*digitalWrite(RESET, HIGH);
           digitalWrite(CS, HIGH);
           digitalWrite(RDWR, HIGH);
-          
+          */
+          unselectADC(RESET, CS, RDWR);  // Desabilita ADC 7762
+          /*
           pinMode(D0, OUTPUT);
           pinMode(D1, OUTPUT);
           pinMode(D2, OUTPUT);
@@ -142,14 +146,17 @@ void setup() {   //*********************INÍCIO SETUP***************************
           pinMode(D13, OUTPUT);
           pinMode(D14, OUTPUT);
           pinMode(D15, OUTPUT);
-    
-          // RESET inicial      **************************
+          */
+
+          busOutputADC(D0, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15); // Configura bus de dados como output   
+          /*// RESET inicial      **************************
           digitalWrite(RESET, LOW);// reset
           delay(100);
           digitalWrite(RESET, HIGH);// reset
           delay(100);
           //************************************************
-    
+          */
+          resetADC(RESET);                                                                    //reset ADC7762
     
     for (int contadorSetup = 0; contadorSetup < 10; contadorSetup ++) { // Laço setup  
     
