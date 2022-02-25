@@ -10,7 +10,7 @@
 const int buttonPin8 = 8;     // Número do pino do Arduino para o pushbutton
 int buttonState8 = 0;         // Variável p/ armazenar status  do pushbutton
 
-#define M_PI 3.141592653589793238462643
+#define M_PI 3.1415926535897932384626
 #define NOP() asm("nop \n")
 //********************CONSTANTES E VARIÁVEIS*********************************
 
