@@ -19,4 +19,38 @@ void busOutputADC(int D0, int D1, int D2, int D3, int D4, int D5, int D6, int D7
           pinMode(D13, OUTPUT);               //D13 pino 46; //Port C17
           pinMode(D14, OUTPUT);               //D14 pino 45; //Port C18
           pinMode(D15, OUTPUT);               //D15 pino44; //Port  C19
+
+          delay(100);
 }
+
+void zeraOutputBusDados(int D0, int D1, int D2, int D3, int D4, int D5, int D6, int D7, int D8, int D9, int D10, int D11, int D12, int D13, int D14, int D15){
+          delay(100);
+          digitalWrite(D0, LOW);              //Zerar output
+          digitalWrite(D1, LOW);
+          digitalWrite(D2, LOW);
+          digitalWrite(D3, LOW);
+          digitalWrite(D4, LOW);
+          digitalWrite(D5, LOW);
+          digitalWrite(D6, LOW);
+          digitalWrite(D7, LOW);
+          digitalWrite(D8, LOW);
+          digitalWrite(D9, LOW);
+          digitalWrite(D10, LOW);
+          digitalWrite(D11, LOW);
+          digitalWrite(D12, LOW);
+          digitalWrite(D13, LOW);
+          digitalWrite(D14, LOW);
+          digitalWrite(D15, LOW);
+          delay(100);
+}
+
+void writeBusADC(long data){        // escreve endereço ou dado na saída
+          REG_PIOC_SODR = data;
+          delay(10);
+}
+
+void zeraBusADC(long data){        // zera Bus antes de escrever um novo dado na saída
+          REG_PIOC_CODR = data;
+          delay(10);
+}
+          

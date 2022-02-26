@@ -155,12 +155,15 @@ void setup() {   //*********************INÍCIO SETUP***************************
           digitalWrite(RESET, HIGH);// reset
           delay(100);
           //************************************************
-          */
-          resetADC(RESET);                                                                    //reset ADC7762
+          */      //finc ok
+                                                                            
+          pulsoPinoADC(RESET, 100);             //reset ADC7762
     
     for (int contadorSetup = 0; contadorSetup < 10; contadorSetup ++) { // Laço setup  
-    
+
+          zeraOutputBusDados(D0, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15); // Zerar saída bus de dados  
           // Envia Endereço Registrador2 p/ Bus de Dados**************************
+          /*
           digitalWrite(D0, LOW); //Endereço Registrador 2  0x0002
           digitalWrite(D1, HIGH);
           digitalWrite(D2, LOW);
@@ -177,14 +180,17 @@ void setup() {   //*********************INÍCIO SETUP***************************
           digitalWrite(D13, LOW);
           digitalWrite(D14, LOW);
           digitalWrite(D15, LOW);
-        
+          */    // func ok
+          writeBusADC(0x00000008);                      // ESCREVE Endereço Registrador2
           //******************************************
           // ESCREVE Endereço Registrador2
           //*********************************************
+          /*
           delay(10);
           digitalWrite(CS, LOW);  // Habilita Chip Select do AD7762 para escrita
           digitalWrite(CS, HIGH); // desabilita Chip Select do AD7762 
-          
+          */  //func OK
+          pulsoPinoADC(CS, 10);          // Habilita pulso Chip Select do AD7762 para escrita
           
           //*****Envia Palavra de controle do Registrador2 p/ Bus de Dados*****
           // set CDIV = 0 metade MCLk
@@ -192,7 +198,8 @@ void setup() {   //*********************INÍCIO SETUP***************************
           // set PD = 0 habilita CI (Power ON)
           // set LPWR = 0 seta power no modo normal
           //******************************************************
-        
+          zeraBusADC(0x00000008);                   //zera bus de dados
+          /*  
           digitalWrite(D0, LOW); //DIPD
           digitalWrite(D1, HIGH);// "1"
           digitalWrite(D2, LOW);//LPWR
@@ -209,15 +216,26 @@ void setup() {   //*********************INÍCIO SETUP***************************
           digitalWrite(D13, LOW);
           digitalWrite(D14, LOW);
           digitalWrite(D15, LOW);
+          */ //func ok
+
+          
+          //*****Envia Palavra de controle do Registrador2 p/ Bus de Dados*****
+          // set CDIV = 0 metade MCLk
+          // set DIPD = 0 habilita Dif Amp
+          // set PD = 0 habilita CI (Power ON)
+          // set LPWR = 0 seta power no modo normal
+          //******************************************************
+          
+          writeBusADC(0x00000248);                      // ESCREVE Palavra de controle do Registrador2
           
           //******************************************
           // ESCREVE palavra de controle no Registrador2
           //*********************************************                
-          delay(10);
+          /*delay(10);
           digitalWrite(CS, LOW);
           digitalWrite(CS, HIGH);
-        
-        
+          */ //func ok
+          pulsoPinoADC(CS, 10);          // Habilita pulso Chip Select do AD7762 para escrita
         
           //*********************************************************
           // ESCREVE END REG 1 0X0001
