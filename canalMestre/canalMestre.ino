@@ -270,8 +270,8 @@ void setup() {   //*********************INÍCIO SETUP***************************
               //***********************************************
               // ESCREVE WORD REG 1 0X001D
               // DEC2, DEC1, DEC0 = 0X4 PARA DECIMACAO 16X
-              digitalWrite(D0, HIGH);      // DEC0 = 1 
-              digitalWrite(D1, LOW);     // DEC1 = 0 
+              digitalWrite(D0, LOW);      // DEC0 = 1 
+              digitalWrite(D1, HIGH);     // DEC1 = 0 
               digitalWrite(D2, LOW);      // DEC2 = 1
               digitalWrite(D3, HIGH);     // tem que ser 1 (high)
               digitalWrite(D4, HIGH);     // BYP F3
