@@ -1,7 +1,23 @@
 
+void busColtrolIni(int CS, int RDWR, int RESET, int DRDY, int buttonPin8, int habilitaMaster){
+// Configuração de Ports para iniciar AD7762 
+          pinMode(CS, OUTPUT);                // Port D0 do Arduino Due
+          pinMode(RDWR, OUTPUT);              // Port D1
+          pinMode(RESET, OUTPUT);             // Port D2
+          pinMode(DRDY, INPUT);               // Port A14 do Arduino Due
+
+          pinMode(buttonPin8, INPUT_PULLUP);  // initialize the pushbutton pin as an input:
+          pinMode(habilitaMaster, OUTPUT);    // initialize the pushbutton pin as an input:
+          delay(10);                          // espera estabilização da porta
+          digitalWrite(habilitaMaster, LOW);  // habilita Master:
+}
+
+void delayFunc(int temp){
+          delay(temp);
+}
 
 void busOutputADC(int D0, int D1, int D2, int D3, int D4, int D5, int D6, int D7, int D8, int D9, int D10, int D11, int D12, int D13, int D14, int D15){
-
+          delay(10);
                                               // Configura bus de dados como output   (Bus de Dados D0 à D15) 
           pinMode(D0, OUTPUT);                //D0 pino 34 Port C2 Arduino DUE
           pinMode(D1, OUTPUT);                //D1 pino 35; //Port C3
@@ -20,11 +36,11 @@ void busOutputADC(int D0, int D1, int D2, int D3, int D4, int D5, int D6, int D7
           pinMode(D14, OUTPUT);               //D14 pino 45; //Port C18
           pinMode(D15, OUTPUT);               //D15 pino44; //Port  C19
 
-          delay(100);
+          //delay(100);
 }
 
 void busInputADC(int D0, int D1, int D2, int D3, int D4, int D5, int D6, int D7, int D8, int D9, int D10, int D11, int D12, int D13, int D14, int D15){
-
+          delay(10);
                                               // Configura bus de dados como output   (Bus de Dados D0 à D15) 
           pinMode(D0, INPUT);                //D0 pino 34 Port C2 Arduino DUE
           pinMode(D1, INPUT);                //D1 pino 35; //Port C3
@@ -43,11 +59,11 @@ void busInputADC(int D0, int D1, int D2, int D3, int D4, int D5, int D6, int D7,
           pinMode(D14, INPUT);               //D14 pino 45; //Port C18
           pinMode(D15, INPUT);               //D15 pino44; //Port  C19
 
-          delay(100);
+          //delay(100);
 }
 
 void zeraOutputBusDados(int D0, int D1, int D2, int D3, int D4, int D5, int D6, int D7, int D8, int D9, int D10, int D11, int D12, int D13, int D14, int D15){
-          delay(100);
+          delay(10);
           digitalWrite(D0, LOW);              //Zerar output
           digitalWrite(D1, LOW);
           digitalWrite(D2, LOW);
@@ -64,7 +80,7 @@ void zeraOutputBusDados(int D0, int D1, int D2, int D3, int D4, int D5, int D6, 
           digitalWrite(D13, LOW);
           digitalWrite(D14, LOW);
           digitalWrite(D15, LOW);
-          delay(100);
+          //delay(100);
 }
 
 void writeBusADC(long data){        // escreve endereço ou dado na saída
