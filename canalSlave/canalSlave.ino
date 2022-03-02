@@ -15,7 +15,7 @@ const int Start = 10;         // the number of the pushbutton pin
 int habilitaMasterState = 0;  // variable for reading the pushbutton status
 int StartState = 0;           // variable for reading the pushbutton status
 
-#define M_PI 3.141592653589793238462643
+//#define M_PI 3.141592653589793238462643
 //#define Rsentinela 55.1
 #define NOP() asm("nop \n")
 
@@ -31,10 +31,13 @@ const int RESET = 27; // Port D2 Arduino -> Reset AD7762 pin 37
 const int DRDY = 23;  // Port A14 Arduino -> Data Ready Output AD7762 pin 38
 //const int DRDY = 14;  // Port D4 Arduino -> Data Ready Output AD7762 pin 38
 volatile int Nr_de_Amostras = 20;
+int ptos_por_periodo = 10;
+int Nr_de_periodos = Nr_de_Amostras/ptos_por_periodo;
+int ptos_periodo = 0;
 volatile uint32_t vetor_Amostra[20] = {0};
 volatile uint32_t vetor_segunda_palavra[20] = {0};
-    //volatile uint32_t sinal_negativo = 0;
-    //volatile uint32_t semiciclo_neg = 0;
+volatile float converte_volts[20];
+  
 volatile uint32_t semiciclo_pos = 0;
 volatile uint32_t low8 = 0;
 volatile uint32_t low24 = 0;
@@ -42,42 +45,24 @@ volatile int contadorSetup = 0;
 volatile int contadorAmostra = 0;
 volatile int contador_aux_1 = 0;
 volatile int contador_aux_2 = 0;
-volatile int contador_aux_3 = 0;
+int contador_aux_3 = 0;
+float soma_seno = 0;
+float soma_cosseno = 0;
+float soma_offset = 0;
 
 float Rsentinela = 55.1;
 float fator_conv_corrente = 1.299285e-7;
-float converte_volts[20];
 unsigned long tempo_inicio = millis();
 unsigned long tempo_exec[20] = {0};
 long Nr_medicao = 0;
 
 
-int ptos_periodo = 0;
 int coluna_piE = 0;
-//float cDC = 0;
-float soma_offset = 0;
 volatile float offsetTOTAL = 0;
-//float cDCbTOTAL = 0;
 float amplitude = 0;
 volatile float ampTOTAL = 0;
 float fase = 0;
 volatile float faseTOTAL = 0;
-
-
-
-//*****************************Matriz pseudo inversa 10 ptos excitação 31,25kHz - Sample Rate 312,5kHz
-float piEs[] = {0.117557050458495, 0.190211303259031, 0.190211303259031, 0.117557050458495, 2.44929359829470e-17, -0.117557050458495, -0.190211303259031, -0.190211303259031, -0.117557050458495, -4.89858719658942e-17};
-float piEc[] = {0.161803398874990, 0.0618033988749894, -0.0618033988749895, -0.161803398874989, -0.200000000000000, -0.161803398874990, -0.0618033988749896, 0.0618033988749895, 0.161803398874990, 0.200000000000000};
-float piEdc[] = {0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000};
-
-
-//*****************************Matriz pseudo inversa 10 ptos excitação 125kHz - Sample Rate 625kHz
-//float piEs[] = {0,  0.190211303259031, 0.117557050458495, -0.117557050458495,  -0.190211303259031,  -2.26621555905919e-16, 0.190211303259031, 0.117557050458495, -0.117557050458495,  -0.190211303259031};
-//float piEc[] = {0.200000000000000, 0.0618033988749895,  -0.161803398874990,  -0.161803398874990,  0.0618033988749895,  0.200000000000000, 0.0618033988749897,  -0.161803398874990,  -0.161803398874990,  0.0618033988749894};
-//float piEdc[] = {0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000};
-
-float soma_seno = 0;
-float soma_cosseno = 0;
 
 int NrMed = 0;
 
@@ -102,6 +87,19 @@ const int D12 = 47; //Port C16
 const int D13 = 46; //Port C17
 const int D14 = 45; //Port C18
 const int D15 = 44; //Port  C19
+
+//*****************************Matriz pseudo inversa 10 ptos excitação 31,25kHz - Sample Rate 312,5kHz
+float piEs[] = {0.117557050458495, 0.190211303259031, 0.190211303259031, 0.117557050458495, 2.44929359829470e-17, -0.117557050458495, -0.190211303259031, -0.190211303259031, -0.117557050458495, -4.89858719658942e-17};
+float piEc[] = {0.161803398874990, 0.0618033988749894, -0.0618033988749895, -0.161803398874989, -0.200000000000000, -0.161803398874990, -0.0618033988749896, 0.0618033988749895, 0.161803398874990, 0.200000000000000};
+float piEdc[] = {0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000};
+
+
+//*****************************Matriz pseudo inversa 10 ptos excitação 125kHz - Sample Rate 625kHz
+//float piEs[] = {0,  0.190211303259031, 0.117557050458495, -0.117557050458495,  -0.190211303259031,  -2.26621555905919e-16, 0.190211303259031, 0.117557050458495, -0.117557050458495,  -0.190211303259031};
+//float piEc[] = {0.200000000000000, 0.0618033988749895,  -0.161803398874990,  -0.161803398874990,  0.0618033988749895,  0.200000000000000, 0.0618033988749897,  -0.161803398874990,  -0.161803398874990,  0.0618033988749894};
+//float piEdc[] = {0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000};
+
+
 
 //DISPLAY
 
@@ -346,94 +344,64 @@ void loop() {
 
           //**** Habilita interrupção do botão que dispara a Medição das N_amostras
          
-         attachInterrupt(digitalPinToInterrupt(buttonPin8), HabilitaDRDY, RISING); // Habilita interrupção do botão de início de medição
-                                                                                   // e vai para interrupção LeAdc 
-          // Realiza a leitura das Nr_de_Amostras enquanto a interrupção "HabilitaDRDY" estiver habilitada
+          attachInterrupt(digitalPinToInterrupt(buttonPin8), HabilitaDRDY, RISING); // Habilita interrupção do botão de início de medição
+                                                                                   
           while(contadorAmostra < Nr_de_Amostras){
-                                                  
-                                                  //contadorAmostra++;
-                                                  //REG_PIOD_ODSR = 0x00000004;
-                                                 }
-          contador_aux_1 = 0;
-           
-          
-                                    
+                                                  // Realiza a leitura das Nr_de_Amostras enquanto a interrupção "HabilitaDRDY" estiver habilitada
+                                                  //Aguarda fim da inyerrupção
+          }
+                                                                                                                              //contador_aux_1 = 0;                         
           //*** Desabilita interrupção p/ aquisição de amostras                                      
           detachInterrupt(digitalPinToInterrupt(DRDY));
           
-           
-                                    
-          //*** Desabilita interrupção p/ aquisição de amostras                                      
-          //detachInterrupt(digitalPinToInterrupt(DRDY));
-         
+            
+                                                                                                                          /*       
+                                                                                                                          for(contador_aux_1 = 0; contador_aux_1 < Nr_de_Amostras; contador_aux_1++) { // Laço Rearranjar 32 bits NÃO CONSECUTIVOS
+                                                                                                                          //*******************************************************************
+                                                                                                                          // Primeira palavra com os 16 bits mais significativos (de 23 à 8)
+                                                                                                                          //*******************************************************************
+                                                                                                                          
+                                                                                                                          // Zerar bits "0" , "1" e bits de "20" à "31" aplicando a operação lógica "AND" 
+                                                                                                                          // por meio da máscara 0x000ffffc  
+                                                                                                                          
+                                                                                                                          vetor_Amostra[contador_aux_1] = vetor_Amostra[contador_aux_1] & 0x000ffffc; //
+                                                                                                                          vetor_Amostra[contador_aux_1] = vetor_Amostra[contador_aux_1] >> 2;         // Desloca dois bits p direita para elininar bits "0" e "1"
+                                                                                                                          
+                                                                                                                          // separa os 8 bits menos significaticos da primrira palavra
+                                                                                                                          low8 = vetor_Amostra[contador_aux_1] & 0x000000ff; 
+                                                                                                                          
+                                                                                                                          //Remove os bits "10 e 11" (Lixo do meio da primeira palavra) deslocando 10 bits para direita
+                                                                                                                          vetor_Amostra[contador_aux_1] = vetor_Amostra[contador_aux_1] >> 10;
+                                                                                                                          
+                                                                                                                          // Rearranjar os 16 bits da primeira palavra
+                                                                                                                          // Deslocando 8 bits à esquerda e aplicando a operação lógica "OU" com os
+                                                                                                                          // 8 bits menos significativos da primeira palavra armazenados na variável low8
+                                                                                                                          
+                                                                                                                          vetor_Amostra[contador_aux_1] = vetor_Amostra[contador_aux_1] << 8 | low8;  //Primeira palavra com os 16 bits mais significativos de 23 à 8
+                                                                                                                          
+                                                                                                                          //****************************************************************** 
+                                                                                                                          // Segunda palavra com os 8 bits menos significativos (de 7 à 0)
+                                                                                                                          //******************************************************************
+                                                                                                                          
+                                                                                                                          // Zera bits de "0 à 11" e bits de "20" à "31" aplicando a operação lógica "AND" 
+                                                                                                                          // por meio da máscara 0x000ff000
+                                                                                                                          low24 = vetor_segunda_palavra[contador_aux_1] & 0x000ff000;
+                                                                                                                          
+                                                                                                                          // Desloca 12 bits à direita separando os 8 bits menos significaticos da palavra de 24 bits 
+                                                                                                                          low24  =  low24 >> 12;
+                                                                                                                          low24  =  low24 & 0x000000ff;
+                                                                                                                          
+                                                                                                                          // Rearranjar a amostra discretizada com resolução de 24 bits
+                                                                                                                          // deslocando os 8 bits da primeira palavra à esquerda e 
+                                                                                                                          // aplicando a operação lógica "OU" com os 8 bits menos significativos
+                                                                                                                          // da segunda palavra armazenados na variavel low24
+                                                                                                                          
+                                                                                                                          vetor_Amostra[contador_aux_1] = vetor_Amostra[contador_aux_1] << 8 | low24;         // Amostra discretizada com 24 bits; 
+                                                                                                                                
+                                                                                                                          }     // Final laço Rearranjar 32 bits NÃO CONSECUTIVOS
+                                                                                                                          */
 
-
-
-          //*************************************************************
-          // Rearranjar 32 bits "NÃO CONSECUTIVOS" do portC do Arduino em 24 bits CONSECUTIVOS
-          // O AD7762 disponibiliza a amostra discretizada com resolução de 24 bits em duas "palavras" de 16 bits.
-          // Entretanto, o kit do Arduino DUE não tem 16 bits consecutivos disponíveis para uso.
-          // Portanto, é necessário mapear as palavras 1 e 2 do AD7762 como segue:
-          // bit do registrador PortC UTILIZADO  = " V "
-          // bit do registrador PortC NÃO UTILIZADO  = " . "
-          // OBS. Arduino Due
-          //*************************************************************
-
-          //   Mapeamento das palavras: 
-          //   Primeira palavra (MSD) -> 16 bits de 23 à 8 
-          //   Segunda palavta (LSD)  -> 8 bits de 7 à 0
-          //   A seguir, mapa com os pinos do portC do Arduino DUE utilzados no hardware.
-          //-------------------------------------------------------------------------------------------------------------        
-          // N_bt PortC/|31|30|29|28|27|26|25|24|23|22|21|20|19|18|17|16|15|14|13|12|11|10|9 |8 |7 |6 |5 |4 |3 |2 |1 | 0|
-          // /Arduino   |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
-          // Palavra 1  |. |. |. |. |. |. |. |. |. |. |. |. |V |V |V |V |V |V |V |V |. |. |V |V |V |V |V |V |V |V |. |. | 
-          // Palavra 2  |. |. |. |. |. |. |. |. |. |. |. |. |V |V |V |V |V |V |V |V |. |. |. |. |. |. |. |. |. |. |. |. | 
-          //-------------------------------------------------------------------------------------------------------------     
-        
-    for(contador_aux_1 = 0; contador_aux_1 < Nr_de_Amostras; contador_aux_1++) { // Laço Rearranjar 32 bits NÃO CONSECUTIVOS
-          //*******************************************************************
-          // Primeira palavra com os 16 bits mais significativos (de 23 à 8)
-          //*******************************************************************
-          
-          // Zerar bits "0" , "1" e bits de "20" à "31" aplicando a operação lógica "AND" 
-          // por meio da máscara 0x000ffffc  
-          
-          vetor_Amostra[contador_aux_1] = vetor_Amostra[contador_aux_1] & 0x000ffffc; //
-          vetor_Amostra[contador_aux_1] = vetor_Amostra[contador_aux_1] >> 2;         // Desloca dois bits p direita para elininar bits "0" e "1"
-          
-          // separa os 8 bits menos significaticos da primrira palavra
-          low8 = vetor_Amostra[contador_aux_1] & 0x000000ff; 
-          
-          //Remove os bits "10 e 11" (Lixo do meio da primeira palavra) deslocando 10 bits para direita
-          vetor_Amostra[contador_aux_1] = vetor_Amostra[contador_aux_1] >> 10;
-          
-          // Rearranjar os 16 bits da primeira palavra
-          // Deslocando 8 bits à esquerda e aplicando a operação lógica "OU" com os
-          // 8 bits menos significativos da primeira palavra armazenados na variável low8
-          
-          vetor_Amostra[contador_aux_1] = vetor_Amostra[contador_aux_1] << 8 | low8;  //Primeira palavra com os 16 bits mais significativos de 23 à 8
-
-          //****************************************************************** 
-          // Segunda palavra com os 8 bits menos significativos (de 7 à 0)
-          //******************************************************************
-          
-          // Zera bits de "0 à 11" e bits de "20" à "31" aplicando a operação lógica "AND" 
-          // por meio da máscara 0x000ff000
-          low24 = vetor_segunda_palavra[contador_aux_1] & 0x000ff000;
-          
-          // Desloca 12 bits à direita separando os 8 bits menos significaticos da palavra de 24 bits 
-          low24  =  low24 >> 12;
-          low24  =  low24 & 0x000000ff;
-          
-          // Rearranjar a amostra discretizada com resolução de 24 bits
-          // deslocando os 8 bits da primeira palavra à esquerda e 
-          // aplicando a operação lógica "OU" com os 8 bits menos significativos
-          // da segunda palavra armazenados na variavel low24
-          
-          vetor_Amostra[contador_aux_1] = vetor_Amostra[contador_aux_1] << 8 | low24;         // Amostra discretizada com 24 bits; 
-                
-    }     // Final laço Rearranjar 32 bits NÃO CONSECUTIVOS
-
+          convert32to24bits(Nr_de_Amostras, vetor_Amostra, vetor_segunda_palavra);
 
 
           //************************************************** 
@@ -493,112 +461,110 @@ void loop() {
           
           // Determinar Amplitude, fase e offset. Serão utilizados os três últimos períodos
           // para evitar transientes do início da medição;
+         
+    for(contador_aux_3 = 0; contador_aux_3 <= ptos_por_periodo; contador_aux_3 = (contador_aux_3 + ptos_por_periodo)){ // Laço demodulação por quadratura
+          /*
+                                                                                                                              for (coluna_piE = 0; coluna_piE < 10; coluna_piE++) { // Nr de amostras
+                                                                                                                              int ptos_periodo = contador_aux_3 + coluna_piE; // Nr de amostras de cada periodo
+                                                                                                                              
+                                                                                                                              // Multiplica a matriz do sinal convertido pela matriz pseudo inversa piE
+                                                                                                                              soma_seno += (float)converte_volts[ptos_periodo]*(float)piEs[coluna_piE]; 
+                                                                                                                              soma_cosseno += (float)converte_volts[ptos_periodo]*(float)piEc[coluna_piE];
+                                                                                                                              soma_offset += (float)converte_volts[ptos_periodo]*(float)piEdc[coluna_piE];
+                                                                                                                              }
+                                                                                                                              */
+         
+         //convert_BIN_Volts(contador, SigConverted, converte_volts, arrayPIE);
+           soma_seno = convert_BIN_Volts(contador_aux_3, converte_volts, piEs);
+           soma_cosseno = convert_BIN_Volts(contador_aux_3, converte_volts, piEc);
+           soma_offset = convert_BIN_Volts(contador_aux_3, converte_volts, piEdc);
+           
+            amplitude = 2*sqrt(sq(soma_seno)+sq(soma_cosseno)); // Cálculo da amplitude
+            fase = atan2(soma_cosseno , soma_seno)*(180/PI);    // cálculo da fase
+  
+            if(fase < 0){ 
+                fase = fase + 360;
+            }
+                                                                                                                  /*
+                                                                                                                  // Imprime dados no monitor serial
+                                                                                                                  //Serial.print(Nr_medicao);
+                                                                                                                  //Serial.print("  ;  ");
+                                                                                                                  //Serial.print("amplitude e fase DC");
+                                                                                                                  //Serial.print("  ;  ");
+                                                                                                                  //Serial.print(sci(amplitude,4));
+                                                                                                                  //Serial.print("  ;  ");
+                                                                                                                  //Serial.print(sci(fase,4));
+                                                                                                                  //Serial.print("  ;  ");
+                                                                                                                  //Serial.println(sci(soma_offset,4));
+                                                                                                                  //Serial.println("impedancia_Z");
+                                                                                                                  //Serial.println("fase");*/
           
-    for(contador_aux_3 = 0; contador_aux_3 <= 10; contador_aux_3 = (contador_aux_3 + 10)){ // Laço demodulação por quadratura
-          for (coluna_piE = 0; coluna_piE < 10; coluna_piE++) { // Nr de amostras
-              int ptos_periodo = contador_aux_3 + coluna_piE; // Nr de amostras de cada periodo
-              
-              // Multiplica a matriz do sinal convertido pela matriz pseudo inversa piE
-              soma_seno += (float)converte_volts[ptos_periodo]*(float)piEs[coluna_piE]; 
-              soma_cosseno += (float)converte_volts[ptos_periodo]*(float)piEc[coluna_piE];
-              soma_offset += (float)converte_volts[ptos_periodo]*(float)piEdc[coluna_piE];
-          }
           
-          
-          amplitude = 2*sqrt(sq(soma_seno)+sq(soma_cosseno))/1; // Cálculo da amplitude
-          fase = atan2(soma_cosseno , soma_seno)*(180/M_PI);    // cálculo da fase
-
-          if(fase < 0){ 
-              fase = fase + 360;
-          }
-          
-          // Imprime dados no monitor serial
-         //Serial.print(Nr_medicao);
-          //Serial.print("  ;  ");
-          //Serial.print("amplitude e fase DC");
-          //Serial.print("  ;  ");
-          //Serial.print(sci(amplitude,4));
-          //Serial.print("  ;  ");
-          //Serial.print(sci(fase,4));
-          //Serial.print("  ;  ");
-          //Serial.println(sci(soma_offset,4));
-
-         //Serial.println("impedancia_Z");
-         //Serial.println("fase");
-          
-          // Soma dos dados para o cálculo de média estatística
-          ampTOTAL = ampTOTAL + amplitude;
+          ampTOTAL = ampTOTAL + amplitude;                  // Soma dos dados para o cálculo de média estatística
           faseTOTAL = faseTOTAL + fase;
           offsetTOTAL =  offsetTOTAL + soma_offset;
-          
-          coluna_piE = 0;
-          amplitude = 0;
-          soma_seno = 0; 
-          soma_cosseno = 0;
-          soma_offset = 0;
-          fase = 0;
-    }     // Final laço demodulação por quadratura
-                        
+                                                                                                                    /*
+                                                                                                                    coluna_piE = 0;
+                                                                                                                    amplitude = 0;
+                                                                                                                    soma_seno = 0; 
+                                                                                                                    soma_cosseno = 0;
+                                                                                                                    soma_offset = 0;
+                                                                                                                    fase = 0;*/
+   }                                                         // Final laço demodulação por quadratura
+         
           //********************************************  
           // Calcular média da ampltude, fase e offsset
           //*******************************************
           
-          ampTOTAL =ampTOTAL/2; // Média da amplitude
-          faseTOTAL = faseTOTAL/2; // Média da fase
-          offsetTOTAL = offsetTOTAL/2; // média do Offset
+          ampTOTAL =ampTOTAL/Nr_de_periodos; // Média da amplitude
+          faseTOTAL = faseTOTAL/Nr_de_periodos; // Média da fase
+          offsetTOTAL = offsetTOTAL/Nr_de_periodos; // média do Offset
           
-          //Nr_medicao = Nr_medicao + 1;
-
-          // Imprimir dados no monitor serial
-          //Serial.print(Nr_medicao);
-          //Serial.print("  ;  ");
-          //Serial.print("amplitude - fase - TOTAL ");
-          //Serial.print("  ;  ");
-          //Serial.print(sci(ampTOTAL,4));
-          //Serial.print("  ;  ");
-          //Serial.print(sci(faseTOTAL,4));
-          //Serial.print("  ;  ");
-          //Serial.println(sci(offsetTOTAL,4));
-          //Serial.println(REG_CKGR_MCFR);
-          //delay(200);
-          //Serial.println(fase);
-          //Serial.println(fase);
+                                                                                                                                //Nr_medicao = Nr_medicao + 1;
+                                                                                                                                // Imprimir dados no monitor serial
+                                                                                                                                //Serial.print(Nr_medicao);
+                                                                                                                                //Serial.print("  ;  ");
+                                                                                                                                //Serial.print("amplitude - fase - TOTAL ");
+                                                                                                                                //Serial.print("  ;  ");
+                                                                                                                                //Serial.print(sci(ampTOTAL,4));
+                                                                                                                                //Serial.print("  ;  ");
+                                                                                                                                //Serial.print(sci(faseTOTAL,4));
+                                                                                                                                //Serial.print("  ;  ");
+                                                                                                                                //Serial.println(sci(offsetTOTAL,4));
+                                                                                                                                //Serial.println(REG_CKGR_MCFR);
+                                                                                                                                //delay(200);
+                                                                                                                                //Serial.println(fase);
+                                                                                                                                //Serial.println(fase);
           //*********************************************************************************************
           //  TRANSMISSÃO SERIAL (I2C) DE DADOS
           //*********************************************************************************************
 
+                                                                                                                                /*        
+                                                                                                                                //union Nr_IEEE754_union {float as_float ; byte as_byte[4];} volatile amplitude_union;            // Coversão foat ampTOTAL em 4 bytes para transmissão serial I2C 
+                                                                                                                                //amplitude_union.as_float = ampTOTAL;
+                                                                                                                                //union Nr_IEEE754_union volatile fase_union;                                                     // Coversão foat faseTOTAL em 4 bytes para transmissão serial I2C 
+                                                                                                                                //fase_union.as_float = faseTOTAL;
+                                                                                                                                //union Nr_IEEE754_union volatile offset_union;                                                   //volatile Coversão foat offsetTOTAL em 4 bytes para transmissão serial I2C 
+                                                                                                                                //offset_union.as_float = offsetTOTAL;
+                                                                                                                                
+                                                                                                                                */     
+          delayFunc(10);                                                      // delay 10us
           
-          //union Nr_IEEE754_union {float as_float ; byte as_byte[4];} volatile amplitude_union;            // Coversão foat ampTOTAL em 4 bytes para transmissão serial I2C 
-          //amplitude_union.as_float = ampTOTAL;
-          //union Nr_IEEE754_union volatile fase_union;                              // Coversão foat faseTOTAL em 4 bytes para transmissão serial I2C 
-          //fase_union.as_float = faseTOTAL;
-          //union Nr_IEEE754_union volatile offset_union;                            //volatile Coversão foat offsetTOTAL em 4 bytes para transmissão serial I2C 
-          //offset_union.as_float = offsetTOTAL;
-             
-        
-          delay(10);                                                      // delay 10us
-          
-          /*Wire.beginTransmission(15);                                     // Começa transmissão para o mestre 0x0F
-          
-          Wire.write(amplitude_union.as_byte[0]);                         // Envia o bytes da ampTOTAL
-          Wire.write(amplitude_union.as_byte[1]);                                              
-          Wire.write(amplitude_union.as_byte[2]);
-          Wire.write(amplitude_union.as_byte[3]);
-          
-          Wire.write(fase_union.as_byte[0]);                              // Envia o bytes da faseTOTAL
-          Wire.write(fase_union.as_byte[1]);                    
-          Wire.write(fase_union.as_byte[2]);
-          Wire.write(fase_union.as_byte[3]);
-          
-          Wire.write(offset_union.as_byte[0]);                            // Envia o bytes do offsetTOTAL
-          Wire.write(offset_union.as_byte[1]);                    
-          Wire.write(offset_union.as_byte[2]);
-          Wire.write(offset_union.as_byte[3]);    
-
-               
-          Wire.endTransmission();                                        // Termina a transmissão 
-          
-          delay(500);*/                                                    // delay 1s                            
+                                                                                                                                  /*Wire.beginTransmission(15);                                     // Começa transmissão para o mestre 0x0F
+                                                                                                                                  Wire.write(amplitude_union.as_byte[0]);                         // Envia o bytes da ampTOTAL
+                                                                                                                                  Wire.write(amplitude_union.as_byte[1]);                                              
+                                                                                                                                  Wire.write(amplitude_union.as_byte[2]);
+                                                                                                                                  Wire.write(amplitude_union.as_byte[3]);
+                                                                                                                                  Wire.write(fase_union.as_byte[0]);                              // Envia o bytes da faseTOTAL
+                                                                                                                                  Wire.write(fase_union.as_byte[1]);                    
+                                                                                                                                  Wire.write(fase_union.as_byte[2]);
+                                                                                                                                  Wire.write(fase_union.as_byte[3]);
+                                                                                                                                  Wire.write(offset_union.as_byte[0]);                            // Envia o bytes do offsetTOTAL
+                                                                                                                                  Wire.write(offset_union.as_byte[1]);                    
+                                                                                                                                  Wire.write(offset_union.as_byte[2]);
+                                                                                                                                  Wire.write(offset_union.as_byte[3]);                
+                                                                                                                                  Wire.endTransmission();                                        // Termina a transmissão 
+                                                                                                                                  delay(500);*/                                                    // delay 1s                            
    
 
           //********************************************
@@ -653,7 +619,7 @@ void HabilitaDRDY(){
 void leADC() {
     detachInterrupt(digitalPinToInterrupt(DRDY));
     long i = 0;  
-        for(i = 0; i <= 65; i++){
+        for(i = 0; i <= 40; i++){
             asm("nop \n");
         }  
         while(contadorAmostra < Nr_de_Amostras){                              
