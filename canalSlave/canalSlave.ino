@@ -6,6 +6,8 @@
 // 08/03/2021
 // versão 1.1 inicial
 //******************************************************************************************
+
+
 //********INICIALIZAÇAO*******************************************************************
 const int buttonPin8 = 8;     // the number of the pushbutton pin
 int buttonState8 = 0;         // variable for reading the pushbutton status
@@ -17,9 +19,13 @@ int StartState = 0;           // variable for reading the pushbutton status
 
 //#define M_PI 3.141592653589793238462643
 //#define Rsentinela 55.1
-#define NOP() asm("nop \n")
+//#define NOP() asm("nop \n")
+
+
 
 //********************CONSTANTES E VARIÁVEIS*********************************
+//#include "defConstVariaveis.h"
+//#include "myInterrupt.h"
 #include "myFunctions.h"
 #include "inicialization.h"  
 #include "MathHelpers.h" 
@@ -56,7 +62,6 @@ unsigned long tempo_inicio = millis();
 unsigned long tempo_exec[20] = {0};
 long Nr_medicao = 0;
 
-
 int coluna_piE = 0;
 volatile float offsetTOTAL = 0;
 float amplitude = 0;
@@ -69,7 +74,8 @@ int NrMed = 0;
 unsigned int aux;
   
 
-// Bus de Dados D0 à D15
+ //Bus de Dados D0 à D15
+
 const int D0 = 34; //Port C2 Arduino DUE
 const int D1 = 35; //Port C3
 const int D2 = 36; //Port C4
@@ -98,7 +104,6 @@ float piEdc[] = {0.100000000000000, 0.100000000000000, 0.100000000000000, 0.1000
 //float piEs[] = {0,  0.190211303259031, 0.117557050458495, -0.117557050458495,  -0.190211303259031,  -2.26621555905919e-16, 0.190211303259031, 0.117557050458495, -0.117557050458495,  -0.190211303259031};
 //float piEc[] = {0.200000000000000, 0.0618033988749895,  -0.161803398874990,  -0.161803398874990,  0.0618033988749895,  0.200000000000000, 0.0618033988749897,  -0.161803398874990,  -0.161803398874990,  0.0618033988749894};
 //float piEdc[] = {0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000};
-
 
 
 //DISPLAY
@@ -596,62 +601,54 @@ void loop() {
        
 } // Final do loop()
 //**********************************************************************************************************************************
-          
+
+
           //*******INTERRUPÇÕES
           
           //***************************************************
           // Interrupção do botão de início de medição
           //*************************************************    
-
 void HabilitaDRDY(){
-          // Desabilita interrupção do botão de início de medição
-          detachInterrupt(digitalPinToInterrupt(buttonPin8));
-          //delayMicroseconds(30);
-          // Habilita interrupção LeADC para  leitura de dados do AD7762
-          attachInterrupt(digitalPinToInterrupt(DRDY), leADC, FALLING);
+          detachInterrupt(digitalPinToInterrupt(buttonPin8));// Desabilita interrupção do botão de início de medição
+          attachInterrupt(digitalPinToInterrupt(DRDY), leADC, FALLING);  // Habilita interrupção LeADC para  leitura de dados do AD7762
 }
 
-          //***************************************************
-          // Interrupção para  leitura de dados do AD7762
-          // Lê "Nr_de_Amostras" 
-          //*************************************************    
+//***************************************************
+// Interrupção para  leitura de dados do AD7762
+// Lê "Nr_de_Amostras" 
+//*************************************************    
 
-void leADC() {
-    detachInterrupt(digitalPinToInterrupt(DRDY));
-    long i = 0;  
-        for(i = 0; i <= 40; i++){
+void leADC() {                                                            // Interrupção para ler Bus de dados do ADC
+    detachInterrupt(digitalPinToInterrupt(DRDY));                         // Desabilita interrupção DRDY p/ ler ptos da senoide (Nr_de_Amostras)     
+            for(int i = 0; i <= 40; i++){                                 // Delay ajuste sincronismo DRDY
             asm("nop \n");
-        }  
-        while(contadorAmostra < Nr_de_Amostras){                              
-                                           
-            REG_PIOD_ODSR = 0x00000004;                               // CS = 0, DRDW = 0 e RSET = 1 habilita leitura
-            
-            vetor_Amostra[contadorAmostra] = REG_PIOC_PDSR;           // lê os 32 bits da palavra 1 (MSD) no registrador  portC
-            
-            for(i = 0; i <= 10; i++){
-                asm("nop \n");
-            }                                                         // e armazena na matriz "vetor_Amostra"
-                                                                      // Palavra de controle do portD para desabilitar CI AD7762
-            REG_PIOD_ODSR = 0x00000007;                               // CS = 1, DRDW = 1 e RSET = 1 desabilita leitura
-            for(i = 0; i <= 4; i++){
-                asm("nop \n");
-            }        
-            REG_PIOD_ODSR = 0x00000004;                               // CS = 0, DRDW = 0 e RSET = 1 habilita leitur             
-            vetor_segunda_palavra[contadorAmostra] = REG_PIOC_PDSR;   // lê os 32 bits da palavra 2 (LSD) no registrador  portC
-            for(i = 0; i <= 9; i++){
-                asm("nop \n");
-            }   
-
-            
-                                                                      // e armazena na matriz "vetor_segunda_palavra" 
-                                                                      // Palavra de controle do portD para Habilitar a leitura do AD7762
-            REG_PIOD_ODSR = 0x00000007;                               // CS = 1, DRDW = 1 e RSET = 1 desabilita leitura              
-            contadorAmostra++;                                        //  contador de amostras 
-                for(i = 0; i <= 22; i++){
-                    asm("nop \n");
-                }
-        }             
-    attachInterrupt(digitalPinToInterrupt(buttonPin8), HabilitaDRDY, RISING);              
+            }
+    
+    while(contadorAmostra < Nr_de_Amostras){                                                               
+        REG_PIOD_ODSR = 0x00000004;                                           // CS = 0, DRDW = 0 e RSET = 1 habilita leitura
+        vetor_Amostra[contadorAmostra] = REG_PIOC_PDSR;                       // lê os 32 bits da palavra 1 (MSD) no registrador  portC     
+            for(int i = 0; i <= 10; i++){                                     // periodo de tempo para ler 1a palavara e armazena na matriz "vetor_Amostra"
+            asm("nop \n");
+            }           
+                                                                              // Palavra de controle do portD para desabilitar CI AD7762
+        REG_PIOD_ODSR = 0x00000007;                                           // CS = 1, DRDW = 1 e RSET = 1 desabilita leitura
+            for(int i = 0; i <= 4; i++){                                      // periodo de tempo para ADC apresentar 2a palavra no buffer
+            asm("nop \n");
+            }
+                    
+        REG_PIOD_ODSR = 0x00000004;                                           // CS = 0, DRDW = 0 e RSET = 1 habilita leitura             
+        vetor_segunda_palavra[contadorAmostra] = REG_PIOC_PDSR;               // lê os 32 bits da palavra 2 (LSD) no registrador  portC
+            for(int i = 0; i <= 9; i++){                                      // periodo de tempo para ler 2a palavara e armazena na matriz "vetor_Amostra"                             
+            asm("nop \n");
+        }   
+                                                                              // Palavra de controle do portD para desabilitar AD7762
+        REG_PIOD_ODSR = 0x00000007;                                           // CS = 1, DRDW = 1 e RSET = 1 desabilita leitura              
+        contadorAmostra++;                                                    //  contador de amostras 
+            for(int i = 0; i <= 22; i++){                                     // periodo de tempo para nova amostra
+            asm("nop \n");
+        }
+    }             
+    attachInterrupt(digitalPinToInterrupt(buttonPin8), HabilitaDRDY, RISING); // Habilita interrupção do botão de medição             
 }
 
 

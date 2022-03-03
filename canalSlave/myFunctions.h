@@ -1,7 +1,5 @@
 #include "MathHelpers.h" 
 
-
-
 void unselectADC(const int x, const int y, const int z){
       // Desabilita ADC
       digitalWrite(x, HIGH);                          // Port D2 Pino 27 arduino HIGH

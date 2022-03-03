@@ -1,5 +1,7 @@
+#include "defConstVariaveis.h"
 
-void busColtrolIni(int CS, int RDWR, int RESET, int DRDY, int buttonPin8, int habilitaMaster){
+
+void busColtrolIni(const int CS, const int RDWR, const int RESET, const int DRDY, const int buttonPin8, const int habilitaMaster){
 // Configuração de Ports para iniciar AD7762 
           pinMode(CS, OUTPUT);                // Port D0 do Arduino Due
           pinMode(RDWR, OUTPUT);              // Port D1
