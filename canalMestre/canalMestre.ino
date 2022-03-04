@@ -187,13 +187,14 @@ void setup() {   //*********************INÍCIO SETUP***************************
                delayFunc(100);
                pulsoPinoADC(RESET, 100);                                                                     //reset ADC7762
 
-               //zeraOutputBusDados(D0, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15);     // Zerar saída bus de dados
-               //delayFunc(100);  
-               //pulsoPinoADC(SYNC, 100);  
+               zeraOutputBusDados(D0, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15);     // Zerar saída bus de dados
+               delayFunc(100);  
+               pulsoPinoADC(SYNC, 100);  
                
   for (contadorSetup = 0; contadorSetup < 10; contadorSetup++) {  // Laço setup
-  
+               
               // Envia Endereço Registrador2 p/ Bus de Dados**************************
+              /*
               digitalWrite(D0, LOW);      //Endereço Registrador 2  0x0002
               digitalWrite(D1, HIGH);
               digitalWrite(D2, LOW);
@@ -220,15 +221,20 @@ void setup() {   //*********************INÍCIO SETUP***************************
               delay(10);
               digitalWrite(CS, LOW);  // Habilita Chip Select do AD7762 para escrita
               digitalWrite(CS, HIGH); // desabilita Chip Select do AD7762 
+              */
+              writeBusADC(0x00000008);                                                                     // ESCREVE Endereço Registrador2
+              pulsoPinoADC(CS, 10);                                                                        // Habilita pulso Chip Select do AD7762 para escrita
              
-            
+             zeraBusADC(0x00000008);                                                                       //zera bus de dados
+             delayFunc(100);
+
               //*****Envia Palavra de controle do Registrador2 p/ Bus de Dados*****
               // set CDIV = 0 metade MCLk
               // set DIPD = 0 habilita Dif Amp
               // set PD = 0 habilita CI (Power ON)
               // set LPWR = 0 seta power no modo normal
               //******************************************************      
-              
+              /*
               digitalWrite(D0, LOW);    //DIPD
               digitalWrite(D1, HIGH);   // "1"
               digitalWrite(D2, LOW);    //LPWR
@@ -254,12 +260,18 @@ void setup() {   //*********************INÍCIO SETUP***************************
                digitalWrite(CS, LOW);  // Habilita Chip Select do AD7762 para escrita
                digitalWrite(CS, HIGH); // desabilita Chip Select do AD7762 
               //*********************************************************
+              */
+              writeBusADC(0x00000248);                                                                      // ESCREVE Palavra de controle do Registrador2
+          
+              pulsoPinoADC(CS, 10);                                                                         // Habilita pulso Chip Select do AD7762 para escrita
+              zeraBusADC(0x00000248);                                                                       //zera bus de dados
+              delayFunc(10);
           
           
               //*********************************************************
               // ESCREVE END REG 1 0X0001
               //******************************************************** 
-              
+              /*
               digitalWrite(D0, HIGH); //Endereço Registrador 1  0x0001
               digitalWrite(D1, LOW);
               digitalWrite(D2, LOW);
@@ -283,11 +295,17 @@ void setup() {   //*********************INÍCIO SETUP***************************
               digitalWrite(CS, HIGH);
              
               //***********************************************************
+              */
 
+              writeBusADC(0x00000004);                                                                      // ESCREVE Endereço 0x04 Registrador1
+              pulsoPinoADC(CS, 10);                                                                         // Habilita pulso Chip Select do AD7762 para escrita
+              zeraBusADC(0x00000004);                                                                       //zera endereço Reg1 do bus de dados
+              delayFunc(10);
 
               //***********************************************
               // ESCREVE WORD REG 1 0X001D
               // DEC2, DEC1, DEC0 = 0X4 PARA DECIMACAO 16X
+              /*
               digitalWrite(D0, LOW);      // DEC0 = 1 
               digitalWrite(D1, HIGH);     // DEC1 = 0 
               digitalWrite(D2, LOW);      // DEC2 = 1
@@ -308,6 +326,14 @@ void setup() {   //*********************INÍCIO SETUP***************************
               delay(10);
               digitalWrite(CS, LOW);  // Habilita Chip Select do AD7762 para escrita
               digitalWrite(CS, HIGH); // desabilita Chip Select do AD7762  
+              */
+
+              writeBusADC(0x000000064);                                                                     // ESCREVE Palavra de controle 0x64do Registrador2
+              pulsoPinoADC(CS, 10);                                                                         // Habilita pulso Chip Select do AD7762 para escrita
+              zeraBusADC(0x00000064);                                                                       //zera endereço Reg1 do bus de dados
+              delayFunc(10);
+
+              
   } // Final laço setup
 
               delay(100);

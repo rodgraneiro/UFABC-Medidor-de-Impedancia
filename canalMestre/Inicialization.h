@@ -168,3 +168,13 @@ void zeraOutputBusDados(int D0, int D1, int D2, int D3, int D4, int D5, int D6, 
           digitalWrite(D14, LOW);
           digitalWrite(D15, LOW);
 }
+
+void writeBusADC(long data){        // escreve endereço ou dado na saída
+          REG_PIOC_SODR = data;
+          delay(10);
+}
+
+void zeraBusADC(long data){        // zera Bus antes de escrever um novo dado na saída
+          REG_PIOC_CODR = data;
+          delay(10);
+}
