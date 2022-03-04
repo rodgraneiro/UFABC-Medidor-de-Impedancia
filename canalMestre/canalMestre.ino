@@ -7,24 +7,26 @@
 // versão 1.1 inicial
 //******************************************************************************************
 //********INICIALIZAÇAO*******************************************************************
-const int buttonPin8 = 8;     // Número do pino do Arduino para o pushbutton
-int buttonState8 = 0;         // Variável p/ armazenar status  do pushbutton
+//const int buttonPin8 = 8;     // Número do pino do Arduino para o pushbutton
+//int buttonState8 = 0;         // Variável p/ armazenar status  do pushbutton
 
 #define M_PI 3.1415926535897932384626
 #define NOP() asm("nop \n")
 //********************CONSTANTES E VARIÁVEIS*********************************
-
+#include "myFunctions.h" 
+#include "Inicialization.h" 
 #include "MathHelpers.h" 
 #include <Wire.h>                         // Carrega a biblioteca I2C
                                           // DISPLAY
 #include <LiquidCrystal.h>                // Carrega a biblioteca LiquidCrystal
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);    // Define os pinos que serão utilizados para ligação ao display
-                                          // AD7762 
+/*                                         // AD7762 
 const int CS = 25;                        // Port D0 Arduino -> Chip Select AD7762 pin 40
 const int RDWR = 26;                      // Port D1 Arduino -> Read/Write AD7762 pin 39
 const int RESET = 27;                     // Port D2 Arduino -> Reset AD7762 pin 37
 const int DRDY = 23;                      // Port A14 Arduino -> Data Ready Output AD7762 pin 38
-//const int DRDY = 14;                      // Port D4 Arduino -> Data Ready Output AD7762 pin 38
+*/
+/*
 const int SYNC = 24;                      // Port A15 Arduino -> Synchronization Input AD7762 pin 36
 volatile int Nr_de_Amostras = 20;
 volatile uint32_t vetor_Amostra[20] = {0};
@@ -42,7 +44,8 @@ int contador_aux_2 = 0;
 int contador_aux_3 = 0;
 //float fator = 0.0000006;
 float converte_volts[20] = {0};
-
+*/
+/*
 int ptos_periodo = 0;
 int coluna_piE = 0;
 volatile float offsetTOTALchSlave = 0;
@@ -60,7 +63,8 @@ volatile float faseTOTALchSlave = 0;
 //byte sinal_fase_Slave = 0;
 //unsigned long Tempo_T =0;
 long Nr_medicao =0;
-
+*/
+/*
 //*****************************Matriz pseudo inversa 10 ptos excitação 31,25kHz - Sample Rate 312,5kHz
 float piEs [] = {0.117557050458495, 0.190211303259031, 0.190211303259031, 0.117557050458495, 2.44929359829470e-17, -0.117557050458495, -0.190211303259031, -0.190211303259031, -0.117557050458495, -4.89858719658942e-17};
 float piEc[] = {0.161803398874990, 0.0618033988749894, -0.0618033988749895, -0.161803398874989, -0.200000000000000, -0.161803398874990, -0.0618033988749896, 0.0618033988749895, 0.161803398874990, 0.200000000000000};
@@ -71,13 +75,12 @@ float piEdc[] = {0.100000000000000, 0.100000000000000, 0.100000000000000, 0.1000
 //float piEs[] = {0,  0.190211303259031, 0.117557050458495, -0.117557050458495,  -0.190211303259031,  -2.26621555905919e-16, 0.190211303259031, 0.117557050458495, -0.117557050458495,  -0.190211303259031};
 //float piEc[] = {0.200000000000000, 0.0618033988749895,  -0.161803398874990,  -0.161803398874990,  0.0618033988749895,  0.200000000000000, 0.0618033988749897,  -0.161803398874990,  -0.161803398874990,  0.0618033988749894};
 //float piEdc[] = {0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000};
-
-
+*/
+/*
 float soma_seno = 0;
 float soma_cosseno = 0;
 float soma_offset = 0;
 float offsetTOTAL = 0;
-
 //float variavel_float;
 //byte byte1, byte2, byte3, byte4, byte5, byte6, byte7, byte8, byte9, byte10, byte11, byte12, byte13, byte14;
 unsigned int aux1;
@@ -94,9 +97,9 @@ float offset_float;
 float fator_conv_volts = 3.97725e-7;
 unsigned long tempo_inicio = millis();
 unsigned long tempo_exec[100] = {0};
-
+*/
   
-
+/*
                                 // Bus de Dados D0 à D15
 const int D0 = 34;              // Port C2
 const int D1 = 35;              // Port C3
@@ -117,7 +120,7 @@ const int D14 = 45;             // Port C18
 const int D15 = 44;             // Port C19
 
 char dataToSend;
-
+*/
 
 void setup() {   //*********************INÍCIO SETUP**********************************8
     
@@ -136,18 +139,25 @@ void setup() {   //*********************INÍCIO SETUP***************************
               lcd.setCursor(1, 1);              // Posiciona o cursor na coluna 1, linha 0;
               lcd.print("Pressione bot 1");     // Envia o texto entre aspas para o LCD
               
-                                              // Configuração de Ports para iniciar AD7762  
+              /*                                // Configuração de Ports para iniciar AD7762  
               pinMode(CS, OUTPUT);               // Port D0 do Arduino Due
               pinMode(RDWR, OUTPUT);             // Port D1 do Arduino Due
               pinMode(RESET, OUTPUT);            // Port D2 do Arduino Due
               pinMode(SYNC, OUTPUT);             // Port A15 do Arduino Due
               pinMode(DRDY, INPUT);              // Port A14 do Arduino Due
-              
+              */
+              busColtrolIni(CS, RDWR, RESET, DRDY, SYNC, buttonPin8); // Configuração de Portas do Bus de controle do AD7762 e Arduino
+              delayFunc(100);
+              /*
               digitalWrite(RESET, HIGH);
               digitalWrite(CS, HIGH);
               digitalWrite(RDWR, HIGH);
               digitalWrite(SYNC, HIGH);
-           
+              */
+              unselectADC(RESET, CS, RDWR, SYNC);                     // Desabilita ADC 7762
+              delayFunc(100);
+              /*
+              // Configuração de Portas do Bus de controle do AD7762 e Arduino
                                               // Configuração de Bus de dados comos saída  
               pinMode(D0, OUTPUT);
               pinMode(D1, OUTPUT);
@@ -172,7 +182,15 @@ void setup() {   //*********************INÍCIO SETUP***************************
               digitalWrite(RESET, HIGH);    // reset high
               delay(100);
               //************************************************
-  
+              */
+               busOutputADC(D0, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15);           // Configura bus de dados como output
+               delayFunc(100);
+               pulsoPinoADC(RESET, 100);                                                                     //reset ADC7762
+
+               //zeraOutputBusDados(D0, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15);     // Zerar saída bus de dados
+               //delayFunc(100);  
+               //pulsoPinoADC(SYNC, 100);  
+               
   for (contadorSetup = 0; contadorSetup < 10; contadorSetup++) {  // Laço setup
   
               // Envia Endereço Registrador2 p/ Bus de Dados**************************
@@ -719,7 +737,7 @@ void leADC() {
     
     long i = 0;
                                           //for(i = 0; i <=3; i++){                                                   // cal só para Z
-        for(i = 0; i < 5; i++){                                                   // Delay para calibração do sincronismos
+        for(i = 0; i < 35; i++){                                                   // Delay para calibração do sincronismos
             asm("nop \n");
              
         }
