@@ -225,8 +225,8 @@ void setup() {   //*********************INÍCIO SETUP***************************
               writeBusADC(0x00000008);                                                                     // ESCREVE Endereço Registrador2
               pulsoPinoADC(CS, 10);                                                                        // Habilita pulso Chip Select do AD7762 para escrita
              
-             zeraBusADC(0x00000008);                                                                       //zera bus de dados
-             delayFunc(100);
+              zeraBusADC(0x00000008);                                                                       //zera bus de dados
+              delayFunc(100);
 
               //*****Envia Palavra de controle do Registrador2 p/ Bus de Dados*****
               // set CDIV = 0 metade MCLk
@@ -384,14 +384,11 @@ void setup() {   //*********************INÍCIO SETUP***************************
 void loop() { //***************************** INÍCIO void loop() *****************************
                                          
               //**** Habilita interrupção do botão que dispara a Medição das N_amostras
-              attachInterrupt(digitalPinToInterrupt(buttonPin8), HabilitaDRDY, RISING);     // Habilita interrupção do botão de início de medição
-               //detachInterrupt(digitalPinToInterrupt(DRDY));                                // e vai para interrupção LeAdc              
-              // Realiza a leitura das Nr_de_Amostras enquanto a interrupção "HabilitaDRDY" estiver habilitada
-              while(contadorAmostra < Nr_de_Amostras){                              
-                                                     }
-               
-               
-              detachInterrupt(digitalPinToInterrupt(DRDY));                        //*** Desabilita interrupção p/ aquisição de amostras   
+              attachInterrupt(digitalPinToInterrupt(buttonPin8), HabilitaDRDY, RISING);       // Habilita interrupção do botão de início de medição
+                                                                                              // e vai para interrupção LeAdc              
+              while(contadorAmostra < Nr_de_Amostras){                                        // Realiza a leitura das Nr_de_Amostras enquanto                           
+                                                     }                                        // a interrupção "HabilitaDRDY" estiver habilitad
+              detachInterrupt(digitalPinToInterrupt(DRDY));                                   //*** Desabilita interrupção p/ aquisição de amostras   
 
                 
               //*************************************************************
@@ -471,8 +468,10 @@ void loop() { //***************************** INÍCIO void loop() **************
                 // conversão para tensão em volts
                 //*********************************************************************
 
+                
 
 
+              /*
   for(contador_aux_2 = 0; contador_aux_2 <= Nr_de_Amostras - 1; contador_aux_2++){ // Laço verificação sinal da amostra em complemento de 2
 
                 // O bit 23 indentifica o sinal da amostra: "1" para negativo e "0" para positivo.
@@ -494,33 +493,38 @@ void loop() { //***************************** INÍCIO void loop() **************
                   //Serial.println(sci(converte_volts[contador_aux_2],4));                      // Envia para o Monitor Serial            
                 }
   } // Final do Laço verificação sinal da amostra em complemento de 2 
+                */                   
 
-              Nr_medicao = Nr_medicao + 1;
-              contador_aux_2 = 0;
+
+              verifSinalNeg(Nr_de_Amostras, vetor_Amostra, converte_volts, fator_conv_volts);
+              
+              //Nr_medicao = Nr_medicao + 1;
+              //contador_aux_2 = 0;
               //Serial.println("Valor convertido X valor decimal");                                    // imprime amostras p debug
-    
+              
                 
                   
-                      
+ /*                     
     for(contador_aux_2 = 0; contador_aux_2 <= Nr_de_Amostras - 1; contador_aux_2++){                 // imprime amostras p debug
-              /*
+             
               Serial.print(Nr_medicao);
               Serial.print("  ;  ");
               Serial.print(tempo_exec[contador_aux_2]);
               Serial.print("  ;  "); 
-              */  
+              
               //Serial.println(converte_volts[contador_aux_2],4);
-              /*
+              
               Serial.print("\n");
               Serial.print("  ;  ");
               Serial.print(vetor_Amostra[contador_aux_2]);
               Serial.print("  ;  ");
-              */
+              
             
               //Serial.print(vetor_Amostra[contador_aux_2], BIN);
               //Serial.print(" ");
               //Serial.println(converte_volts[contador_aux_2],4);
 }
+*/
 
   
                         
@@ -533,7 +537,28 @@ void loop() { //***************************** INÍCIO void loop() **************
                 
                 // Determinar Amplitude, fase e offset. Serão utilizados os três últimos períodos
                 // para evitar transientes do início da medição;
-                          
+
+for(contador_aux_3 = 0; contador_aux_3 <= ptos_por_periodo; contador_aux_3 = (contador_aux_3 + ptos_por_periodo)){ // Laço demodulação por quadratur
+    
+          soma_seno = convert_BIN_Volts(contador_aux_3, converte_volts, piEs);                  // convertes amostra discretizada em volts
+          soma_cosseno = convert_BIN_Volts(contador_aux_3, converte_volts, piEc);               // convertes amostra discretizada em volts
+          soma_offset = convert_BIN_Volts(contador_aux_3, converte_volts, piEdc);               // convertes amostra discretizada em volts
+          amplitude = 2*sqrt(sq(soma_seno)+sq(soma_cosseno));                                   // Cálculo da amplitude
+          fase = atan2(soma_cosseno , soma_seno)*(180/PI);                                      // cálculo da fase
+          
+              if(fase < 0){ 
+                    fase = fase + 360;                                                          // convete ândulo 0 - 360 graus
+              }
+          ampTOTAL = ampTOTAL + amplitude;                                                      // Soma dos dados para o cálculo de média estatística
+          faseTOTAL = faseTOTAL + fase;                                                         //
+          offsetTOTAL =  offsetTOTAL + soma_offset;                                             //
+    }     
+
+
+
+
+                
+               /*           
   for(contador_aux_3 = 0; contador_aux_3 <= 10; contador_aux_3 = (contador_aux_3 + 10)){ // Laço Matriz pseudo inversa
             for (coluna_piE = 0; coluna_piE < 10; coluna_piE++) {
                 ptos_periodo = contador_aux_3 + coluna_piE;
@@ -542,8 +567,8 @@ void loop() { //***************************** INÍCIO void loop() **************
                 soma_cosseno += (float)converte_volts[ptos_periodo]*(float)piEc[coluna_piE];
                 soma_offset += (float)converte_volts[ptos_periodo]*(float)piEdc[coluna_piE];
              }
-                amplitude = 2*sqrt(sq(soma_seno)+sq(soma_cosseno))/1;    // Cálculo da amplitude
-                fase = atan2(soma_cosseno , soma_seno)*(180/M_PI);       // Cálculo da fase
+                amplitude = 2*sqrt(sq(soma_seno)+sq(soma_cosseno));    // Cálculo da amplitude
+                fase = atan2(soma_cosseno , soma_seno)*(180/PI);       // Cálculo da fase
 
             if(fase < 0){ 
                  fase = fase + 360;
@@ -568,14 +593,14 @@ void loop() { //***************************** INÍCIO void loop() **************
                 soma_offset = 0;
                 fase = 0;
   } // Final Laço Matriz pseudo inversa
-                                                
+                        */                        
               //********************************************  
               // Calcular média da ampltude, fase e offsset
               //*******************************************
               
-              ampTOTAL =ampTOTAL/2;             // Média da amplitude
-              faseTOTAL = faseTOTAL/2;          // Média da fase
-              offsetTOTAL = offsetTOTAL/2;      // média do Offset
+              ampTOTAL =ampTOTAL/Nr_de_periodos;             // Média da amplitude
+              faseTOTAL = faseTOTAL/Nr_de_periodos;          // Média da fase
+              offsetTOTAL = offsetTOTAL/Nr_de_periodos;      // média do Offset
               faseTOTALchA = faseTOTAL;
 
               // Para debug

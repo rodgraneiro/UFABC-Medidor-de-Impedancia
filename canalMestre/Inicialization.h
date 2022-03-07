@@ -29,7 +29,7 @@ int contador_aux_1 = 0;
 int contador_aux_2 = 0;
 int contador_aux_3 = 0;
 //float fator = 0.0000006;
-float converte_volts[20] = {0};
+volatile float converte_volts[20] = {0};
 
 int ptos_periodo = 0;
 int coluna_piE = 0;
@@ -48,6 +48,10 @@ volatile float faseTOTALchSlave = 0;
 //byte sinal_fase_Slave = 0;
 //unsigned long Tempo_T =0;
 long Nr_medicao =0;
+
+int ptos_por_periodo = 10;
+int Nr_de_periodos = Nr_de_Amostras/ptos_por_periodo;
+//int ptos_periodo = 0;
 
 //*****************************Matriz pseudo inversa 10 ptos excitação 31,25kHz - Sample Rate 312,5kHz
 float piEs [] = {0.117557050458495, 0.190211303259031, 0.190211303259031, 0.117557050458495, 2.44929359829470e-17, -0.117557050458495, -0.190211303259031, -0.190211303259031, -0.117557050458495, -4.89858719658942e-17};
@@ -77,7 +81,7 @@ byte fase_byte[4];
 float fase_float;
 byte offset_byte[4]; 
 float offset_float;
-float fator_conv_volts = 3.97725e-7;
+volatile float fator_conv_volts = 3.97725e-7;
 unsigned long tempo_inicio = millis();
 unsigned long tempo_exec[100] = {0};
 
