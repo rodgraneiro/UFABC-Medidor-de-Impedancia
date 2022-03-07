@@ -191,7 +191,7 @@ void setup() {   //*********************INÍCIO SETUP***************************
                delayFunc(100);  
                pulsoPinoADC(SYNC, 100);  
                
-  for (contadorSetup = 0; contadorSetup < 10; contadorSetup++) {  // Laço setup
+  //for (contadorSetup = 0; contadorSetup < 10; contadorSetup++) {  // Laço setup
                
               // Envia Endereço Registrador2 p/ Bus de Dados**************************
               /*
@@ -334,8 +334,8 @@ void setup() {   //*********************INÍCIO SETUP***************************
               delayFunc(10);
 
               
-  } // Final laço setup
-
+  //} // Final laço setup
+              /*
               delay(100);
               
               //****************************
@@ -361,41 +361,37 @@ void setup() {   //*********************INÍCIO SETUP***************************
               delay(100);
               contadorAmostra = 0;
           
+              */
+              zeraBusADC(0x00000064);                                                                       //zera endereço Reg1 do bus de dados
+              delayFunc(10);
+              
+              busInputADC(D0, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15);            // Configura bus de dados como entrada 
+              delayFunc(100);
           
               //************ Envia sinal de sincronismo SYNC ******************* 
+              /*
               digitalWrite(SYNC, LOW);
               delay(500);
               digitalWrite(SYNC, HIGH);
               delay(100);
+              */
+              pulsoPinoADC(SYNC, 200);    
 
-
-               pinMode(buttonPin8, INPUT);     // Inicializa pino do pushbutton como input:
-               delay(1000);
-
-
-              
-    }         //**********************FINAL de void setup() ****************************
+}         //**********************FINAL de void setup() ****************************
     
-              //******************************************************************************
-              //***************************** INÍCIO void loop() *****************************
-              //******************************************************************************
 
-void loop() {
+
+void loop() { //***************************** INÍCIO void loop() *****************************
                                          
               //**** Habilita interrupção do botão que dispara a Medição das N_amostras
               attachInterrupt(digitalPinToInterrupt(buttonPin8), HabilitaDRDY, RISING);     // Habilita interrupção do botão de início de medição
                //detachInterrupt(digitalPinToInterrupt(DRDY));                                // e vai para interrupção LeAdc              
               // Realiza a leitura das Nr_de_Amostras enquanto a interrupção "HabilitaDRDY" estiver habilitada
-              while(contadorAmostra < Nr_de_Amostras){
-                                                           //Serial.println("banana");
-                                                      //contadorAmostra++;
-                                                      //REG_PIOD_ODSR = 0x00000004;                                 
+              while(contadorAmostra < Nr_de_Amostras){                              
                                                      }
-                contador_aux_1 = 0;
-                //Serial.println("banana");
-              //*** Desabilita interrupção p/ aquisição de amostras   
-              detachInterrupt(digitalPinToInterrupt(DRDY));
-              //Serial.println("banana");
+               
+               
+              detachInterrupt(digitalPinToInterrupt(DRDY));                        //*** Desabilita interrupção p/ aquisição de amostras   
 
                 
               //*************************************************************
@@ -419,7 +415,7 @@ void loop() {
               // Palavra 2  |. |. |. |. |. |. |. |. |. |. |. |. |V |V |V |V |V |V |V |V |. |. |. |. |. |. |. |. |. |. |. |. | 
               //-------------------------------------------------------------------------------------------------------------     
      
-
+              /*
   for(contador_aux_1 = 0; contador_aux_1 < Nr_de_Amostras; contador_aux_1++) { // Laço rearranjo dos 32 bits NÃO CONSECUTIVOS
   
               //*******************************************************************
@@ -466,6 +462,9 @@ void loop() {
                   
   } //Final Laço rearranjo dos 32 bits NÃO CONSECUTIVOS
                   contador_aux_1 = 0;
+                  */
+
+                 convert32to24bits(Nr_de_Amostras, vetor_Amostra, vetor_segunda_palavra);                        // coverte palavra de 32 bits para 24 bits 
               
                 //********************************************************************* 
                 // Verificação de sinal positivo/negativo no bit 23 e complemento de 2
@@ -594,7 +593,7 @@ void loop() {
               delay(300);
               contadorAmostra = 0;
               contador_aux_1 = 0;
-              contador_aux_2;
+              contador_aux_2 = 0;
               contador_aux_3 = 0;
               coluna_piE = 0;
               soma_seno = 0;
@@ -761,16 +760,16 @@ void leADC() {
       
     detachInterrupt(digitalPinToInterrupt(DRDY));
     
-    long i = 0;
+    //long i = 0;
                                           //for(i = 0; i <=3; i++){                                                   // cal só para Z
-        for(i = 0; i < 35; i++){                                                   // Delay para calibração do sincronismos
+        for(int i = 0; i <= 40; i++){                                                   // Delay para calibração do sincronismos
             asm("nop \n");
              
         }
         while(contadorAmostra < Nr_de_Amostras){ 
             REG_PIOD_ODSR = 0x00000004;                                             // CS = 0, DRDW = 0 e RSET = 1 habilita leitura         
             vetor_Amostra[contadorAmostra] = REG_PIOC_PDSR;                         // lê os 32 bits da palavra 1 (MSD) no registrador  portC
-            for(i = 0; i <= 9; i++){                                               // Delay para calibração dosoncronismos
+            for(int i = 0; i <= 9; i++){                                               // Delay para calibração dosoncronismos
             asm("nop \n");
             }
 
@@ -781,13 +780,13 @@ void leADC() {
                                                                                     // e armazena na matriz "vetor_Amostra"
                                                                                     // Palavra de controle do portD para desabilitar CI AD7762
             REG_PIOD_ODSR = 0x00000007;                                             // CS = 1, DRDW = 1 e RSET = 1 desabilita leitura
-           for(i = 0; i <= 4; i++){                                               // Delay para calibração dosoncronismos
+           for(int i = 0; i <= 4; i++){                                               // Delay para calibração dosoncronismos
             asm("nop \n");
            }
             
             REG_PIOD_ODSR = 0x00000004;                                             // CS = 0, DRDW = 0 e RSET = 1 habilita leitur             
             vetor_segunda_palavra[contadorAmostra] = REG_PIOC_PDSR;                 // lê os 32 bits da palavra 2 (LSD) no registrador  portC
-            for(i = 0; i <= 9; i++){                                               // Delay para calibração dosoncronismos
+            for(int i = 0; i <= 9; i++){                                               // Delay para calibração dosoncronismos
             asm("nop \n");
            }
                                                                                     // e armazena na matriz "vetor_segunda_palavra" 
@@ -795,7 +794,7 @@ void leADC() {
             REG_PIOD_ODSR = 0x00000007;                                             // CS = 1, DRDW = 1 e RSET = 1 desabilita leitura              
             contadorAmostra++;                                                      //  contador de amostras                                                      
                 //for(i = 0; i <= 12; i++){                                           // Delay para calibração dosoncronismos
-                for(i = 0; i <= 23; i++){  
+                for(int i = 0; i <= 23; i++){  
                     asm("nop \n");
                 }         
         }

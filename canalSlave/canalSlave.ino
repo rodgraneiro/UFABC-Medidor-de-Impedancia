@@ -150,7 +150,7 @@ void setup() {   //*********************INÍCIO SETUP***************************
           delayFunc(10);
 
           busInputADC(D0, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15);            // Configura bus de dados como entrada 
-          delayFunc(100);
+          delayFunc(600);                                                                               // aguarda sinal de SYNC
 }                                                                                                       //**********************FINAL SETUP PRINCIPAL ****************************/
 
 
@@ -252,7 +252,7 @@ void HabilitaDRDY(){
 
 void leADC() {                                                            // Interrupção para ler Bus de dados do ADC
     detachInterrupt(digitalPinToInterrupt(DRDY));                         // Desabilita interrupção DRDY p/ ler ptos da senoide (Nr_de_Amostras)     
-            for(int i = 0; i <= 40; i++){                                 // Delay ajuste sincronismo DRDY
+            for(int i = 0; i <= 45; i++){                                 // Delay ajuste sincronismo DRDY
             asm("nop \n");
             }
     
