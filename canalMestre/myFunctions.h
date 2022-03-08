@@ -15,7 +15,7 @@ void pulsoPinoADC(int x, int tempo){
 }
 
 volatile uint32_t convert32to24bits(int Nr_de_Amostras, volatile uint32_t *vetor_Amostra, volatile uint32_t *vetor_segunda_palavra){
-
+        //Serial.println(Time_2); 
 //*************************************************************
 // Rearranjar 32 bits "NÃO CONSECUTIVOS" do portC do Arduino em 24 bits CONSECUTIVOS
 // O AD7762 disponibiliza a amostra discretizada com resolução de 24 bits em duas "palavras" de 16 bits.
@@ -65,7 +65,7 @@ volatile uint32_t convert32to24bits(int Nr_de_Amostras, volatile uint32_t *vetor
                                                                                     // aplicando a operação lógica "OU" com os 8 bits menos significativos
                                                                                     // da segunda palavra armazenados na variavel low24
         vetor_Amostra[contador_aux_1] = vetor_Amostra[contador_aux_1] << 8 | low24; // Amostra discretizada com 24 bits;    
-    }                                                                               // Final laço Rearranjar 32 bits NÃO CONSECUTIVOS  
+    }                                                                               // Final laço Rearranjar 32 bits NÃO CONSECUTIVOS 
 }
 
 

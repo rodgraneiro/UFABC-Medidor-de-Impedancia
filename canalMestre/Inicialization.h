@@ -1,6 +1,8 @@
 
 
 
+unsigned long Time_1 = 0;
+unsigned long Time_2 = 0;
 
 // ******Sinais Bus de controle
 const int CS = 25;                        // Port D0 Arduino -> Chip Select AD7762 pin 40
@@ -12,17 +14,18 @@ const int SYNC = 24;                      // Port A15 Arduino -> Synchronization
 const int buttonPin8 = 8;     // Número do pino do Arduino para o pushbutton
 int buttonState8 = 0;         // Variável p/ armazenar status  do pushbutton
 
+int banana= 0;
 
 
 volatile int Nr_de_Amostras = 20;
 volatile uint32_t vetor_Amostra[20] = {0};
 volatile uint32_t vetor_segunda_palavra[20] = {0};
-volatile uint32_t sinal_negativo = 0;
-volatile uint32_t semiciclo_neg = 0;
-volatile uint32_t semiciclo_pos = 0;
-volatile uint32_t low8 = 0;
-volatile uint32_t low24 = 0;
-volatile int contadorSetup = 0;
+//volatile uint32_t sinal_negativo = 0;
+//volatile uint32_t semiciclo_neg = 0;
+//volatile uint32_t semiciclo_pos = 0;
+//volatile uint32_t low8 = 0;
+//volatile uint32_t low24 = 0;
+//volatile int contadorSetup = 0;
 volatile int contadorAmostra = 0;
 //volatile int Transmissao_OK = 0;
 int contador_aux_1 = 0;
@@ -32,6 +35,8 @@ int contador_aux_3 = 0;
 volatile float converte_volts[20] = {0};
 
 int ptos_periodo = 0;
+int ptos_por_periodo = 10;
+int Nr_de_periodos = Nr_de_Amostras/ptos_por_periodo;
 int coluna_piE = 0;
 volatile float offsetTOTALchSlave = 0;
 float amplitude = 0;
@@ -39,6 +44,8 @@ float ampTOTAL = 0;
 volatile float ampTOTALchSlave = 0;
 float impedancia_Z = 0;
 float impedancia_fase = 0;
+volatile float vetorModulo_Z[100] = {0};
+volatile float vetorFase[100] = {0};
 float fase = 0;
 float faseTOTAL = 0;
 float faseTOTALchA = 0;
@@ -48,10 +55,6 @@ volatile float faseTOTALchSlave = 0;
 //byte sinal_fase_Slave = 0;
 //unsigned long Tempo_T =0;
 long Nr_medicao =0;
-
-int ptos_por_periodo = 10;
-int Nr_de_periodos = Nr_de_Amostras/ptos_por_periodo;
-//int ptos_periodo = 0;
 
 //*****************************Matriz pseudo inversa 10 ptos excitação 31,25kHz - Sample Rate 312,5kHz
 float piEs [] = {0.117557050458495, 0.190211303259031, 0.190211303259031, 0.117557050458495, 2.44929359829470e-17, -0.117557050458495, -0.190211303259031, -0.190211303259031, -0.117557050458495, -4.89858719658942e-17};
