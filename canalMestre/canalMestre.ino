@@ -9,16 +9,30 @@
 //********INICIALIZAÇAO*******************************************************************
 //const int buttonPin8 = 8;     // Número do pino do Arduino para o pushbutton
 //int buttonState8 = 0;         // Variável p/ armazenar status  do pushbutton
-
-#define M_PI 3.1415926535897932384626
-#define NOP() asm("nop \n")
-//********************CONSTANTES E VARIÁVEIS*********************************
+#include "Arduino.h"
 #include "myFunctions.h" 
 #include "Inicialization.h" 
 #include "MathHelpers.h" 
 #include <Wire.h>                         // Carrega a biblioteca I2C
                                           // DISPLAY
-#include <LiquidCrystal.h>                // Carrega a biblioteca LiquidCrystal
+#include <LiquidCrystal.h>                // Carrega a biblioteca LiquidCrystal       
+
+
+//#define Nr_de_Amostras  10
+#define M_PI 3.141592653589
+#define CS  25                        // Port D0 Arduino -> Chip Select AD7762 pin 40
+#define RDWR  26                      // Port D1 Arduino -> Read/Write AD77627932384626
+#define NOP() asm("nop \n")
+#define buttonPin8  8                 // pin 39
+#define RESET 27                      // Port D2 Arduino -> Reset AD7762 pin 37
+#define DRDY  23                      // Port A14 Arduino -> Data Ready Output AD7762 pin 38
+#define SYNC  24                      // Port A15 Arduino -> Synchronization Input AD7762 pin 36const int CS = 25;                        // Port D0 Arduino -> Chip Select AD7762 pin 40
+//
+//********************CONSTANTES E VARIÁVEIS*********************************
+//int contadorAmostra = 0;
+//volatile int DRDY = 23;
+
+
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);    // Define os pinos que serão utilizados para ligação ao display
 /*                                         // AD7762 
 const int CS = 25;                        // Port D0 Arduino -> Chip Select AD7762 pin 40
@@ -147,7 +161,7 @@ pinMode(SYNC, OUTPUT);             // Port A15 do Arduino Due
 pinMode(DRDY, INPUT);              // Port A14 do Arduino Due
 */
               busColtrolIni(CS, RDWR, RESET, DRDY, SYNC, buttonPin8); // Configuração de Portas do Bus de controle do AD7762 e Arduino
-              delayFunc(100);
+              delay(100);
 /*
 digitalWrite(RESET, HIGH);
 digitalWrite(CS, HIGH);
@@ -155,7 +169,7 @@ digitalWrite(RDWR, HIGH);
 digitalWrite(SYNC, HIGH);
 */
               unselectADC(RESET, CS, RDWR, SYNC);                     // Desabilita ADC 7762
-              delayFunc(100);
+              delay(100);
 /*
 // Configuração de Portas do Bus de controle do AD7762 e Arduino
 // Configuração de Bus de dados comos saída  
@@ -184,11 +198,11 @@ delay(100);
 //************************************************
 */
                busOutputADC(D0, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15);           // Configura bus de dados como output
-               delayFunc(100);
+               delay(100);
                pulsoPinoADC(RESET, 100);                                                                     //reset ADC7762
 
                zeraOutputBusDados(D0, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15);     // Zerar saída bus de dados
-               delayFunc(100);  
+               delay(100);  
                pulsoPinoADC(SYNC, 100);  
                
   //for (contadorSetup = 0; contadorSetup < 10; contadorSetup++) {  // Laço setup
@@ -226,7 +240,7 @@ digitalWrite(CS, HIGH); // desabilita Chip Select do AD7762
               pulsoPinoADC(CS, 10);                                                                        // Habilita pulso Chip Select do AD7762 para escrita
              
               zeraBusADC(0x00000008);                                                                       //zera bus de dados
-              delayFunc(100);
+              delay(100);
 
               //*****Envia Palavra de controle do Registrador2 p/ Bus de Dados*****
               // set CDIV = 0 metade MCLk
@@ -265,7 +279,7 @@ digitalWrite(CS, HIGH); // desabilita Chip Select do AD7762
           
               pulsoPinoADC(CS, 10);                                                                         // Habilita pulso Chip Select do AD7762 para escrita
               zeraBusADC(0x00000248);                                                                       //zera bus de dados
-              delayFunc(10);
+              delay(10);
           
           
               //*********************************************************
@@ -300,7 +314,7 @@ digitalWrite(CS, HIGH);
               writeBusADC(0x00000004);                                                                      // ESCREVE Endereço 0x04 Registrador1
               pulsoPinoADC(CS, 10);                                                                         // Habilita pulso Chip Select do AD7762 para escrita
               zeraBusADC(0x00000004);                                                                       //zera endereço Reg1 do bus de dados
-              delayFunc(10);
+              delay(10);
 
               //***********************************************
               // ESCREVE WORD REG 1 0X001D
@@ -331,7 +345,7 @@ digitalWrite(CS, HIGH); // desabilita Chip Select do AD7762
               writeBusADC(0x000000064);                                                                     // ESCREVE Palavra de controle 0x64do Registrador2
               pulsoPinoADC(CS, 10);                                                                         // Habilita pulso Chip Select do AD7762 para escrita
               zeraBusADC(0x00000064);                                                                       //zera endereço Reg1 do bus de dados
-              delayFunc(10);
+              delay(10);
 
               
   //} // Final laço setup
@@ -363,10 +377,10 @@ contadorAmostra = 0;
 
 */
               zeraBusADC(0x00000064);                                                                       //zera endereço Reg1 do bus de dados
-              delayFunc(10);
+              delay(10);
               
               busInputADC(D0, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15);            // Configura bus de dados como entrada 
-              delayFunc(100);
+              delay(100);
           
               //************ Envia sinal de sincronismo SYNC ******************* 
 /*

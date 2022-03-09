@@ -1,8 +1,23 @@
+                              // Número do pino do Arduino para o pushbutton
+/*
+#ifndef _WIRING_INTERRUPTS_
+#define _WIRING_INTERRUPTS_
 
+#include "Arduino.h"
 
-void delayFunc(int temp){
-          delay(temp);
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void attachInterrupt(uint32_t pin, void (*callback)(void), uint32_t mode);
+
+void detachInterrupt(uint32_t pin);
+
+#ifdef __cplusplus
 }
+#endif
+
+#endif /* _WIRING_INTERRUPTS_ */
 
 
 void pulsoPinoADC(int x, int tempo){
