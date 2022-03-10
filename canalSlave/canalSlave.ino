@@ -7,43 +7,41 @@
 // versão 1.1 inicial
 //******************************************************************************************
 
-
-//********INICIALIZAÇAO*******************************************************************
-const int buttonPin8 = 8;     // the number of the pushbutton pin
-int buttonState8 = 0;         // variable for reading the pushbutton status
-//int DRDYstate = 1;          // variable for reading the pushbutton status
-const int habilitaMaster = 9; // the number of the pushbutton pin
-const int Start = 10;         // the number of the pushbutton pin
-int habilitaMasterState = 0;  // variable for reading the pushbutton status
-int StartState = 0;           // variable for reading the pushbutton status
-
-//#define M_PI 3.141592653589793238462643
-//#define Rsentinela 55.1
-//#define NOP() asm("nop \n")
-
-
-
-//********************CONSTANTES E VARIÁVEIS*********************************
-//#include "defConstVariaveis.h"
-//#include "myInterrupt.h"
 #include "myFunctions.h"
 #include "inicialization.h"  
 #include "MathHelpers.h" 
 #include <Wire.h>
 
-const int CS = 25;    // Port D0 Arduino -> Chip Select AD7762 pin 40
-const int RDWR = 26;  // Port D1 Arduino -> Read/Write AD7762 pin 39
-const int RESET = 27; // Port D2 Arduino -> Reset AD7762 pin 37
-const int DRDY = 23;  // Port A14 Arduino -> Data Ready Output AD7762 pin 38
-//const int DRDY = 14;  // Port D4 Arduino -> Data Ready Output AD7762 pin 38
-volatile int Nr_de_Amostras = 20;
-int ptos_por_periodo = 10;
-int Nr_de_periodos = Nr_de_Amostras/ptos_por_periodo;
-int ptos_periodo = 0;
-volatile uint32_t vetor_Amostra[20] = {0};
-volatile uint32_t vetor_segunda_palavra[20] = {0};
-volatile float converte_volts[20];
+//********INICIALIZAÇAO*******************************************************************
+/*
+int buttonState8 = 0;         // variable for reading the pushbutton status
+int habilitaMasterState = 0;  // variable for reading the pushbutton status
+int StartState = 0;           // variable for reading the pushbutton status
+*/
+//********************CONSTANTES E VARIÁVEIS*********************************
+//#define M_PI 3.141592653589793238462643
+//#define Rsentinela 55.1
+//#define NOP() asm("nop \n")
+#define CS 25                   // Port D0 Arduino -> Chip Select AD7762 pin 40
+#define RDWR 26                 // Port D1 Arduino -> Read/Write AD7762 pin 39
+#define RESET 27                // Port D2 Arduino -> Reset AD7762 pin 37
+#define DRDY 23                 // Port A14 Arduino -> Data Ready Output AD7762 pin 38
+#define buttonPin8 8            // the number of the pushbutton pin
+#define habilitaMaster 9        // the number of the pushbutton pin
+#define Start  10               // the number of the pushbutton pin
+#define Nr_de_Amostras 10
+#define ptos_por_periodo 10
+
+//volatile int Nr_de_Amostras = 10;
+//int ptos_por_periodo = 10;
+//int Nr_de_periodos = Nr_de_Amostras/ptos_por_periodo;
+//int ptos_periodo = 0;
+volatile uint32_t vetor_Amostra[Nr_de_Amostras] = {0};
+volatile uint32_t vetor_segunda_palavra[Nr_de_Amostras] = {0};
+volatile float converte_volts[Nr_de_Amostras];
   
+
+
 volatile uint32_t semiciclo_pos = 0;
 volatile uint32_t low8 = 0;
 volatile uint32_t low24 = 0;
@@ -69,11 +67,11 @@ volatile float ampTOTAL = 0;
 float fase = 0;
 volatile float faseTOTAL = 0;
 
-int NrMed = 0;
+//int NrMed = 0;
 
-unsigned int aux;
+//unsigned int aux;
   
-
+/*
  //Bus de Dados D0 à D15
 
 const int D0 = 34; //Port C2 Arduino DUE
@@ -98,7 +96,7 @@ const int D15 = 44; //Port  C19
 float piEs[] = {0.117557050458495, 0.190211303259031, 0.190211303259031, 0.117557050458495, 2.44929359829470e-17, -0.117557050458495, -0.190211303259031, -0.190211303259031, -0.117557050458495, -4.89858719658942e-17};
 float piEc[] = {0.161803398874990, 0.0618033988749894, -0.0618033988749895, -0.161803398874989, -0.200000000000000, -0.161803398874990, -0.0618033988749896, 0.0618033988749895, 0.161803398874990, 0.200000000000000};
 float piEdc[] = {0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000};
-
+*/
 
 void setup() {   //*********************INÍCIO SETUP**********************************8
     
@@ -164,7 +162,7 @@ void loop() {
                                                                                    
           while(contadorAmostra < Nr_de_Amostras){                                                        // Realiza a leitura das Nr_de_Amostras enquanto a interrupção 
                                                                                                           //"HabilitaDRDY" estiver habilitada
-                                                                                                          //Aguarda fim da inyerrupção
+                                                                                                          //Aguarda fim da interrupção
           } 
                                                  
           detachInterrupt(digitalPinToInterrupt(DRDY));                                                   //*** Desabilita interrupção p/ aquisição de amostras 
@@ -185,9 +183,6 @@ void loop() {
           //          DEMODULAÇÃO PO QUADRATURA
           //**********************************************************
           
-         
-    for(contador_aux_3 = 0; contador_aux_3 <= ptos_por_periodo; contador_aux_3 = (contador_aux_3 + ptos_por_periodo)){ // Laço demodulação por quadratur
-    
           soma_seno = convert_BIN_Volts(contador_aux_3, converte_volts, piEs);                  // convertes amostra discretizada em volts
           soma_cosseno = convert_BIN_Volts(contador_aux_3, converte_volts, piEc);               // convertes amostra discretizada em volts
           soma_offset = convert_BIN_Volts(contador_aux_3, converte_volts, piEdc);               // convertes amostra discretizada em volts
@@ -196,26 +191,18 @@ void loop() {
           
               if(fase < 0){ 
                     fase = fase + 360;                                                          // convete ândulo 0 - 360 graus
-              }
-          ampTOTAL = ampTOTAL + amplitude;                                                      // Soma dos dados para o cálculo de média estatística
-          faseTOTAL = faseTOTAL + fase;                                                         //
-          offsetTOTAL =  offsetTOTAL + soma_offset;                                             //
-    }                                                                                           // Final laço demodulação por quadratura
-         
-      //********************************************  
-      // Calcular média da ampltude, fase e offsset
-      //*******************************************
-      
-      ampTOTAL =ampTOTAL/Nr_de_periodos;                                                    // Média da amplitude                              
-      faseTOTAL = faseTOTAL/Nr_de_periodos;                                                 // Média da fase
-      offsetTOTAL = offsetTOTAL/Nr_de_periodos;                                             // média do Offset
-      
+              }          
+          ampTOTAL = amplitude;                                                      // Soma dos dados para o cálculo de média estatística
+          faseTOTAL = fase;                                                         //
+          offsetTOTAL = soma_offset;                                             //
+          
+    
                                                                                                                             
       //*********************************************************************************************
       //  TRANSMISSÃO SERIAL (I2C) DE DADOS
       //*********************************************************************************************
       
-      delayFunc(10);                                                                         // delay 10us                   
+      delay(10);                                                                         // delay 10us                   
       //********************************************
       // ZERAR VARIÁVEIS
       //********************************************                 
@@ -232,7 +219,7 @@ void loop() {
       amplitude = 0;
       fase = 0;
       semiciclo_pos = 0;
-      aux = 0;      
+      //aux = 0;      
 }                                                                                               // Final do loop()
 //**********************************************************************************************************************************
 
@@ -288,12 +275,12 @@ void requestEvent() {
 
 union Nr_IEEE754_union {float as_float ; byte as_byte[4];} amplitude_union;            // Coversão foat ampTOTAL em 4 bytes para transmissão serial I2C 
 amplitude_union.as_float = ampTOTAL;
-union Nr_IEEE754_union fase_union;                              // Coversão foat faseTOTAL em 4 bytes para transmissão serial I2C 
+union Nr_IEEE754_union fase_union;                                                    // Coversão foat faseTOTAL em 4 bytes para transmissão serial I2C 
 fase_union.as_float = faseTOTAL;
-union Nr_IEEE754_union offset_union;                            // Coversão foat offsetTOTAL em 4 bytes para transmissão serial I2C 
+union Nr_IEEE754_union offset_union;                                                  // Coversão foat offsetTOTAL em 4 bytes para transmissão serial I2C 
 offset_union.as_float = offsetTOTAL;
 
-Wire.write(amplitude_union.as_byte[0]);                         // Envia o bytes da ampTOTAL
+Wire.write(amplitude_union.as_byte[0]);                                               // Envia o bytes da ampTOTAL
 Wire.write(amplitude_union.as_byte[1]);                                              
 Wire.write(amplitude_union.as_byte[2]);
 Wire.write(amplitude_union.as_byte[3]);

@@ -96,37 +96,7 @@ volatile uint32_t convert32to24bits(int Nr_de_Amostras, volatile uint32_t *vetor
         vetor_Amostra[contador_aux_1] = vetor_Amostra[contador_aux_1] << 8 | low24; // Amostra discretizada com 24 bits;    
      }                                                                              // Final laço Rearranjar 32 bits NÃO CONSECUTIVOS  
 }
-/*
-volatile float demoduQuadratura(volatile float *converte_volts, volatile float *piEs,  volatile float *piEc,  volatile float *piEdc){
 
-    for(int contador_aux_3 = 0; contador_aux_3 <= 10; contador_aux_3 = (contador_aux_3 + 10)){    // Laço demodulação por quadratura
-      for (int coluna_piE = 0; coluna_piE < 10; coluna_piE++) {                                   // Nr de amostras
-          int ptos_periodo = contador_aux_3 + coluna_piE;                                     // Nr de amostras de cada periodo
-          
-          // Multiplica a matriz do sinal convertido pela matriz pseudo inversa piE
-          float soma_seno = soma_seno + (float)converte_volts[ptos_periodo]*(float)piEs[coluna_piE]; 
-          float soma_cosseno = soma_cosseno + (float)converte_volts[ptos_periodo]*(float)piEc[coluna_piE];
-          float soma_offset = soma_offset + (float)converte_volts[ptos_periodo]*(float)piEdc[coluna_piE];
-          }
-        /* 
-        float amplitude = 2*sqrt(sq(soma_seno)+sq(soma_cosseno));                                       // Cálculo da amplitude
-        float fase = atan2(soma_cosseno , soma_seno)*(180/M_PI);                                        // cálculo da fase
-    
-          if(fase < 0){ 
-              fase = fase + 360;
-          }
-        ampTOTAL = (ampTOTAL + amplitude)/2;                                                          // Media de dois periodos
-        faseTOTAL = (faseTOTAL + fase)/2;                                                             // Media de dois periodos
-        offsetTOTAL =  (offsetTOTAL + soma_offset)/2;                                                 // Media de dois periodos
-        
-        coluna_piE = 0;
-        amplitude = 0;
-        soma_seno = 0; 
-        soma_cosseno = 0;
-        soma_offset = 0;
-        fase = 0;*/
-    //}     // Final laço demodulação por quadratura 
-//}
 
 
 volatile float convert_BIN_Volts(int contador, volatile float *converte_volts, float *arrayPIE){

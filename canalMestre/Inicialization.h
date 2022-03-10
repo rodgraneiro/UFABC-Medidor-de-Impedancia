@@ -4,26 +4,25 @@
 unsigned long Time_1 = 0;
 unsigned long Time_2 = 0;
 
-const int CS = 25;                        // Port D0 Arduino -> Chip Select AD7762 pin 40
-const int RDWR = 26;                      // Port D1 Arduino -> Read/Write AD7762 pin 39
-const int RESET = 27;                     // Port D2 Arduino -> Reset AD7762 pin 37
+//const int CS = 25;                        // Port D0 Arduino -> Chip Select AD7762 pin 40
+//const int RDWR = 26;                      // Port D1 Arduino -> Read/Write AD7762 pin 39
+//const int RESET = 27;                     // Port D2 Arduino -> Reset AD7762 pin 37
 //const int DRDY = 23;                      // Port A14 Arduino -> Data Ready Output AD7762 pin 38
-const int SYNC = 24;                      // Port A15 Arduino -> Synchronization Input AD7762 pin 36
+//const int SYNC = 24;                      // Port A15 Arduino -> Synchronization Input AD7762 pin 36
 
 //const int buttonPin8 = 8;     // Número do pino do Arduino para o pushbutton
 int buttonState8 = 0;         // Variável p/ armazenar status  do pushbutton
 
-int banana= 0;
 
 #define Nr_de_Amostras  10
 #define ptos_por_periodo 10
-//volatile int Nr_de_Amostras = 10;
+
 volatile uint32_t vetor_Amostra[Nr_de_Amostras] = {0};
 volatile uint32_t vetor_segunda_palavra[Nr_de_Amostras] = {0};
 volatile float converte_volts[Nr_de_Amostras] = {0};
 int Nr_de_periodos = Nr_de_Amostras/ptos_por_periodo;
 int ptos_periodo = 0;
-//int ptos_por_periodo = 10;
+
 
 //volatile uint32_t sinal_negativo = 0;
 //volatile uint32_t semiciclo_neg = 0;
