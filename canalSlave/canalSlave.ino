@@ -41,7 +41,7 @@ volatile uint32_t vetor_segunda_palavra[Nr_de_Amostras] = {0};
 volatile float converte_volts[Nr_de_Amostras];
   
 
-
+/*
 volatile uint32_t semiciclo_pos = 0;
 volatile uint32_t low8 = 0;
 volatile uint32_t low24 = 0;
@@ -53,19 +53,21 @@ int contador_aux_3 = 0;
 float soma_seno = 0;
 float soma_cosseno = 0;
 float soma_offset = 0;
-
-float Rsentinela = 55.1;
-float fator_conv_corrente = 1.299285e-7;
-unsigned long tempo_inicio = millis();
-unsigned long tempo_exec[20] = {0};
-long Nr_medicao = 0;
-
+*/
+//float Rsentinela = 55.1;
+//float fator_conv_corrente = 1.299285e-7;
+//unsigned long tempo_inicio = millis();
+//unsigned long tempo_exec[20] = {0};
+//long Nr_medicao = 0;
+/*
 int coluna_piE = 0;
 volatile float offsetTOTAL = 0;
 float amplitude = 0;
 volatile float ampTOTAL = 0;
 float fase = 0;
 volatile float faseTOTAL = 0;
+*/
+
 
 //int NrMed = 0;
 
