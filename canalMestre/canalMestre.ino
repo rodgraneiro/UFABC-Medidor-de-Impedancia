@@ -20,7 +20,7 @@
 
 //#define Nr_de_Amostras  10
 #define M_PI 3.141592653589
-#define CS  25                        // Port D0 Arduino -> Chip Select AD7762 pin 40
+#define CS 25                        // Port D0 Arduino -> Chip Select AD7762 pin 40
 #define RDWR  26                      // Port D1 Arduino -> Read/Write AD77627932384626
 #define NOP() asm("nop \n")
 #define buttonPin8  8                 // pin 39
@@ -141,6 +141,7 @@ void setup() {   //*********************INÍCIO SETUP***************************
               //pinMode(buttonPin8, INPUT);     // Inicializa pino do pushbutton como input:
               //Serial.begin(115200);
               Serial.begin(9600);
+              /*
               Wire.begin();                 // Endereço canalSlave
               //Wire.onReceive(receiveEvent);   // register event
               
@@ -152,7 +153,7 @@ void setup() {   //*********************INÍCIO SETUP***************************
               lcd.print("MIE-EBM-UFABC");       // Envia o texto entre aspas para o LCD
               lcd.setCursor(1, 1);              // Posiciona o cursor na coluna 1, linha 0;
               lcd.print("Pressione bot 1");     // Envia o texto entre aspas para o LCD
-              
+              */
 /*                                // Configuração de Ports para iniciar AD7762  
 pinMode(CS, OUTPUT);               // Port D0 do Arduino Due
 pinMode(RDWR, OUTPUT);             // Port D1 do Arduino Due
@@ -169,7 +170,7 @@ digitalWrite(RDWR, HIGH);
 digitalWrite(SYNC, HIGH);
 */
               unselectADC(RESET, CS, RDWR, SYNC);                     // Desabilita ADC 7762
-              delay(100);
+              //delay(100);
 /*
 // Configuração de Portas do Bus de controle do AD7762 e Arduino
 // Configuração de Bus de dados comos saída  
@@ -203,14 +204,15 @@ delay(100);
 
                zeraOutputBusDados(D0, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15);     // Zerar saída bus de dados
                delay(100);  
-               pulsoPinoADC(SYNC, 100);  
+               //pulsoPinoADC(SYNC, 100);  
                
-  //for (contadorSetup = 0; contadorSetup < 10; contadorSetup++) {  // Laço setup
+  for (int contadorSetup = 0; contadorSetup < 2; contadorSetup++) {  // Laço setup
                
               // Envia Endereço Registrador2 p/ Bus de Dados**************************
-/*
-digitalWrite(D0, LOW);      //Endereço Registrador 2  0x0002
+
+//digitalWrite(D0, LOW);      //Endereço Registrador 2  0x0002
 digitalWrite(D1, HIGH);
+/*
 digitalWrite(D2, LOW);
 digitalWrite(D3, LOW);
 digitalWrite(D4, LOW);
@@ -225,6 +227,7 @@ digitalWrite(D12, LOW);
 digitalWrite(D13, LOW);
 digitalWrite(D14, LOW);
 digitalWrite(D15, LOW);
+*/
 //*****************************************************
 
 
@@ -232,31 +235,35 @@ digitalWrite(D15, LOW);
 // ESCREVE Endereço Registrador2
 //*********************************************
 
-delay(10);
-digitalWrite(CS, LOW);  // Habilita Chip Select do AD7762 para escrita
-digitalWrite(CS, HIGH); // desabilita Chip Select do AD7762 
-*/
+//delay(10);
+//digitalWrite(CS, LOW);  // Habilita Chip Select do AD7762 para escrita
+//digitalWrite(CS, HIGH); // desabilita Chip Select do AD7762 
+               pulsoPinoADC(CS, 5);  
+              /*
               writeBusADC(0x00000008);                                                                     // ESCREVE Endereço Registrador2
-              pulsoPinoADC(CS, 10);                                                                        // Habilita pulso Chip Select do AD7762 para escrita
+              delay(100);
+              pulsoPinoADC(CS, 5);                                                                        // Habilita pulso Chip Select do AD7762 para escrita
              
               zeraBusADC(0x00000008);                                                                       //zera bus de dados
               delay(100);
-
+              pulsoPinoADC(CS, 5);
+               */
               //*****Envia Palavra de controle do Registrador2 p/ Bus de Dados*****
               // set CDIV = 0 metade MCLk
               // set DIPD = 0 habilita Dif Amp
               // set PD = 0 habilita CI (Power ON)
               // set LPWR = 0 seta power no modo normal
               //******************************************************      
-/*
-digitalWrite(D0, LOW);    //DIPD
-digitalWrite(D1, HIGH);   // "1"
-digitalWrite(D2, LOW);    //LPWR
-digitalWrite(D3, LOW);    //PD
+
+//digitalWrite(D0, LOW);    //DIPD
+//digitalWrite(D1, HIGH);   // "1"
+//digitalWrite(D2, LOW);    //LPWR
+//digitalWrite(D3, LOW);    //PD
 digitalWrite(D4, HIGH);   // Default 9B
-digitalWrite(D5, LOW);    //CDIV
-digitalWrite(D6, LOW);    //Default 9B
+//digitalWrite(D5, LOW);    //CDIV
+//digitalWrite(D6, LOW);    //Default 9B
 digitalWrite(D7, HIGH);   //Default 9B
+/*
 digitalWrite(D8, LOW);
 digitalWrite(D9, LOW);
 digitalWrite(D10, LOW);
@@ -265,23 +272,25 @@ digitalWrite(D12, LOW);
 digitalWrite(D13, LOW);
 digitalWrite(D14, LOW);
 digitalWrite(D15, LOW);
-
+*/
 //******************************************
 // ESCREVE palavra de controle no Registrador2
 //*********************************************      
 
-delay(10);
-digitalWrite(CS, LOW);  // Habilita Chip Select do AD7762 para escrita
-digitalWrite(CS, HIGH); // desabilita Chip Select do AD7762 
+//delay(10);
+//digitalWrite(CS, LOW);  // Habilita Chip Select do AD7762 para escrita
+//digitalWrite(CS, HIGH); // desabilita Chip Select do AD7762 
 //*********************************************************
-*/
+               pulsoPinoADC(CS, 5);  
+              /*
               writeBusADC(0x00000248);                                                                      // ESCREVE Palavra de controle do Registrador2
-          
-              pulsoPinoADC(CS, 10);                                                                         // Habilita pulso Chip Select do AD7762 para escrita
+              delay(100);
+              pulsoPinoADC(CS, 1);                                                                         // Habilita pulso Chip Select do AD7762 para escrita
+              //zeraOutputBusDados(D0, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15);
               zeraBusADC(0x00000248);                                                                       //zera bus de dados
-              delay(10);
-          
-          
+              delay(100);
+               pulsoPinoADC(CS, 1);
+              */
               //*********************************************************
               // ESCREVE END REG 1 0X0001
               //******************************************************** 
@@ -312,9 +321,12 @@ digitalWrite(CS, HIGH);
 */
 
               writeBusADC(0x00000004);                                                                      // ESCREVE Endereço 0x04 Registrador1
+              delay(10);
               pulsoPinoADC(CS, 10);                                                                         // Habilita pulso Chip Select do AD7762 para escrita
+              //zeraOutputBusDados(D0, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15);
               zeraBusADC(0x00000004);                                                                       //zera endereço Reg1 do bus de dados
               delay(10);
+              pulsoPinoADC(CS, 10);
 
               //***********************************************
               // ESCREVE WORD REG 1 0X001D
@@ -342,13 +354,16 @@ digitalWrite(CS, LOW);  // Habilita Chip Select do AD7762 para escrita
 digitalWrite(CS, HIGH); // desabilita Chip Select do AD7762  
 */
 
-              writeBusADC(0x000000064);                                                                     // ESCREVE Palavra de controle 0x64do Registrador2
-              pulsoPinoADC(CS, 10);                                                                         // Habilita pulso Chip Select do AD7762 para escrita
-              zeraBusADC(0x00000064);                                                                       //zera endereço Reg1 do bus de dados
+              writeBusADC(0x00000068);                                                                     // ESCREVE Palavra de controle 0x64do Registrador2
               delay(10);
+              pulsoPinoADC(CS, 10);                                                                         // Habilita pulso Chip Select do AD7762 para escrita
+              //zeraOutputBusDados(D0, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15);
+              zeraBusADC(0x00000068);                                                                       //zera endereço Reg1 do bus de dados
+              delay(10);
+               pulsoPinoADC(CS, 10);
 
               
-  //} // Final laço setup
+  } // Final laço setup
 /*
 delay(100);
 
@@ -376,8 +391,8 @@ delay(100);
 contadorAmostra = 0;
 
 */
-              zeraBusADC(0x00000064);                                                                       //zera endereço Reg1 do bus de dados
-              delay(10);
+              //zeraBusADC(0x00000064);                                                                       //zera endereço Reg1 do bus de dados
+              //delay(10);
               
               busInputADC(D0, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15);            // Configura bus de dados como entrada 
               delay(100);
@@ -389,7 +404,22 @@ delay(500);
 digitalWrite(SYNC, HIGH);
 delay(100);
 */
+              
               pulsoPinoADC(SYNC, 200);    
+
+
+               Wire.begin();                 // Endereço canalSlave
+              //Wire.onReceive(receiveEvent);   // register event
+              
+              
+              //***************inicia LCD 
+              lcd.begin(16, 2);                 // Define o número de colunas e linhas do LCD
+              lcd.clear();                      // Limpa a tela
+              lcd.setCursor(1, 0);              // Posiciona o cursor na coluna 1, linha 0;
+              lcd.print("MIE-EBM-UFABC");       // Envia o texto entre aspas para o LCD
+              lcd.setCursor(1, 1);              // Posiciona o cursor na coluna 1, linha 0;
+              lcd.print("Pressione bot 1");     // Envia o texto entre aspas para o LCD
+              
 
 
           //Time_2 = micros() - Time_1;
@@ -558,7 +588,7 @@ Serial.print("  ;  ");
                 // Determinar Amplitude, fase e offset. Serão utilizados os três últimos períodos
                 // para evitar transientes do início da medição;
 
-for(contador_aux_3 = 0; contador_aux_3 <= ptos_por_periodo; contador_aux_3 = (contador_aux_3 + ptos_por_periodo)){ // Laço demodulação por quadratur
+//for(contador_aux_3 = 0; contador_aux_3 <= ptos_por_periodo; contador_aux_3 = (contador_aux_3 + ptos_por_periodo)){ // Laço demodulação por quadratur
   
           soma_seno = convert_BIN_Volts(contador_aux_3, converte_volts, piEs);                  // convertes amostra discretizada em volts
           soma_cosseno = convert_BIN_Volts(contador_aux_3, converte_volts, piEc);               // convertes amostra discretizada em volts
@@ -574,7 +604,7 @@ for(contador_aux_3 = 0; contador_aux_3 <= ptos_por_periodo; contador_aux_3 = (co
           offsetTOTAL =  offsetTOTAL + soma_offset;                                             //
 
           
-    } //time 180us
+    //} //time 180us
                       
 /*           
 for(contador_aux_3 = 0; contador_aux_3 <= 10; contador_aux_3 = (contador_aux_3 + 10)){ // Laço Matriz pseudo inversa
