@@ -107,12 +107,12 @@ void setup() {   //*********************INÍCIO SETUP***************************
           Wire.onRequest(requestEvent); // register event              
           
           busColtrolIni(CS, RDWR, RESET, DRDY, buttonPin8, habilitaMaster);                             // Configuração de Portas do Bus de controle do AD7762 e Arduino
-          delayFunc(100);
+          delayFunc(150);
           
           unselectADC(RESET, CS, RDWR);                                                                 // Desabilita ADC 7762
 
           busOutputADC(D0, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15);           // Configura bus de dados como output
-          delayFunc(100);
+          delayFunc(260);
           pulsoPinoADC(RESET, 100);                                                                     //reset ADC7762
            
           zeraOutputBusDados(D0, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15);     // Zerar saída bus de dados
@@ -150,7 +150,7 @@ void setup() {   //*********************INÍCIO SETUP***************************
           delayFunc(10);
 
           busInputADC(D0, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15);            // Configura bus de dados como entrada 
-          delayFunc(600);                                                                               // aguarda sinal de SYNC
+          delayFunc(100);                                                                               // aguarda sinal de SYNC
 }                                                                                                       //**********************FINAL SETUP PRINCIPAL ****************************/
 
 
