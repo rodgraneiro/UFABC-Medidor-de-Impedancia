@@ -122,120 +122,60 @@ digitalWrite(D7, HIGH);   //Default 9B
 
 
 //****************************
-//Prepara PORTC como INPUT
 
-              //zeraBusADC(0x00000064);                                                                       //zera endereço Reg1 do bus de dados
-              //delay(10);
-              
-              busInputADC(D0, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15);            // Configura bus de dados como entrada 
+                                                                                                           //Prepara PORTC como INPUT           
+              busInputADC(D0, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15);          // Configura bus de dados como entrada 
               delay(100);
           
-              //************ Envia sinal de sincronismo SYNC ******************* 
-            
-              pulsoPinoADC(SYNC, 200);    
+              pulsoPinoADC(SYNC, 200);                                                                    // Envia sinal de sincronismo SYNC *******************  
 
-
-               Wire.begin();                 // Endereço canalSlave
-              //Wire.onReceive(receiveEvent);   // register event
+              Wire.begin();                                                                              // Incia comunicação I2C
               
               
-              //***************inicia LCD 
-              lcd.begin(16, 2);                 // Define o número de colunas e linhas do LCD
-              lcd.clear();                      // Limpa a tela
-              lcd.setCursor(1, 0);              // Posiciona o cursor na coluna 1, linha 0;
-              lcd.print("MIE-EBM-UFABC");       // Envia o texto entre aspas para o LCD
-              lcd.setCursor(1, 1);              // Posiciona o cursor na coluna 1, linha 0;
-              lcd.print("Pressione bot 1");     // Envia o texto entre aspas para o LCD
+                                                                                                          //***************inicia LCD 
+              lcd.begin(16, 2);                                                                           // Define o número de colunas e linhas do LCD
+              lcd.clear();                                                                                // Limpa a tela
+              lcd.setCursor(1, 0);                                                                        // Posiciona o cursor na coluna 1, linha 0;
+              lcd.print("MIE-EBM-UFABC");                                                                 // Envia o texto entre aspas para o LCD
+              lcd.setCursor(1, 1);                                                                        // Posiciona o cursor na coluna 1, linha 0;
+              lcd.print("Pressione bot 1");                                                               // Envia o texto entre aspas para o LCD
               
-
-
-          //Time_2 = micros() - Time_1;
-          //Serial.println(Time_2); 
 }         //**********************FINAL de void setup() ****************************
     
 
 
 void loop() { //***************************** INÍCIO void loop() *****************************
 
-               //Time_1 = micros();
-              //**** Habilita interrupção do botão que dispara a Medição das N_amostras
-              attachInterrupt(digitalPinToInterrupt(buttonPin8), HabilitaDRDY, RISING);       // Habilita interrupção do botão de início de medição
-                                                                                              // e vai para interrupção LeAdc              
-              while(contadorAmostra < Nr_de_Amostras){                                        // Realiza a leitura das Nr_de_Amostras enquanto                           
-                                                     }                                        // a interrupção "HabilitaDRDY" estiver habilitad
-
-              detachInterrupt(digitalPinToInterrupt(DRDY));                                   //*** Desabilita interrupção p/ aquisição de amostras   
-              
-                
-//*************************************************************
-// Rearranjar 32 bits "NÃO CONSECUTIVOS" do portC do Arduino em 24 bits CONSECUTIVOS
-// O AD7762 disponibiliza a amostra discretizada com resolução de 24 bits em duas "palavras" de 16 bits.
-// Entretanto, o kit do Arduino DUE não tem 16 bits consecutivos disponíveis para uso.
-// Portanto, é necessário mapear as palavras 1 e 2 do AD7762 como segue:
-// bit do registrador PortC UTILIZADO  = " V "
-// bit do registrador PortC NÃO UTILIZADO  = " . "
-// OBS. Arduino Due
-//*************************************************************
-
-//   Mapeamento das palavras: 
-//   Primeira palavra (MSD) -> 16 bits de 23 à 8 
-//   Segunda palavta (LSD)  -> 8 bits de 7 à 0
-//   A seguir, mapa com os pinos do portC do Arduino DUE utilzados no hardware.
-//-------------------------------------------------------------------------------------------------------------        
-// N_bt PortC/|31|30|29|28|27|26|25|24|23|22|21|20|19|18|17|16|15|14|13|12|11|10|9 |8 |7 |6 |5 |4 |3 |2 |1 | 0|
-// /Arduino   |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
-// Palavra 1  |. |. |. |. |. |. |. |. |. |. |. |. |V |V |V |V |V |V |V |V |. |. |V |V |V |V |V |V |V |V |. |. | 
-// Palavra 2  |. |. |. |. |. |. |. |. |. |. |. |. |V |V |V |V |V |V |V |V |. |. |. |. |. |. |. |. |. |. |. |. | 
-//-------------------------------------------------------------------------------------------------------------     
-
-
-                 
-                 convert32to24bits(Nr_de_Amostras, vetor_Amostra, vetor_segunda_palavra);                        // coverte palavra de 32 bits para 24 bits 
-                 //time 16us
-                //********************************************************************* 
-                // Verificação de sinal positivo/negativo no bit 23 e complemento de 2
-                // conversão para tensão em volts
-                //*********************************************************************
-             
-              verifSinalNeg(Nr_de_Amostras, vetor_Amostra, converte_volts, fator_conv_volts);
-              //time 46us
-
-              //Nr_medicao = Nr_medicao + 1;
-              //contador_aux_2 = 0;
-              //Serial.println("Valor convertido X valor decimal");                                    // imprime amostras p debug
-              
-
-
-
-                //**********************************************************
-                //          DEMODULAÇÃO PO QUADRATURA
-                //**********************************************************
-  
-          soma_seno = convert_BIN_Volts(contador_aux_3, converte_volts, piEs);                  // convertes amostra discretizada em volts
-          soma_cosseno = convert_BIN_Volts(contador_aux_3, converte_volts, piEc);               // convertes amostra discretizada em volts
-          soma_offset = convert_BIN_Volts(contador_aux_3, converte_volts, piEdc);               // convertes amostra discretizada em volts
-          amplitude = 2*sqrt(sq(soma_seno)+sq(soma_cosseno));                                   // Cálculo da amplitude
-          fase = atan2(soma_cosseno , soma_seno)*(180/PI);                                      // cálculo da fase
-          
-              if(fase < 0){ 
-                    fase = fase + 360;                                                          // convete ândulo 0 - 360 graus
-              }
-          ampTOTAL = amplitude;                                                      // Soma dos dados para o cálculo de média estatística
-          faseTOTAL = fase;                                                         //
-          offsetTOTAL =  offsetTOTAL;                                             //
-
-          
-                                           
-              //********************************************  
-              // Calcular média da ampltude, fase e offsset
-              //*******************************************
-              /*      
-              ampTOTAL =ampTOTAL/Nr_de_periodos;             // Média da amplitude
-              faseTOTAL = faseTOTAL/Nr_de_periodos;          // Média da fase
-              offsetTOTAL = offsetTOTAL/Nr_de_periodos;      // média do Offset
-              */
-              faseTOTALchA = faseTOTAL;
-              // 5us
+        //**** Habilita interrupção do botão que dispara a Medição das N_amostras
+        attachInterrupt(digitalPinToInterrupt(buttonPin8), HabilitaDRDY, RISING);       // Habilita interrupção do botão de início de medição
+                                                                                  // e vai para interrupção LeAdc              
+        while(contadorAmostra < Nr_de_Amostras){                                        // Realiza a leitura das Nr_de_Amostras enquanto                           
+                                         }                                        // a interrupção "HabilitaDRDY" estiver habilitad
+        detachInterrupt(digitalPinToInterrupt(DRDY));                                   //*** Desabilita interrupção p/ aquisição de amostras   
+        
+        convert32to24bits(Nr_de_Amostras, vetor_Amostra, vetor_segunda_palavra);                        // coverte palavra de 32 bits para 24 bits 
+        verifSinalNeg(Nr_de_Amostras, vetor_Amostra, converte_volts, fator_conv_volts);
+        //time 46us
+        
+                                                                                              //**********************************************************
+                                                                                              //          DEMODULAÇÃO PO QUADRATURA
+                                                                                              //**********************************************************
+        
+        soma_seno = convert_BIN_Volts(contador_aux_3, converte_volts, piEs);                  // convertes amostra discretizada em volts
+        soma_cosseno = convert_BIN_Volts(contador_aux_3, converte_volts, piEc);               // convertes amostra discretizada em volts
+        soma_offset = convert_BIN_Volts(contador_aux_3, converte_volts, piEdc);               // convertes amostra discretizada em volts
+        amplitude = 2*sqrt(sq(soma_seno)+sq(soma_cosseno));                                   // Cálculo da amplitude
+        fase = atan2(soma_cosseno , soma_seno)*(180/PI);                                      // cálculo da fase
+        
+            if(fase < 0){ 
+                fase = fase + 360;                                                            // convete ândulo 0 - 360 graus
+            }
+        
+        ampTOTAL = amplitude;                                                                 // Soma dos dados para o cálculo de média estatística
+        faseTOTAL = fase;                                                         
+        offsetTOTAL =  offsetTOTAL;                                                 
+        faseTOTALchA = faseTOTAL;
+        // 5us
                 
 /*
 // Para debug
@@ -249,201 +189,123 @@ void loop() { //***************************** INÍCIO void loop() **************
 //Serial.print("  ;  ");
 //Serial.println(sci(offsetTOTAL,4));
 */
-              //delay(300);
-              contadorAmostra = 0;
-              contador_aux_1 = 0;
-              contador_aux_2 = 0;
-              contador_aux_3 = 0;
-              coluna_piE = 0;
-              soma_seno = 0;
-              soma_cosseno = 0;
-              soma_offset = 0;
-              amplitude = 0;
-              fase =0;
-              faseTOTAL = 0;
-              offsetTOTAL = 0; 
-              // 3us          
-              //*****************************************************************************************
-              
-              delay(10);
+        //delay(300);
+        contadorAmostra = 0;
+        contador_aux_1 = 0;
+        contador_aux_2 = 0;
+        contador_aux_3 = 0;
+        coluna_piE = 0;
+        soma_seno = 0;
+        soma_cosseno = 0;
+        soma_offset = 0;
+        amplitude = 0;
+        fase =0;
+        faseTOTAL = 0;
+        offsetTOTAL = 0; 
+              // 3us
+        delay(10);              
+//*****************************************************************************************
+                    
+        Wire.requestFrom(8, 12);    // request 6 bytes from slave device #8
+        // 1192us
+        
+        while(Wire.available()) { // slave may send less than requested
+            Time_1 = micros();
+            canal_escravo_data[0] = Wire.read();                            // Lê os 4 bytes da amplitude enviados pelo escravo 
+            canal_escravo_data[1] = Wire.read(); 
+            canal_escravo_data[2] = Wire.read(); 
+            canal_escravo_data[3] = Wire.read(); 
             
-Wire.requestFrom(8, 12);    // request 6 bytes from slave device #8
-// 1192us
-
-while(Wire.available()) { // slave may send less than requested
-Time_1 = micros();
-canal_escravo_data[0] = Wire.read();                            // Lê os 4 bytes da amplitude enviados pelo escravo 
-canal_escravo_data[1] = Wire.read(); 
-canal_escravo_data[2] = Wire.read(); 
-canal_escravo_data[3] = Wire.read(); 
-
-canal_escravo_data[4] = Wire.read();                            // Lê os 4 bytes da fase enviados pelo escravo 
-canal_escravo_data[5] = Wire.read(); 
-canal_escravo_data[6] = Wire.read(); 
-canal_escravo_data[7] = Wire.read(); 
-
-canal_escravo_data[8] = Wire.read();                            // Lê os 4 bytes do offset enviados pelo escravo 
-canal_escravo_data[9] = Wire.read(); 
-canal_escravo_data[10] = Wire.read(); 
-canal_escravo_data[11] = Wire.read();           
-// 6us
-
-}
-
- delay(10);
-union Nr_IEEE754_union {byte as_byte[4]; float as_float;} amplitude_union;  //Nr float formato IEEE754 de 32 |Sinal|Expoente|Mantissa| 
-amplitude_union.as_byte[0] = canal_escravo_data[0];
-amplitude_union.as_byte[1] = canal_escravo_data[1];
-amplitude_union.as_byte[2] = canal_escravo_data[2];
-amplitude_union.as_byte[3] = canal_escravo_data[3];   
-float AMPLITUDE = amplitude_union.as_float  ;
-ampTOTALchSlave = AMPLITUDE;
-// 2us
-
-union Nr_IEEE754_union fase_union;   
-fase_union.as_byte[0] = canal_escravo_data[4];
-fase_union.as_byte[1] = canal_escravo_data[5];
-fase_union.as_byte[2] = canal_escravo_data[6];
-fase_union.as_byte[3] = canal_escravo_data[7];   
-float FASE = fase_union.as_float  ;
-faseTOTALchSlave = FASE;
-
-union Nr_IEEE754_union offset_union;   
-offset_union.as_byte[0] = canal_escravo_data[8];
-offset_union.as_byte[1] = canal_escravo_data[9];
-offset_union.as_byte[2] = canal_escravo_data[10];
-offset_union.as_byte[3] = canal_escravo_data[11];   
-float OFFSET = offset_union.as_float  ;
-offsetTOTALchSlave = OFFSET;
-              //***************************
-               //Serial.print(Nr_medicao);
-             // Serial.print("  ;  ");
-              //Serial.println("Variaveis recebidas do canal ESCRAVO:");
-              //Serial.print(Nr_medicao);
-              //Serial.print("  ;  ");
-              //Serial.print("amplitude - fase - offset ");
-              //Serial.print("  ;  ");
-              //Serial.print(sci(ampTOTALchSlave,4));
-              //Serial.print("  ;  ");
-              //Serial.print(sci(faseTOTALchSlave,4));
-              //Serial.print("  ;  ");
-              //Serial.println(sci(offsetTOTALchSlave,4));
-              
-              // Cálculo da impedância e ângulo theta 
-                     
-              impedancia_Z = ampTOTAL / ampTOTALchSlave;             // Cálculo da impedância
-              impedancia_fase = faseTOTALchA - faseTOTALchSlave;     // Cálculo do ângulo theta
-              // 6us
-
-              
-              //Time_1 = micros();
-              //Time_2 = micros() - Time_1;
-              //Serial.println(Time_2); 
-
-
-              
-              //impedanceSave(impedancia_Z, impedancia_fase);
-              vetorModulo_Z[indiceSave] = impedancia_Z;
-              vetorFase[indiceSave] = impedancia_fase;
-              //Serial.print(indiceSave);
-              //Serial.print(" ");  
-              //Serial.print(vetorModulo_Z[indiceSave], 2);
-              //Serial.print(" ");
-              //Serial.println(vetorFase[indiceSave],4);
-              indiceSave++;
-
-              //Time_2 = micros() - Time_1;
-              //Serial.println(Time_2);    
-              
-              if(indiceSave > vetorSize){
-              detachInterrupt(digitalPinToInterrupt(DRDY));
-              detachInterrupt(digitalPinToInterrupt(buttonPin8));
-                 /* for(int i = 1; i <= vetorSize ; i++){
-                            //Serial.print(i);
-                            Serial.print("  ->banana");
-                            Serial.print(vetorModulo_Z[i], 2);
-                            Serial.print(" ");
-                            Serial.println(vetorFase[i],4);
-                            indiceSave = 0;
-                      
-                        }*/
-
-
-              ordena_vetores(vetorModulo_Z, vetorFase, vetorSize);
-              trima_array(vetorModulo_Z, vetorFase, Z_trimed, Ph_trimed, vetorSize, quartil);
-              ordena_vetores(Ph_trimed, Z_trimed, Primeiroquartil);
-              trima_array(Z_trimed, Ph_trimed, Z2_trimed, Ph2_trimed, Primeiroquartil, quartil);
-              media_polar(Z2_trimed, Ph2_trimed, Segundoquartil, &modulo_Z, &fase_Z);
-              delay(10);          
-              // ************ DISPLAY **********************************
-              //Envia os dados calculados para o display
-              
-              lcd.begin(16, 2);             // Define o número de colunas e linhas do LCD
-              lcd.clear();                  // Limpa a tela
-              lcd.setCursor(0, 0);          // Posiciona o cursor na coluna 0, linha 0;
-              lcd.print("Z =");             // Escrever "Z =" no display
-              lcd.setCursor(4, 0);          // Posiciona o cursor na coluna 4, linha 0;
-              lcd.print(modulo_Z,4);        // Escrever valor da Impedância "X.XXXX"
-              lcd.setCursor(15, 0);         // Posiciona o cursor na coluna 15, linha 1;
-              lcd.write(B11110100);         // ômega
-              lcd.setCursor(0, 1);          // Posiciona o cursor na coluna 0, linha 1;
-              lcd.write(B11110010);         // theta
-              lcd.setCursor(1, 1);          // Posiciona o cursor na coluna 1, linha 1;
-              lcd.print(" =");              // Escrever " =" no display
-              lcd.setCursor(4, 1);          // Posiciona o cursor na coluna 4, linha 1;
-              lcd.print(fase_Z,2);          // Escrever valor da fase "XX.X"
-              lcd.setCursor(15, 1);         // Posiciona o cursor na coluna 15, linha 1;
-              lcd.write(B11011111);          // graus
-
-              Serial.print("media trimada:  ");
-              Serial.print(modulo_Z, 2);
-              Serial.print(" ");
-              Serial.println(fase_Z,2);
-              indiceSave = 0;
-              delay(10);
-              }
-              //Nr_medicao = Nr_medicao + 1;
-            /*
-              Serial.print(Nr_medicao);
-              Serial.print("  ;  ");
-              Serial.print(" IMPEDANCIA - FASE ");
-              Serial.print("  ;  ");
-              Serial.print(impedancia_Z,4);
-              Serial.print("  ;  ");
-              //Serial.println(sci(impedancia_fase,4));
-              Serial.println(impedancia_fase,4);
-            */
-
-
-              ampTOTAL = 0;
-              ampTOTALchSlave = 0;
-              faseTOTALchA =0;
-              faseTOTALchSlave = 0;
-              offsetTOTAL = 0;
-              offsetTOTALchSlave = 0;
-              //sinal_fase_Slave = 0;
-             
-
-
-
+            canal_escravo_data[4] = Wire.read();                            // Lê os 4 bytes da fase enviados pelo escravo 
+            canal_escravo_data[5] = Wire.read(); 
+            canal_escravo_data[6] = Wire.read(); 
+            canal_escravo_data[7] = Wire.read(); 
             
-/*if (Serial.available() > 0)
-{
-dataToSend = Serial.read();    
+            canal_escravo_data[8] = Wire.read();                            // Lê os 4 bytes do offset enviados pelo escravo 
+            canal_escravo_data[9] = Wire.read(); 
+            canal_escravo_data[10] = Wire.read(); 
+            canal_escravo_data[11] = Wire.read();           
+            // 6us
+        }
 
-if (dataToSend == 'B')
-{
-Serial.println(impedancia_Z);
-}
-else if (dataToSend == 'L')
-{
-Serial.println(impedancia_fase);
-}
-}*/
-        //Time_2 = micros() - Time_1;
-        //Serial.println(Time_2);                   
+        delay(10);
+        union Nr_IEEE754_union {byte as_byte[4]; float as_float;} amplitude_union;  //Nr float formato IEEE754 de 32 |Sinal|Expoente|Mantissa| 
+            amplitude_union.as_byte[0] = canal_escravo_data[0];
+            amplitude_union.as_byte[1] = canal_escravo_data[1];
+            amplitude_union.as_byte[2] = canal_escravo_data[2];
+            amplitude_union.as_byte[3] = canal_escravo_data[3];   
+            float AMPLITUDE = amplitude_union.as_float  ;
+            ampTOTALchSlave = AMPLITUDE;
+        // 2us
+
+        union Nr_IEEE754_union fase_union;   
+            fase_union.as_byte[0] = canal_escravo_data[4];
+            fase_union.as_byte[1] = canal_escravo_data[5];
+            fase_union.as_byte[2] = canal_escravo_data[6];
+            fase_union.as_byte[3] = canal_escravo_data[7];   
+            float FASE = fase_union.as_float  ;
+            faseTOTALchSlave = FASE;
+        
+        union Nr_IEEE754_union offset_union;   
+            offset_union.as_byte[0] = canal_escravo_data[8];
+            offset_union.as_byte[1] = canal_escravo_data[9];
+            offset_union.as_byte[2] = canal_escravo_data[10];
+            offset_union.as_byte[3] = canal_escravo_data[11];   
+            float OFFSET = offset_union.as_float  ;
+            offsetTOTALchSlave = OFFSET;
+                                   
+                impedancia_Z = ampTOTAL / ampTOTALchSlave;             // Cálculo da impedância
+                impedancia_fase = faseTOTALchA - faseTOTALchSlave;     // Cálculo do ângulo theta
+                // 6us
     
+                vetorModulo_Z[indiceSave] = impedancia_Z;
+                vetorFase[indiceSave] = impedancia_fase;
+
+            if(indiceSave > vetorSize){
+                detachInterrupt(digitalPinToInterrupt(DRDY));
+                detachInterrupt(digitalPinToInterrupt(buttonPin8));
+                
+                ordena_vetores(vetorModulo_Z, vetorFase, vetorSize);
+                trima_array(vetorModulo_Z, vetorFase, Z_trimed, Ph_trimed, vetorSize, quartil);
+                ordena_vetores(Ph_trimed, Z_trimed, Primeiroquartil);
+                trima_array(Z_trimed, Ph_trimed, Z2_trimed, Ph2_trimed, Primeiroquartil, quartil);
+                media_polar(Z2_trimed, Ph2_trimed, Segundoquartil, &modulo_Z, &fase_Z);
+                delay(10);          
+                    // ************ DISPLAY **********************************
+                    //Envia os dados calculados para o display
+                    lcd.begin(16, 2);                             // Define o número de colunas e linhas do LCD
+                    lcd.clear();                                  // Limpa a tela
+                    lcd.setCursor(0, 0);                          // Posiciona o cursor na coluna 0, linha 0;
+                    lcd.print("Z =");                             // Escrever "Z =" no display
+                    lcd.setCursor(4, 0);                          // Posiciona o cursor na coluna 4, linha 0;
+                    lcd.print(modulo_Z,4);                        // Escrever valor da Impedância "X.XXXX"
+                    lcd.setCursor(15, 0);                         // Posiciona o cursor na coluna 15, linha 1;
+                    lcd.write(B11110100);                         // ômega
+                    lcd.setCursor(0, 1);                          // Posiciona o cursor na coluna 0, linha 1;
+                    lcd.write(B11110010);                         // theta
+                    lcd.setCursor(1, 1);                          // Posiciona o cursor na coluna 1, linha 1;
+                    lcd.print(" =");                              // Escrever " =" no display
+                    lcd.setCursor(4, 1);                          // Posiciona o cursor na coluna 4, linha 1;
+                    lcd.print(fase_Z,2);                          // Escrever valor da fase "XX.X"
+                    lcd.setCursor(15, 1);                         // Posiciona o cursor na coluna 15, linha 1;
+                    lcd.write(B11011111);                         // graus
+                
+                Serial.print("media trimada:  ");
+                Serial.print(modulo_Z, 2);
+                Serial.print(" ");
+                Serial.println(fase_Z,2);
+                indiceSave = 0;
+                delay(10);
+            }
+             
+        ampTOTAL = 0;
+        ampTOTALchSlave = 0;
+        faseTOTALchA =0;
+        faseTOTALchSlave = 0;
+        offsetTOTAL = 0;
+        offsetTOTALchSlave = 0;
 }
+
 //**********************************************************************************************************************************
 
             //*******INTERRUPÇÕES
@@ -453,14 +315,9 @@ Serial.println(impedancia_fase);
             //*************************************************   
 
 void HabilitaDRDY(){
-            //long i = 0;
             // Desabilita interrupção do botão de início de medição
             detachInterrupt(digitalPinToInterrupt(buttonPin8));
-             //delayMicroseconds(30);
-             // Habilita interrupção LeADC para  leitura de dados do AD7762
-            // Habilita interrupção LeADC para  leitura de dados do AD7762
             attachInterrupt(digitalPinToInterrupt(DRDY), leADC, FALLING);
-            //Serial.println("banana");
 }
 
           //HabilitaDRDY(int buttonPin8, int DRDY, char leADC)
@@ -470,39 +327,38 @@ void HabilitaDRDY(){
           //*************************************************    
 
 void leADC() { 
-      
-    detachInterrupt(digitalPinToInterrupt(DRDY));
-        for(int i = 0; i <= 50; i++){                                                   // Delay para calibração do sincronismos
-            asm("nop \n");
-        }
-    while(contadorAmostra < Nr_de_Amostras){ 
-        REG_PIOD_ODSR = 0x00000004;                                             // CS = 0, DRDW = 0 e RSET = 1 habilita leitura         
-        vetor_Amostra[contadorAmostra] = REG_PIOC_PDSR;                         // lê os 32 bits da palavra 1 (MSD) no registrador  portC
-            for(int i = 0; i <= 9; i++){                                               // Delay para calibração dosoncronismos
-                asm("nop \n");
-            }
-                                                            // e armazena na matriz "vetor_Amostra"
-                                                            // Palavra de controle do portD para desabilitar CI AD7762
-        REG_PIOD_ODSR = 0x00000007;                                             // CS = 1, DRDW = 1 e RSET = 1 desabilita leitura
-            for(int i = 0; i <= 4; i++){                                               // Delay para calibração dosoncronismos
-                asm("nop \n");
-            }
-        
-        REG_PIOD_ODSR = 0x00000004;                                             // CS = 0, DRDW = 0 e RSET = 1 habilita leitur             
-        vetor_segunda_palavra[contadorAmostra] = REG_PIOC_PDSR;                 // lê os 32 bits da palavra 2 (LSD) no registrador  portC
-            for(int i = 0; i <= 9; i++){                                               // Delay para calibração dosoncronismos
-                asm("nop \n");
-            }
-                                                            // e armazena na matriz "vetor_segunda_palavra" 
-                                                            // Palavra de controle do portD para Habilitar a leitura do AD7762
-        REG_PIOD_ODSR = 0x00000007;                                             // CS = 1, DRDW = 1 e RSET = 1 desabilita leitura              
-        contadorAmostra++;                                                      //  contador de amostras                                                      
-            for(int i = 0; i <= 23; i++){  
-                asm("nop \n");
-            }         
-    }
-    attachInterrupt(digitalPinToInterrupt(buttonPin8), HabilitaDRDY, RISING); 
-}             
+          detachInterrupt(digitalPinToInterrupt(DRDY));
+              for(int i = 0; i <= 50; i++){                                       // Delay para calibração do sincronismos
+                  asm("nop \n");
+              }
+              while(contadorAmostra < Nr_de_Amostras){ 
+                  REG_PIOD_ODSR = 0x00000004;                                     // CS = 0, DRDW = 0 e RSET = 1 habilita leitura         
+                  vetor_Amostra[contadorAmostra] = REG_PIOC_PDSR;                 // lê os 32 bits da palavra 1 (MSD) no registrador  portC
+                      for(int i = 0; i <= 9; i++){                                // Delay para calibração dosoncronismos
+                          asm("nop \n");
+                      }
+                                                                                  // e armazena na matriz "vetor_Amostra"
+                                                                                  // Palavra de controle do portD para desabilitar CI AD7762
+          REG_PIOD_ODSR = 0x00000007;                                             // CS = 1, DRDW = 1 e RSET = 1 desabilita leitura
+              for(int i = 0; i <= 4; i++){                                        // Delay para calibração dosoncronismos
+                  asm("nop \n");
+              }
+          
+          REG_PIOD_ODSR = 0x00000004;                                             // CS = 0, DRDW = 0 e RSET = 1 habilita leitur             
+          vetor_segunda_palavra[contadorAmostra] = REG_PIOC_PDSR;                 // lê os 32 bits da palavra 2 (LSD) no registrador  portC
+              for(int i = 0; i <= 9; i++){                                        // Delay para calibração dosoncronismos
+                  asm("nop \n");
+              }
+                                                                                  // e armazena na matriz "vetor_segunda_palavra" 
+                                                                                  // Palavra de controle do portD para Habilitar a leitura do AD7762
+          REG_PIOD_ODSR = 0x00000007;                                             // CS = 1, DRDW = 1 e RSET = 1 desabilita leitura              
+          contadorAmostra++;                                                      //  contador de amostras                                                      
+              for(int i = 0; i <= 23; i++){  
+                  asm("nop \n");
+              }         
+          }
+       attachInterrupt(digitalPinToInterrupt(buttonPin8), HabilitaDRDY, RISING); 
+ }             
 
 void serialEvent(){
     if(Serial.available() > 0){

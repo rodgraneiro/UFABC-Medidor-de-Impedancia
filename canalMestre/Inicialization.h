@@ -1,22 +1,15 @@
 #include "MathHelpers.h" 
 
 
-unsigned long Time_1 = 0;
-unsigned long Time_2 = 0;
-
-//const int CS = 25;                        // Port D0 Arduino -> Chip Select AD7762 pin 40
-//const int RDWR = 26;                      // Port D1 Arduino -> Read/Write AD7762 pin 39
-//const int RESET = 27;                     // Port D2 Arduino -> Reset AD7762 pin 37
-//const int DRDY = 23;                      // Port A14 Arduino -> Data Ready Output AD7762 pin 38
-//const int SYNC = 24;                      // Port A15 Arduino -> Synchronization Input AD7762 pin 36
-
-//const int buttonPin8 = 8;     // Número do pino do Arduino para o pushbutton
-int buttonState8 = 0;         // Variável p/ armazenar status  do pushbutton
+int buttonState8 = 0;                                            // Variável p/ armazenar status  do pushbutton
 
 
 #define Nr_de_Amostras  10
 #define ptos_por_periodo 10
 #define vetorSize 101
+
+unsigned long Time_1 = 0;
+unsigned long Time_2 = 0;
 
 float myArray[vetorSize];                                         //Vetor modulo Z
 float myPhase[vetorSize];                                         //Vetor fase Z
@@ -31,22 +24,15 @@ float modulo_Z = 0;                                               // media modul
 float fase_Z = 0;                                                 // media fase de Z em graus
 
 
-
-
-
-
 volatile uint32_t vetor_Amostra[Nr_de_Amostras] = {0};
 volatile uint32_t vetor_segunda_palavra[Nr_de_Amostras] = {0};
 volatile float converte_volts[Nr_de_Amostras] = {0};
 int Nr_de_periodos = Nr_de_Amostras/ptos_por_periodo;
 int ptos_periodo = 0;
-//int vetorSize = 10;
 
 int indiceSave = 0;
 
-
 volatile int contadorAmostra = 0;
-//volatile int Transmissao_OK = 0;
 int contador_aux_1 = 0;
 int contador_aux_2 = 0;
 int contador_aux_3 = 0;
@@ -124,16 +110,14 @@ char dataToSend;
 
 void busColtrolIni(const int CS, const int RDWR, const int RESET, const int DRDY, const int SYNC, const int buttonPin8){
 // Configuração de Ports para iniciar AD7762 
-          pinMode(CS, OUTPUT);                // Port D0 do Arduino Due
-          pinMode(RDWR, OUTPUT);              // Port D1
-          pinMode(RESET, OUTPUT);             // Port D2
-          pinMode(SYNC, OUTPUT);             // Port A15 do Arduino Due
-          pinMode(DRDY, INPUT);               // Port A14 do Arduino Due
+          pinMode(CS, OUTPUT);                            // Port D0 do Arduino Due
+          pinMode(RDWR, OUTPUT);                          // Port D1
+          pinMode(RESET, OUTPUT);                         // Port D2
+          pinMode(SYNC, OUTPUT);                          // Port A15 do Arduino Due
+          pinMode(DRDY, INPUT);                           // Port A14 do Arduino Due
 
-          pinMode(buttonPin8, INPUT_PULLUP);  // initialize the pushbutton pin as an input:
-          //pinMode(habilitaMaster, OUTPUT);    // initialize the pushbutton pin as an input:
-          delay(10);                          // espera estabilização da porta
-          //digitalWrite(habilitaMaster, LOW);  // habilita Master:
+          pinMode(buttonPin8, INPUT_PULLUP);              // initialize the pushbutton pin as an input:
+          delay(10);                                      // espera estabilização da porta
 } 
 
 void unselectADC(const int x, const int y, const int z, const int w){

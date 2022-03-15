@@ -1,36 +1,16 @@
   #include "MathHelpers.h"                             // Número do pino do Arduino para o pushbutton
-/*
-#ifndef _WIRING_INTERRUPTS_
-#define _WIRING_INTERRUPTS_
-
-#include "Arduino.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-void attachInterrupt(uint32_t pin, void (*callback)(void), uint32_t mode);
-
-void detachInterrupt(uint32_t pin);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* _WIRING_INTERRUPTS_ */
-
 
 void pulsoPinoADC(int x, int tempo){
-  // RESET pino xx do ADC 7762     **************************
+                                                                      // RESET pino xx do ADC 7762     **************************
       delay(tempo);
-      digitalWrite(x, LOW);                             // Pino  arduino LOW
+      digitalWrite(x, LOW);                                           // Pino  arduino LOW
       delay(tempo);
-      digitalWrite(x, HIGH);// reset                    // Pino  arduino HIGH
+      digitalWrite(x, HIGH);// reset                                  // Pino  arduino HIGH
       delay(tempo);
 }
 
 volatile uint32_t convert32to24bits(int Nr_de_Amostras, volatile uint32_t *vetor_Amostra, volatile uint32_t *vetor_segunda_palavra){
-        //Serial.println(Time_2); 
+        
 //*************************************************************
 // Rearranjar 32 bits "NÃO CONSECUTIVOS" do portC do Arduino em 24 bits CONSECUTIVOS
 // O AD7762 disponibiliza a amostra discretizada com resolução de 24 bits em duas "palavras" de 16 bits.
@@ -52,9 +32,9 @@ volatile uint32_t convert32to24bits(int Nr_de_Amostras, volatile uint32_t *vetor
 //-------------------------------------------------------------------------------------------------------------  
 
     for(int contador_aux_1 = 0; contador_aux_1 < Nr_de_Amostras; contador_aux_1++) { // Laço Rearranjar 32 bits NÃO CONSECUTIVOS
-        //*******************************************************************
-        // Primeira palavra com os 16 bits mais significativos (de 23 à 8)
-        //*******************************************************************
+                                                                                    //*******************************************************************
+                                                                                    // Primeira palavra com os 16 bits mais significativos (de 23 à 8)
+                                                                                    //*******************************************************************
         
         vetor_Amostra[contador_aux_1] = vetor_Amostra[contador_aux_1] & 0x000ffffc; // Zerar bits "0" , "1" e bits de "20" à "31" aplicando a operação lógica "AND" por meio da máscara 0x000ffffc  
         vetor_Amostra[contador_aux_1] = vetor_Amostra[contador_aux_1] >> 2;         // Desloca dois bits p direita para elininar bits "0" e "1"
@@ -67,9 +47,9 @@ volatile uint32_t convert32to24bits(int Nr_de_Amostras, volatile uint32_t *vetor
                                                                                     // 8 bits menos significativos da primeira palavra armazenados na variável low8 
         vetor_Amostra[contador_aux_1] = vetor_Amostra[contador_aux_1] << 8 | low8;  //Primeira palavra com os 16 bits mais significativos de 23 à 8
         
-        //****************************************************************** 
-        // Segunda palavra com os 8 bits menos significativos (de 7 à 0)
-        //******************************************************************
+                                                                                    //****************************************************************** 
+                                                                                    // Segunda palavra com os 8 bits menos significativos (de 7 à 0)
+                                                                                    //******************************************************************
         
         uint32_t low24 = vetor_segunda_palavra[contador_aux_1] & 0x000ff000;        // Zera bits de "0 à 11" e bits de "20" à "31" aplicando a operação lógica "AND"  
                                                                                     // por meio da máscara 0x000ff000
@@ -95,20 +75,19 @@ float verifSinalNeg(int Nr_de_Amostras, volatile uint32_t *vetor_Amostra, volati
             if(sinal_negativo == 0x800000){ 
                 volatile uint32_t semiciclo_neg  = ((~vetor_Amostra[contador_aux_2] + 0x1)) & 0xffffff;       // lê amostra e aplica operação "complemento de 2"
                 converte_volts[contador_aux_2] = -(semiciclo_neg*fator_conv_volts);                           // converte para volts e multiplicar por -1
-            }
-            // Se estado do bit 23 igual a "0", aplicar fator de conversão para volts   
-            else{
-                volatile uint32_t semiciclo_pos = vetor_Amostra[contador_aux_2];                              // lê amostra
-                converte_volts[contador_aux_2] = (semiciclo_pos*fator_conv_volts);                            // converte pata volts      
-            }
+                }
+                // Se estado do bit 23 igual a "0", aplicar fator de conversão para volts   
+                    else{
+                        volatile uint32_t semiciclo_pos = vetor_Amostra[contador_aux_2];                      // lê amostra
+                        converte_volts[contador_aux_2] = (semiciclo_pos*fator_conv_volts);                    // converte pata volts      
+                }
         } // Final do Laço verificação sinal da amostra em complemento de 2 
     }
-    
     
 volatile float convert_BIN_Volts(int contador, volatile float *converte_volts, float *arrayPIE){
     for (int coluna_piE = 0; coluna_piE < 10; coluna_piE++) {                                                 // Nr de amostras
         int ptos_periodo = contador + coluna_piE; // Nr de amostras de cada periodo
-                                                                                                              // Multiplica a matriz do sinal convertido pela matriz pseudo inversa piE
+       // Multiplica a matriz do sinal convertido pela matriz pseudo inversa piE
         volatile float SigConverted = SigConverted + (float)converte_volts[ptos_periodo]*(float)arrayPIE[coluna_piE];
     }
 }
@@ -129,25 +108,24 @@ void ordena_vetores(volatile float *ArrayPrincipal, volatile float *ArraySecunda
 }
 
 void trima_array(volatile float *Array1, volatile float *Array2, volatile float *Trim1, volatile float*Trim2, int tamanho_do_array, int quartil){
-    for ( int x = quartil; x < (tamanho_do_array - quartil); x++){    //Remove 1o quartil das extremidades superior e inferior 
-        Trim1[x - quartil] = Array1[x];                      //Vetor 1o quartil Z trimado 
-        Trim2[x - quartil] = Array2[x];                     //Vetor 10 quartil fase
+    for ( int x = quartil; x < (tamanho_do_array - quartil); x++){            //Remove 1o quartil das extremidades superior e inferior 
+        Trim1[x - quartil] = Array1[x];                                       //Vetor 1o quartil Z trimado 
+        Trim2[x - quartil] = Array2[x];                                       //Vetor 10 quartil fase
     }
 }
 
 void media_polar(float *ArrayAmpl, float *ArrayPhase, int tamanho_do_array,
                  float *media_Z, float *phase_Z){
     
-    float real_part = 0;                                              // Media trimada parte real
+    float real_part = 0;                                                         // Media trimada parte real
     float imag_part = 0;  
-    for(int x = 0; x < tamanho_do_array; x++){                                      //Converte polar para retangular
-        real_part =  real_part + ArrayAmpl[x]*cos( ArrayPhase[x]*PI/180);       //Calcula parte real e soma
-        imag_part =  imag_part + ArrayAmpl[x]*sin( ArrayPhase[x]*PI/180);      //Calcula parte imaginária e soma
-    }
-    real_part = (real_part)/tamanho_do_array;                                       //Calcula media parte real
-    imag_part = (imag_part)/tamanho_do_array;                                       //calcula media parte imaginaria
+      for(int x = 0; x < tamanho_do_array; x++){                                //Converte polar para retangular
+          real_part =  real_part + ArrayAmpl[x]*cos( ArrayPhase[x]*PI/180);     //Calcula parte real e soma
+          imag_part =  imag_part + ArrayAmpl[x]*sin( ArrayPhase[x]*PI/180);     //Calcula parte imaginária e soma
+      }
+    real_part = (real_part)/tamanho_do_array;                                   //Calcula media parte real
+    imag_part = (imag_part)/tamanho_do_array;                                   //calcula media parte imaginaria
     
     *media_Z = sqrt(sq(real_part)+sq(imag_part));                               // Converte retangular para polar - modulo Z
-    *phase_Z = atan2(imag_part , real_part)*(180/PI);    // cálculo da fase       //Fase em graus
-  
+    *phase_Z = atan2(imag_part , real_part)*(180/PI);                           // cálculo da fase   
 }
