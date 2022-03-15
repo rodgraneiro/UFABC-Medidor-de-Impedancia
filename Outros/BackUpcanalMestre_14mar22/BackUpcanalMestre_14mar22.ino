@@ -28,23 +28,176 @@
 #define DRDY  23                      // Port A14 Arduino -> Data Ready Output AD7762 pin 38
 #define SYNC  24                      // Port A15 Arduino -> Synchronization Input AD7762 pin 36const int CS = 25;                        // Port D0 Arduino -> Chip Select AD7762 pin 40
 //
-//********************CONSTANTES E VARIÁVEIS********************************
+//********************CONSTANTES E VARIÁVEIS*********************************
+//int contadorAmostra = 0;
+//volatile int DRDY = 23;
 
 
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);    // Define os pinos que serão utilizados para ligação ao display
+/*                                         // AD7762 
+const int CS = 25;                        // Port D0 Arduino -> Chip Select AD7762 pin 40
+const int RDWR = 26;                      // Port D1 Arduino -> Read/Write AD7762 pin 39
+const int RESET = 27;                     // Port D2 Arduino -> Reset AD7762 pin 37
+const int DRDY = 23;                      // Port A14 Arduino -> Data Ready Output AD7762 pin 38
+*/
+/*
+const int SYNC = 24;                      // Port A15 Arduino -> Synchronization Input AD7762 pin 36
+volatile int Nr_de_Amostras = 20;
+volatile uint32_t vetor_Amostra[20] = {0};
+volatile uint32_t vetor_segunda_palavra[20] = {0};
+volatile uint32_t sinal_negativo = 0;
+volatile uint32_t semiciclo_neg = 0;
+volatile uint32_t semiciclo_pos = 0;
+volatile uint32_t low8 = 0;
+volatile uint32_t low24 = 0;
+volatile int contadorSetup = 0;
+volatile int contadorAmostra = 0;
+//volatile int Transmissao_OK = 0;
+int contador_aux_1 = 0;
+int contador_aux_2 = 0;
+int contador_aux_3 = 0;
+//float fator = 0.0000006;
+float converte_volts[20] = {0};
+*/
+/*
+int ptos_periodo = 0;
+int coluna_piE = 0;
+volatile float offsetTOTALchSlave = 0;
+float amplitude = 0;
+float ampTOTAL = 0;
+volatile float ampTOTALchSlave = 0;
+float impedancia_Z = 0;
+float impedancia_fase = 0;
+float fase = 0;
+float faseTOTAL = 0;
+float faseTOTALchA = 0;
+//float faseAmenosB = 0;
+volatile float faseTOTALchSlave = 0;
+//byte sinal_offset_Slave =0;
+//byte sinal_fase_Slave = 0;
+//unsigned long Tempo_T =0;
+long Nr_medicao =0;
+*/
+/*
+//*****************************Matriz pseudo inversa 10 ptos excitação 31,25kHz - Sample Rate 312,5kHz
+float piEs [] = {0.117557050458495, 0.190211303259031, 0.190211303259031, 0.117557050458495, 2.44929359829470e-17, -0.117557050458495, -0.190211303259031, -0.190211303259031, -0.117557050458495, -4.89858719658942e-17};
+float piEc[] = {0.161803398874990, 0.0618033988749894, -0.0618033988749895, -0.161803398874989, -0.200000000000000, -0.161803398874990, -0.0618033988749896, 0.0618033988749895, 0.161803398874990, 0.200000000000000};
+float piEdc[] = {0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000};
+
+
+//*****************************Matriz pseudo inversa 10 ptos excitação 125kHz - Sample Rate 625kHz
+//float piEs[] = {0,  0.190211303259031, 0.117557050458495, -0.117557050458495,  -0.190211303259031,  -2.26621555905919e-16, 0.190211303259031, 0.117557050458495, -0.117557050458495,  -0.190211303259031};
+//float piEc[] = {0.200000000000000, 0.0618033988749895,  -0.161803398874990,  -0.161803398874990,  0.0618033988749895,  0.200000000000000, 0.0618033988749897,  -0.161803398874990,  -0.161803398874990,  0.0618033988749894};
+//float piEdc[] = {0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000, 0.100000000000000};
+*/
+/*
+float soma_seno = 0;
+float soma_cosseno = 0;
+float soma_offset = 0;
+float offsetTOTAL = 0;
+//float variavel_float;
+//byte byte1, byte2, byte3, byte4, byte5, byte6, byte7, byte8, byte9, byte10, byte11, byte12, byte13, byte14;
+unsigned int aux1;
+unsigned int aux2;
+unsigned int aux3;
+int quantidade_bytes_esperados = 12;
+byte canal_escravo_data[12];
+byte amplitude_byte[4]; 
+float amplitude_float;
+byte fase_byte[4]; 
+float fase_float;
+byte offset_byte[4]; 
+float offset_float;
+float fator_conv_volts = 3.97725e-7;
+unsigned long tempo_inicio = millis();
+unsigned long tempo_exec[100] = {0};
+*/
+  
+/*
+                                // Bus de Dados D0 à D15
+const int D0 = 34;              // Port C2
+const int D1 = 35;              // Port C3
+const int D2 = 36;              // Port C4
+const int D3 = 37;              // Port C5
+const int D4 = 38;              // Port C6
+const int D5 = 39;              // Port C7
+const int D6 = 40;              // Port C8
+const int D7 = 41;              // Port C9
+                                //*************
+const int D8 = 51;              // Port C12
+const int D9 = 50;              // Port C13
+const int D10 = 49;             // Port C14
+const int D11 = 48;             // Port C15
+const int D12 = 47;             // Port C16
+const int D13 = 46;             // Port C17
+const int D14 = 45;             // Port C18
+const int D15 = 44;             // Port C19
+
+char dataToSend;
+*/
 
 void setup() {   //*********************INÍCIO SETUP**********************************8
               //Time_1 = micros();
               //pinMode(buttonPin8, INPUT);     // Inicializa pino do pushbutton como input:
               //Serial.begin(115200);
               Serial.begin(9600);
-
+              /*
+              Wire.begin();                 // Endereço canalSlave
+              //Wire.onReceive(receiveEvent);   // register event
+              
+              
+              //***************inicia LCD 
+              lcd.begin(16, 2);                 // Define o número de colunas e linhas do LCD
+              lcd.clear();                      // Limpa a tela
+              lcd.setCursor(1, 0);              // Posiciona o cursor na coluna 1, linha 0;
+              lcd.print("MIE-EBM-UFABC");       // Envia o texto entre aspas para o LCD
+              lcd.setCursor(1, 1);              // Posiciona o cursor na coluna 1, linha 0;
+              lcd.print("Pressione bot 1");     // Envia o texto entre aspas para o LCD
+              */
+/*                                // Configuração de Ports para iniciar AD7762  
+pinMode(CS, OUTPUT);               // Port D0 do Arduino Due
+pinMode(RDWR, OUTPUT);             // Port D1 do Arduino Due
+pinMode(RESET, OUTPUT);            // Port D2 do Arduino Due
+pinMode(SYNC, OUTPUT);             // Port A15 do Arduino Due
+pinMode(DRDY, INPUT);              // Port A14 do Arduino Due
+*/
               busColtrolIni(CS, RDWR, RESET, DRDY, SYNC, buttonPin8); // Configuração de Portas do Bus de controle do AD7762 e Arduino
               delay(100);
-
+/*
+digitalWrite(RESET, HIGH);
+digitalWrite(CS, HIGH);
+digitalWrite(RDWR, HIGH);
+digitalWrite(SYNC, HIGH);
+*/
               unselectADC(RESET, CS, RDWR, SYNC);                     // Desabilita ADC 7762
               //delay(100);
+/*
+// Configuração de Portas do Bus de controle do AD7762 e Arduino
+// Configuração de Bus de dados comos saída  
+pinMode(D0, OUTPUT);
+pinMode(D1, OUTPUT);
+pinMode(D2, OUTPUT);
+pinMode(D3, OUTPUT);
+pinMode(D4, OUTPUT);
+pinMode(D5, OUTPUT);
+pinMode(D6, OUTPUT);
+pinMode(D7, OUTPUT);
+pinMode(D8, OUTPUT);
+pinMode(D9, OUTPUT);
+pinMode(D10, OUTPUT);
+pinMode(D11, OUTPUT);
+pinMode(D12, OUTPUT);
+pinMode(D13, OUTPUT);
+pinMode(D14, OUTPUT);
+pinMode(D15, OUTPUT);
 
+//  ********************* RESET inicial      **************************
+digitalWrite(RESET, LOW);     // reset low 
+delay(100);
+digitalWrite(RESET, HIGH);    // reset high
+delay(100);
+//************************************************
+*/
                busOutputADC(D0, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15);           // Configura bus de dados como output
                delay(100);
                pulsoPinoADC(RESET, 100);                                                                     //reset ADC7762
@@ -59,7 +212,22 @@ void setup() {   //*********************INÍCIO SETUP***************************
 
 //digitalWrite(D0, LOW);      //Endereço Registrador 2  0x0002
 digitalWrite(D1, HIGH);
-
+/*
+digitalWrite(D2, LOW);
+digitalWrite(D3, LOW);
+digitalWrite(D4, LOW);
+digitalWrite(D5, LOW);
+digitalWrite(D6, LOW);
+digitalWrite(D7, LOW);
+digitalWrite(D8, LOW);
+digitalWrite(D9, LOW);
+digitalWrite(D10, LOW);
+digitalWrite(D11, LOW);
+digitalWrite(D12, LOW);
+digitalWrite(D13, LOW);
+digitalWrite(D14, LOW);
+digitalWrite(D15, LOW);
+*/
 //*****************************************************
 
 
@@ -71,7 +239,15 @@ digitalWrite(D1, HIGH);
 //digitalWrite(CS, LOW);  // Habilita Chip Select do AD7762 para escrita
 //digitalWrite(CS, HIGH); // desabilita Chip Select do AD7762 
                pulsoPinoADC(CS, 5);  
-
+              /*
+              writeBusADC(0x00000008);                                                                     // ESCREVE Endereço Registrador2
+              delay(100);
+              pulsoPinoADC(CS, 5);                                                                        // Habilita pulso Chip Select do AD7762 para escrita
+             
+              zeraBusADC(0x00000008);                                                                       //zera bus de dados
+              delay(100);
+              pulsoPinoADC(CS, 5);
+               */
               //*****Envia Palavra de controle do Registrador2 p/ Bus de Dados*****
               // set CDIV = 0 metade MCLk
               // set DIPD = 0 habilita Dif Amp
@@ -79,9 +255,24 @@ digitalWrite(D1, HIGH);
               // set LPWR = 0 seta power no modo normal
               //******************************************************      
 
+//digitalWrite(D0, LOW);    //DIPD
+//digitalWrite(D1, HIGH);   // "1"
+//digitalWrite(D2, LOW);    //LPWR
+//digitalWrite(D3, LOW);    //PD
 digitalWrite(D4, HIGH);   // Default 9B
+//digitalWrite(D5, LOW);    //CDIV
+//digitalWrite(D6, LOW);    //Default 9B
 digitalWrite(D7, HIGH);   //Default 9B
-
+/*
+digitalWrite(D8, LOW);
+digitalWrite(D9, LOW);
+digitalWrite(D10, LOW);
+digitalWrite(D11, LOW);
+digitalWrite(D12, LOW);
+digitalWrite(D13, LOW);
+digitalWrite(D14, LOW);
+digitalWrite(D15, LOW);
+*/
 //******************************************
 // ESCREVE palavra de controle no Registrador2
 //*********************************************      
@@ -91,11 +282,43 @@ digitalWrite(D7, HIGH);   //Default 9B
 //digitalWrite(CS, HIGH); // desabilita Chip Select do AD7762 
 //*********************************************************
                pulsoPinoADC(CS, 5);  
-
+              /*
+              writeBusADC(0x00000248);                                                                      // ESCREVE Palavra de controle do Registrador2
+              delay(100);
+              pulsoPinoADC(CS, 1);                                                                         // Habilita pulso Chip Select do AD7762 para escrita
+              //zeraOutputBusDados(D0, D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15);
+              zeraBusADC(0x00000248);                                                                       //zera bus de dados
+              delay(100);
+               pulsoPinoADC(CS, 1);
+              */
               //*********************************************************
               // ESCREVE END REG 1 0X0001
               //******************************************************** 
+/*
+digitalWrite(D0, HIGH); //Endereço Registrador 1  0x0001
+digitalWrite(D1, LOW);
+digitalWrite(D2, LOW);
+digitalWrite(D3, LOW);
+digitalWrite(D4, LOW);
+digitalWrite(D5, LOW);
+digitalWrite(D6, LOW);
+digitalWrite(D7, LOW);
+digitalWrite(D8, LOW);
+digitalWrite(D9, LOW);
+digitalWrite(D10, LOW);
+digitalWrite(D11, LOW);
+digitalWrite(D12, LOW);
+digitalWrite(D13, LOW);
+digitalWrite(D14, LOW);
+digitalWrite(D15, LOW);
 
+ delay(10);
+
+digitalWrite(CS, LOW);      // Habilita Chip Select do AD7762 para escrita
+digitalWrite(CS, HIGH);
+
+//***********************************************************
+*/
 
               writeBusADC(0x00000004);                                                                      // ESCREVE Endereço 0x04 Registrador1
               delay(10);
@@ -108,6 +331,28 @@ digitalWrite(D7, HIGH);   //Default 9B
               //***********************************************
               // ESCREVE WORD REG 1 0X001D
               // DEC2, DEC1, DEC0 = 0X4 PARA DECIMACAO 16X
+              /*
+digitalWrite(D0, LOW);      // DEC0 = 1 
+digitalWrite(D1, HIGH);     // DEC1 = 0 
+digitalWrite(D2, LOW);      // DEC2 = 1
+digitalWrite(D3, HIGH);     // tem que ser 1 (high)
+digitalWrite(D4, HIGH);     // BYP F3
+digitalWrite(D5, LOW);
+digitalWrite(D6, LOW);
+digitalWrite(D7, LOW);
+digitalWrite(D8, LOW);
+digitalWrite(D9, LOW);
+digitalWrite(D10, LOW);
+digitalWrite(D11, LOW);
+digitalWrite(D12, LOW);
+digitalWrite(D13, LOW);
+digitalWrite(D14, LOW);
+digitalWrite(D15, LOW);
+
+delay(10);
+digitalWrite(CS, LOW);  // Habilita Chip Select do AD7762 para escrita
+digitalWrite(CS, HIGH); // desabilita Chip Select do AD7762  
+*/
 
               writeBusADC(0x00000068);                                                                     // ESCREVE Palavra de controle 0x64do Registrador2
               delay(10);
@@ -119,11 +364,33 @@ digitalWrite(D7, HIGH);   //Default 9B
 
               
   } // Final laço setup
-
+/*
+delay(100);
 
 //****************************
 //Prepara PORTC como INPUT
+//****************************
+pinMode(D0, INPUT);
+pinMode(D1, INPUT);
+pinMode(D2, INPUT);
+pinMode(D3, INPUT);
+pinMode(D4, INPUT);
+pinMode(D5, INPUT);
+pinMode(D6, INPUT);
+pinMode(D7, INPUT);
+pinMode(D8, INPUT);
+pinMode(D9, INPUT);
+pinMode(D10, INPUT);
+pinMode(D11, INPUT);
+pinMode(D12, INPUT);
+pinMode(D13, INPUT);
+pinMode(D14, INPUT);
+pinMode(D15, INPUT);
 
+delay(100);
+contadorAmostra = 0;
+
+*/
               //zeraBusADC(0x00000064);                                                                       //zera endereço Reg1 do bus de dados
               //delay(10);
               
@@ -131,7 +398,13 @@ digitalWrite(D7, HIGH);   //Default 9B
               delay(100);
           
               //************ Envia sinal de sincronismo SYNC ******************* 
-            
+/*
+digitalWrite(SYNC, LOW);
+delay(500);
+digitalWrite(SYNC, HIGH);
+delay(100);
+*/
+              
               pulsoPinoADC(SYNC, 200);    
 
 
@@ -188,7 +461,54 @@ void loop() { //***************************** INÍCIO void loop() **************
 // Palavra 2  |. |. |. |. |. |. |. |. |. |. |. |. |V |V |V |V |V |V |V |V |. |. |. |. |. |. |. |. |. |. |. |. | 
 //-------------------------------------------------------------------------------------------------------------     
 
+/*
+for(contador_aux_1 = 0; contador_aux_1 < Nr_de_Amostras; contador_aux_1++) { // Laço rearranjo dos 32 bits NÃO CONSECUTIVOS
 
+//*******************************************************************
+// Primeira palavra com os 16 bits mais significativos (de 23 à 8)
+//*******************************************************************
+
+// Zerar bits "0" , "1" e bits de "20" à "31" aplicando a operação lógica "AND" 
+// por meio da máscara 0x000ffffc
+
+vetor_Amostra[contador_aux_1] = vetor_Amostra[contador_aux_1] & 0xffffc;  // clear top 11 and bottom 2 bits with mask
+vetor_Amostra[contador_aux_1] = vetor_Amostra[contador_aux_1] >> 2;       // Desloca dois bits p direita para elininar bits "0" e "1"
+
+// separa os 8 bits menos significaticos da primrira palavra
+low8 = vetor_Amostra[contador_aux_1] & 0x000000ff;                               //mask and save lower 8 bits
+
+// Remove os bits "10 e 11" (Lixo do meio da primeira palavra) deslocando 10 bits para direita
+vetor_Amostra[contador_aux_1] = vetor_Amostra[contador_aux_1] >> 10;
+
+// Rearranjar os 16 bits da primeira palavra
+// Deslocando 8 bits à esquerda e aplicando a operação lógica "OU" com os
+// 8 bits menos significativos da primeira palavra armazenados na variável low8
+    
+vetor_Amostra[contador_aux_1] = vetor_Amostra[contador_aux_1] << 8 | low8;
+
+//****************************************************************** 
+// Segunda palavra com os 8 bits menos significativos (de 7 à 0)
+//******************************************************************
+
+// Zera bits de "0 à 11" e bits de "20" à "31" aplicando a operação lógica "AND" 
+// por meio da máscara 0x000ff000  
+
+low24 = vetor_segunda_palavra[contador_aux_1] & 0xff000;
+
+// Desloca 12 bits à direita separando os 8 bits menos significaticos da palavra de 24 bits
+low24  =  low24 >> 12;
+low24  =  low24 & 0x000000ff;
+
+// Rearranjar a amostra discretizada com resolução de 24 bits
+// deslocando os 8 bits da primeira palavra à esquerda e 
+// aplicando a operação lógica "OU" com os 8 bits menos significativos
+// da segunda palavra armazenados na variavel low24
+
+vetor_Amostra[contador_aux_1] = vetor_Amostra[contador_aux_1] << 8 | low24; // Amostra discretizada com 24 bits;
+
+} //Final Laço rearranjo dos 32 bits NÃO CONSECUTIVOS
+contador_aux_1 = 0;
+*/
                  
                  convert32to24bits(Nr_de_Amostras, vetor_Amostra, vetor_segunda_palavra);                        // coverte palavra de 32 bits para 24 bits 
                  //time 16us
@@ -196,6 +516,34 @@ void loop() { //***************************** INÍCIO void loop() **************
                 // Verificação de sinal positivo/negativo no bit 23 e complemento de 2
                 // conversão para tensão em volts
                 //*********************************************************************
+
+                
+
+
+/*
+for(contador_aux_2 = 0; contador_aux_2 <= Nr_de_Amostras - 1; contador_aux_2++){ // Laço verificação sinal da amostra em complemento de 2
+
+// O bit 23 indentifica o sinal da amostra: "1" para negativo e "0" para positivo.
+
+// Verifica estado do bit 23 aplicando a operação lógica "AND" por meio da máscara 0x800000.
+sinal_negativo = vetor_Amostra[contador_aux_2] & 0x00800000;
+
+// Se estado do bit 23 igual a "1", aplicar operação lógica de "complemento de 2" e multiplicar por (-1).
+// Em seguida multiplicar pelo fator de conversão para volts
+if(sinal_negativo == 0x800000){ 
+semiciclo_neg  = ((~vetor_Amostra[contador_aux_2] + 0x1)) & 0xffffff;       // lê amostra e aplica operação "complemento de 2"
+converte_volts[contador_aux_2] = -(semiciclo_neg*fator_conv_volts);         // converte para volts e multiplicar por -1
+//Serial.println(sci(converte_volts[contador_aux_2],4));                      // Envia para o Monitor Serial
+}
+// Se estado do bit 23 igual a "0", aplicar fator de conversão para volts   
+else{
+semiciclo_pos = vetor_Amostra[contador_aux_2];                              // lê amostra
+converte_volts[contador_aux_2] = (semiciclo_pos*fator_conv_volts);          // converte pata volts
+//Serial.println(sci(converte_volts[contador_aux_2],4));                      // Envia para o Monitor Serial            
+}
+} // Final do Laço verificação sinal da amostra em complemento de 2 
+*/                   
+
              
               verifSinalNeg(Nr_de_Amostras, vetor_Amostra, converte_volts, fator_conv_volts);
               //time 46us
@@ -204,12 +552,43 @@ void loop() { //***************************** INÍCIO void loop() **************
               //contador_aux_2 = 0;
               //Serial.println("Valor convertido X valor decimal");                                    // imprime amostras p debug
               
+                
+                  
+/*                     
+for(contador_aux_2 = 0; contador_aux_2 <= Nr_de_Amostras - 1; contador_aux_2++){                 // imprime amostras p debug
+
+Serial.print(Nr_medicao);
+Serial.print("  ;  ");
+Serial.print(tempo_exec[contador_aux_2]);
+Serial.print("  ;  "); 
+
+//Serial.println(converte_volts[contador_aux_2],4);
+
+Serial.print("\n");
+Serial.print("  ;  ");
+Serial.print(vetor_Amostra[contador_aux_2]);
+Serial.print("  ;  ");
+
+
+//Serial.print(vetor_Amostra[contador_aux_2], BIN);
+//Serial.print(" ");
+//Serial.println(converte_volts[contador_aux_2],4);
+}
+*/
+
+  
+                        
 
 
 
                 //**********************************************************
                 //          DEMODULAÇÃO PO QUADRATURA
                 //**********************************************************
+                
+                // Determinar Amplitude, fase e offset. Serão utilizados os três últimos períodos
+                // para evitar transientes do início da medição;
+
+//for(contador_aux_3 = 0; contador_aux_3 <= ptos_por_periodo; contador_aux_3 = (contador_aux_3 + ptos_por_periodo)){ // Laço demodulação por quadratur
   
           soma_seno = convert_BIN_Volts(contador_aux_3, converte_volts, piEs);                  // convertes amostra discretizada em volts
           soma_cosseno = convert_BIN_Volts(contador_aux_3, converte_volts, piEc);               // convertes amostra discretizada em volts
@@ -220,23 +599,59 @@ void loop() { //***************************** INÍCIO void loop() **************
               if(fase < 0){ 
                     fase = fase + 360;                                                          // convete ândulo 0 - 360 graus
               }
-          ampTOTAL = amplitude;                                                      // Soma dos dados para o cálculo de média estatística
-          faseTOTAL = fase;                                                         //
-          offsetTOTAL =  offsetTOTAL;                                             //
+          ampTOTAL = ampTOTAL + amplitude;                                                      // Soma dos dados para o cálculo de média estatística
+          faseTOTAL = faseTOTAL + fase;                                                         //
+          offsetTOTAL =  offsetTOTAL + soma_offset;                                             //
 
           
-                                           
+    //} //time 180us
+                      
+/*           
+for(contador_aux_3 = 0; contador_aux_3 <= 10; contador_aux_3 = (contador_aux_3 + 10)){ // Laço Matriz pseudo inversa
+for (coluna_piE = 0; coluna_piE < 10; coluna_piE++) {
+ptos_periodo = contador_aux_3 + coluna_piE;
+// Multiplica a matriz do sinal convertido pela matriz pseudo inversa piE
+soma_seno += (float)converte_volts[ptos_periodo]*(float)piEs[coluna_piE]; 
+soma_cosseno += (float)converte_volts[ptos_periodo]*(float)piEc[coluna_piE];
+soma_offset += (float)converte_volts[ptos_periodo]*(float)piEdc[coluna_piE];
+}
+amplitude = 2*sqrt(sq(soma_seno)+sq(soma_cosseno));    // Cálculo da amplitude
+fase = atan2(soma_cosseno , soma_seno)*(180/PI);       // Cálculo da fase
+
+if(fase < 0){ 
+fase = fase + 360;
+}
+//Serial.print(Nr_medicao);
+//Serial.print("  ;  ");
+//Serial.print("amplitude e fase DC");
+//Serial.print("  ;  ");
+//Serial.print(sci(amplitude,4));
+//Serial.print("  ;  ");
+//Serial.print(sci(fase,4));
+//Serial.print("  ;  ");
+//Serial.println(sci(soma_offset,4));
+
+ampTOTAL = ampTOTAL + amplitude;
+faseTOTAL = faseTOTAL + fase;
+offsetTOTAL =  offsetTOTAL + soma_offset;
+coluna_piE = 0;
+amplitude = 0;
+soma_seno = 0; 
+soma_cosseno = 0;
+soma_offset = 0;
+fase = 0;
+} // Final Laço Matriz pseudo inversa
+*/                        
               //********************************************  
               // Calcular média da ampltude, fase e offsset
               //*******************************************
-              /*      
+                      
               ampTOTAL =ampTOTAL/Nr_de_periodos;             // Média da amplitude
               faseTOTAL = faseTOTAL/Nr_de_periodos;          // Média da fase
               offsetTOTAL = offsetTOTAL/Nr_de_periodos;      // média do Offset
-              */
               faseTOTALchA = faseTOTAL;
               // 5us
-                
+                 
 /*
 // Para debug
 //Serial.print(Nr_medicao);
@@ -343,38 +758,20 @@ offsetTOTALchSlave = OFFSET;
 
               
               //impedanceSave(impedancia_Z, impedancia_fase);
-              vetorModulo_Z[indiceSave] = impedancia_Z;
-              vetorFase[indiceSave] = impedancia_fase;
-              //Serial.print(indiceSave);
-              //Serial.print(" ");  
-              //Serial.print(vetorModulo_Z[indiceSave], 2);
+              //vetorModulo_Z[banana] = impedancia_Z;
+              //vetorFase[banana] = impedancia_fase;  
+              //Serial.print(vetorModulo_Z[banana], 2);
               //Serial.print(" ");
-              //Serial.println(vetorFase[indiceSave],4);
-              indiceSave++;
+              //Serial.println(vetorFase[banana],4);
+              //banana++;
 
               //Time_2 = micros() - Time_1;
               //Serial.println(Time_2);    
               
-              if(indiceSave > vetorSize){
-              detachInterrupt(digitalPinToInterrupt(DRDY));
-              detachInterrupt(digitalPinToInterrupt(buttonPin8));
-                 /* for(int i = 1; i <= vetorSize ; i++){
-                            //Serial.print(i);
-                            Serial.print("  ->banana");
-                            Serial.print(vetorModulo_Z[i], 2);
-                            Serial.print(" ");
-                            Serial.println(vetorFase[i],4);
-                            indiceSave = 0;
-                      
-                        }*/
+              //if(banana >= 10){
+              //Serial.println("banana");
+              //}
 
-
-              ordena_vetores(vetorModulo_Z, vetorFase, vetorSize);
-              trima_array(vetorModulo_Z, vetorFase, Z_trimed, Ph_trimed, vetorSize, quartil);
-              ordena_vetores(Ph_trimed, Z_trimed, Primeiroquartil);
-              trima_array(Z_trimed, Ph_trimed, Z2_trimed, Ph2_trimed, Primeiroquartil, quartil);
-              media_polar(Z2_trimed, Ph2_trimed, Segundoquartil, &modulo_Z, &fase_Z);
-              delay(10);          
               // ************ DISPLAY **********************************
               //Envia os dados calculados para o display
               
@@ -383,7 +780,7 @@ offsetTOTALchSlave = OFFSET;
               lcd.setCursor(0, 0);          // Posiciona o cursor na coluna 0, linha 0;
               lcd.print("Z =");             // Escrever "Z =" no display
               lcd.setCursor(4, 0);          // Posiciona o cursor na coluna 4, linha 0;
-              lcd.print(modulo_Z,4);        // Escrever valor da Impedância "X.XXXX"
+              lcd.print(impedancia_Z,4);    // Escrever valor da Impedância "X.XXXX"
               lcd.setCursor(15, 0);         // Posiciona o cursor na coluna 15, linha 1;
               lcd.write(B11110100);         // ômega
               lcd.setCursor(0, 1);          // Posiciona o cursor na coluna 0, linha 1;
@@ -391,18 +788,11 @@ offsetTOTALchSlave = OFFSET;
               lcd.setCursor(1, 1);          // Posiciona o cursor na coluna 1, linha 1;
               lcd.print(" =");              // Escrever " =" no display
               lcd.setCursor(4, 1);          // Posiciona o cursor na coluna 4, linha 1;
-              lcd.print(fase_Z,2);          // Escrever valor da fase "XX.X"
+              lcd.print(impedancia_fase,2); // Escrever valor da fase "XX.X"
               lcd.setCursor(15, 1);         // Posiciona o cursor na coluna 15, linha 1;
               lcd.write(B11011111);          // graus
-
-              Serial.print("media trimada:  ");
-              Serial.print(modulo_Z, 2);
-              Serial.print(" ");
-              Serial.println(fase_Z,2);
-              indiceSave = 0;
-              delay(10);
-              }
-              //Nr_medicao = Nr_medicao + 1;
+              
+              Nr_medicao = Nr_medicao + 1;
             /*
               Serial.print(Nr_medicao);
               Serial.print("  ;  ");
@@ -422,7 +812,6 @@ offsetTOTALchSlave = OFFSET;
               offsetTOTAL = 0;
               offsetTOTALchSlave = 0;
               //sinal_fase_Slave = 0;
-             
 
 
 
@@ -472,7 +861,7 @@ void HabilitaDRDY(){
 void leADC() { 
       
     detachInterrupt(digitalPinToInterrupt(DRDY));
-        for(int i = 0; i <= 50; i++){                                                   // Delay para calibração do sincronismos
+        for(int i = 0; i <= 40; i++){                                                   // Delay para calibração do sincronismos
             asm("nop \n");
         }
     while(contadorAmostra < Nr_de_Amostras){ 

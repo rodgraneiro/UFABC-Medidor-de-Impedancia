@@ -16,41 +16,31 @@ int buttonState8 = 0;         // Variável p/ armazenar status  do pushbutton
 
 #define Nr_de_Amostras  10
 #define ptos_por_periodo 10
-#define vetorSize 101
-
-float myArray[vetorSize];                                         //Vetor modulo Z
-float myPhase[vetorSize];                                         //Vetor fase Z
-const int quartil = floor(vetorSize/8);                           // Tamanho do 1o quartil
-const int Primeiroquartil = vetorSize - 2*quartil;                //Tamanho primeiro quartil
-const int Segundoquartil = Primeiroquartil - 2*quartil;           //Tamanho segubdo quartil
-float Z_trimed[Primeiroquartil];                                  //Vetor modulo Z trimado 1o quartil
-float Ph_trimed[Primeiroquartil];                                 //Vetor fase Z 1o quartil
-float Z2_trimed[Segundoquartil];                                  //Vetor modulo Z 2o quartil
-float Ph2_trimed[Segundoquartil];                                 //Vetor fase trimada 2o quartil
-float modulo_Z = 0;                                               // media modulo Z
-float fase_Z = 0;                                                 // media fase de Z em graus
-
-
-
-
-
 
 volatile uint32_t vetor_Amostra[Nr_de_Amostras] = {0};
 volatile uint32_t vetor_segunda_palavra[Nr_de_Amostras] = {0};
 volatile float converte_volts[Nr_de_Amostras] = {0};
 int Nr_de_periodos = Nr_de_Amostras/ptos_por_periodo;
 int ptos_periodo = 0;
-//int vetorSize = 10;
-
-int indiceSave = 0;
 
 
+//volatile uint32_t sinal_negativo = 0;
+//volatile uint32_t semiciclo_neg = 0;
+//volatile uint32_t semiciclo_pos = 0;
+//volatile uint32_t low8 = 0;
+//volatile uint32_t low24 = 0;
+//volatile int contadorSetup = 0;
 volatile int contadorAmostra = 0;
 //volatile int Transmissao_OK = 0;
 int contador_aux_1 = 0;
 int contador_aux_2 = 0;
 int contador_aux_3 = 0;
+//float fator = 0.0000006;
+//volatile float converte_volts[20] = {0};
 
+//int ptos_periodo = 0;
+//int ptos_por_periodo = 10;
+//int Nr_de_periodos = Nr_de_Amostras/ptos_por_periodo;
 int coluna_piE = 0;
 volatile float offsetTOTALchSlave = 0;
 float amplitude = 0;
@@ -58,12 +48,16 @@ float ampTOTAL = 0;
 volatile float ampTOTALchSlave = 0;
 float impedancia_Z = 0;
 float impedancia_fase = 0;
-volatile float vetorModulo_Z[vetorSize] = {0};
-volatile float vetorFase[vetorSize] = {0};
+volatile float vetorModulo_Z[100] = {0};
+volatile float vetorFase[100] = {0};
 float fase = 0;
 float faseTOTAL = 0;
 float faseTOTALchA = 0;
+//float faseAmenosB = 0;
 volatile float faseTOTALchSlave = 0;
+//byte sinal_offset_Slave =0;
+//byte sinal_fase_Slave = 0;
+//unsigned long Tempo_T =0;
 long Nr_medicao =0;
 
 //*****************************Matriz pseudo inversa 10 ptos excitação 31,25kHz - Sample Rate 312,5kHz
